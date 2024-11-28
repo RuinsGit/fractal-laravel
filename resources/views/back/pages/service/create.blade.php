@@ -204,25 +204,25 @@
                 let hasError = false;
                 let errorMessage = '';
 
-                // AZ tab kontrolü
+               
                 if (!$('#az input[name="title_az"]').val().trim()) {
                     errorMessage += 'Azərbaycan dilində başlıq daxil edin<br>';
                     hasError = true;
                 }
 
-                // EN tab kontrolü
+               
                 if (!$('#en input[name="title_en"]').val().trim()) {
                     errorMessage += 'İngilis dilində başlıq daxil edin<br>';
                     hasError = true;
                 }
 
-                // RU tab kontrolü
+                
                 if (!$('#ru input[name="title_ru"]').val().trim()) {
                     errorMessage += 'Rus dilində başlıq daxil edin<br>';
                     hasError = true;
                 }
 
-                // İkon kontrolü
+                
                 if (!$('input[name="icon"]').val()) {
                     errorMessage += 'Zəhmət olmasa, ikon seçin<br>';
                     hasError = true;

@@ -50,13 +50,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
         
         // Category Routes
-        Route::prefix('category')->name('category.')->group(function () {
-            Route::get('/', [CategoryController::class, 'index'])->name('index');
-            Route::get('/create', [CategoryController::class, 'create'])->name('create');
-            Route::post('/store', [CategoryController::class, 'store'])->name('store');
-            Route::get('/{id}/edit', [CategoryController::class, 'edit'])->name('edit');
-            Route::post('/{id}/update', [CategoryController::class, 'update'])->name('update');
-            Route::get('/{id}/delete', [CategoryController::class, 'destroy'])->name('destroy');
+        Route::controller(CategoryController::class)->prefix('category')->name('category.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::post('/update/{id}', 'update')->name('update');
+            Route::get('/delete/{id}', 'destroy')->name('destroy');
         });
 
         // SubCategory Routes 
@@ -77,8 +77,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('edit');
             Route::post('/{id}/update', [ProductController::class, 'update'])->name('update');
             Route::get('/{id}/delete', [ProductController::class, 'destroy'])->name('destroy');
-            Route::get('/{id}/get-sub-category', [ProductController::class, 'getSubCategory'])
-                ->name('admin.product.get-sub-category');
+            Route::get('/get-sub-category/{category_id}', [ProductController::class, 'getSubCategory'])
+                ->name('get-sub-category');
         });
 
         // Order Routes

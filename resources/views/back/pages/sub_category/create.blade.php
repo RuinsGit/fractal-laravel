@@ -25,6 +25,24 @@
             <!-- end page title -->
 
             <div class="row">
+                <div class="col-12">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="col-xl-12">
                     <div class="card">
                         <div class="card-body">
@@ -192,12 +210,19 @@
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Kateqoriya</label>
-                                            <select name="category_id" id="" class="form-control">
+                                            <select name="category_id" class="form-control select2">
                                                 <option value="">Seçim edin</option>
                                                 @foreach ($categories as $category)
-                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                                        {{ $category->name_az }}
+                                                    </option>
                                                 @endforeach
                                             </select>
+                                            @error('category_id')
+                                                <div class="invalid-feedback" style="display: block">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -237,5 +262,103 @@
 
     <script>
         $('select').select2();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    @if(session('success'))
+        <script>
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Uğurlu!',
+                text: "{{ session('success') }}",
+                showConfirmButton: true,
+                confirmButtonText: 'Tamam',
+                timer: 3000
+            });
+        </script>
+    @endif
+
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Xəta!',
+                text: "{{ session('error') }}",
+                showConfirmButton: true,
+                confirmButtonText: 'Tamam',
+                timer: 3000
+            });
+        </script>
+    @endif
+
+    @if($errors->any())
+        <script>
+            Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: 'Diqqət!',
+                html: `
+                    <div style="text-align: left;">
+                        Zəhmət olmasa, bütün dillərdə məlumatları daxil edin:<br><br>
+                        @foreach($errors->all() as $error)
+                            - {{ $error }}<br>
+                        @endforeach
+                    </div>
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Tamam',
+                timer: 5000
+            });
+        </script>
+    @endif
+
+    <!-- Form submit edildiğinde tüm tabları kontrol et -->
+    <script>
+        $(document).ready(function() {
+            $('form').on('submit', function(e) {
+                let hasError = false;
+                let errorMessage = '';
+
+                // AZ tab kontrolü
+                if (!$('#az input[name="name_az"]').val() || 
+                    !$('#az input[name="image_alt_az"]').val() || 
+                    !$('#az input[name="image_title_az"]').val()) {
+                    errorMessage += 'Azərbaycan dilində məlumatları daxil edin\n';
+                    hasError = true;
+                }
+
+                // EN tab kontrolü
+                if (!$('#en input[name="name_en"]').val() || 
+                    !$('#en input[name="image_alt_en"]').val() || 
+                    !$('#en input[name="image_title_en"]').val()) {
+                    errorMessage += 'İngilis dilində məlumatları daxil edin\n';
+                    hasError = true;
+                }
+
+                // RU tab kontrolü
+                if (!$('#ru input[name="name_ru"]').val() || 
+                    !$('#ru input[name="image_alt_ru"]').val() || 
+                    !$('#ru input[name="image_title_ru"]').val()) {
+                    errorMessage += 'Rus dilində məlumatları daxil edin\n';
+                    hasError = true;
+                }
+
+                if (hasError) {
+                    e.preventDefault();
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'warning',
+                        title: 'Diqqət!',
+                        html: errorMessage,
+                        showConfirmButton: true,
+                        confirmButtonText: 'Tamam',
+                        timer: 5000
+                    });
+                }
+            });
+        });
     </script>
 @endpush

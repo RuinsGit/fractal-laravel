@@ -382,12 +382,13 @@
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <div class="mb-3">Kateqoriya</div>
-                                        <select class="select2 form-control select2-multiple" name="category_id"
-                                            onchange="get_sub_categories(this)">
+                                        <select class="form-control select2" name="category_id" onchange="get_sub_categories(this)">
                                             <option value="">Seçim edin</option>
-                                            <option value="1">Kurs 1</option>
-                                            <option value="2">Kurs 2</option>
-                                            <option value="3">Kurs 3</option>
+                                            @foreach($categories as $category)
+                                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                                    {{ $category->name_az }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                         @error('category_id')
                                             <div class="invalid-feedback" style="display: block">
@@ -397,17 +398,8 @@
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <div class="mb-3">Alt kateqoriya</div>
-                                        <select class="select2 form-control select2-multiple" name="sub_category_id">
+                                        <select class="form-control select2" name="sub_category_id">
                                             <option value="">Seçim edin</option>
-                                            <option value="1" data-category="1">Kurs 1 Alt 1</option>
-                                            <option value="2" data-category="1">Kurs 1 Alt 2</option>
-                                            <option value="3" data-category="1">Kurs 1 Alt 3</option>
-                                            <option value="4" data-category="2">Kurs 2 Alt 1</option>
-                                            <option value="5" data-category="2">Kurs 2 Alt 2</option>
-                                            <option value="6" data-category="2">Kurs 2 Alt 3</option>
-                                            <option value="7" data-category="3">Kurs 3 Alt 1</option>
-                                            <option value="8" data-category="3">Kurs 3 Alt 2</option>
-                                            <option value="9" data-category="3">Kurs 3 Alt 3</option>
                                         </select>
                                         @error('sub_category_id')
                                             <div class="invalid-feedback" style="display: block">
@@ -455,15 +447,49 @@
 
     <script>
         function get_sub_categories(elem) {
-            let id = elem.value;
-            let url = `/admin/category/${id}/get-sub-categories`;
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status == 'success') {
-                        document.querySelector('[name="sub_category_id"]').innerHTML = data.view;
+            let category_id = elem.value;
+            let sub_category_select = $('[name="sub_category_id"]');
+            
+            // Kategori seçili değilse
+            if (!category_id) {
+                sub_category_select.html('<option value="">Seçim edin</option>');
+                return;
+            }
+
+            // Loading göster
+            sub_category_select.html('<option>Yüklənir...</option>');
+            
+            // Alt kategorileri getir
+            $.ajax({
+                url: "{{ route('admin.product.get-sub-category', '') }}/" + category_id,
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        sub_category_select.html(response.view);
+                    } else {
+                        sub_category_select.html('<option value="">Alt kateqoriya tapılmadı</option>');
                     }
-                });
+                },
+                error: function(xhr) {
+                    console.error('AJAX Xətası:', xhr);
+                    sub_category_select.html('<option value="">Xəta baş verdi</option>');
+                }
+            });
         }
+
+        // Sayfa yüklendiğinde
+        $(document).ready(function() {
+            // Select2'yi başlat
+            $('select').select2();
+            
+            // Seçili kategori varsa alt kategorileri getir
+            let selected_category = $('[name="category_id"]').val();
+            if (selected_category) {
+                get_sub_categories({ value: selected_category });
+            }
+        });
     </script>
 @endpush

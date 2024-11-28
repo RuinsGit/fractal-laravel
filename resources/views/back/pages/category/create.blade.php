@@ -27,6 +27,18 @@
                 <div class="col-xl-12">
                     <div class="card">
                         <div class="card-body">
+                            @if(session('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+
+                            @if(session('error'))
+                                <div class="alert alert-danger">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
+
                             <h4 class="card-title">Kateqoriya əlavə et</h4>
                             <ul class="nav nav-pills nav-justified" role="tablist">
                                 <li class="nav-item waves-effect waves-light">
@@ -112,3 +124,42 @@
     </div>
     <!-- End Page-content -->
 @endsection
+
+@push('js')
+<script>
+$(document).ready(function() {
+    $('form').on('submit', function(e) {
+        e.preventDefault();
+        
+        let formData = new FormData(this);
+
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Uğurlu!',
+                    text: 'Kateqoriya müvəffəqiyyətlə əlavə edildi',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    window.location.href = "{{ route('admin.category.index') }}";
+                });
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Xəta!',
+                    text: xhr.responseJSON?.message || 'Xəta baş verdi',
+                    confirmButtonText: 'Tamam'
+                });
+            }
+        });
+    });
+});
+</script>
+@endpush

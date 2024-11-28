@@ -200,14 +200,20 @@
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Kateqoriya</label>
-                                            <select name="category_id" id="" class="form-control">
+                                            <select name="category_id" class="form-control select2">
                                                 <option value="">Seçim edin</option>
                                                 @foreach ($categories as $category)
-                                                    <option value="{{ $category->id }}"
-                                                        {{ $sub_category->category_id == $category->id ? 'selected' : '' }}>
-                                                        {{ $category->name }}</option>
+                                                    <option value="{{ $category->id }}" 
+                                                        {{ old('category_id', $sub_category->category_id) == $category->id ? 'selected' : '' }}>
+                                                        {{ $category->name_az }}
+                                                    </option>
                                                 @endforeach
                                             </select>
+                                            @error('category_id')
+                                                <div class="invalid-feedback" style="display: block">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>

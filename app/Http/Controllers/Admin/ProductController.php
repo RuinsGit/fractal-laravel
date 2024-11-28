@@ -38,10 +38,11 @@ class ProductController extends Controller
 
     public function create()
     {
-        $categories = Category::all();
-        $sub_categories = SubCategory::all();
+        $categories = Category::where('status', 1)
+            ->orderBy('name_az')
+            ->get();
         
-        return view('back.pages.product.create', compact('categories', 'sub_categories'));
+        return view('back.pages.product.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -270,18 +271,43 @@ class ProductController extends Controller
         }
     }
 
-    public function getSubCategory($id)
+    public function getSubCategory($category_id)
     {
-        $sub_categories = SubCategory::where('category_id', $id)->get();
-        
-        $view = '<option value="">Seçim edin</option>';
-        foreach ($sub_categories as $sub_category) {
-            $view .= '<option value="'.$sub_category->id.'">'.$sub_category->name_az.'</option>';
+        try {
+            // Kategoriyi kontrol et
+            $category = Category::findOrFail($category_id);
+            
+            // Alt kategorileri getir
+            $sub_categories = SubCategory::where('category_id', $category_id)
+                ->where('status', 1)
+                ->orderBy('name_az')
+                ->get();
+
+            if ($sub_categories->isEmpty()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Bu kateqoriyaya aid alt kateqoriya tapılmadı'
+                ]);
+            }
+
+            // View'i hazırla
+            $view = '<option value="">Seçim edin</option>';
+            foreach ($sub_categories as $sub) {
+                $view .= '<option value="'.$sub->id.'">'.$sub->name_az.'</option>';
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'view' => $view
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Alt kategori getirme hatası: ' . $e->getMessage());
+            
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Xəta baş verdi: ' . $e->getMessage()
+            ], 422);
         }
-        
-        return response()->json([
-            'status' => 'success',
-            'view' => $view
-        ]);
     }
 }

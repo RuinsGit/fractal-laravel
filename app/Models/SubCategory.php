@@ -11,6 +11,13 @@ class SubCategory extends Model
         'name_az',
         'name_en',
         'name_ru',
+        'image',
+        'image_alt_az',
+        'image_alt_en',
+        'image_alt_ru',
+        'image_title_az',
+        'image_title_en',
+        'image_title_ru',
         'slug',
         'status'
     ];

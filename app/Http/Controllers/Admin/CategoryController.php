@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -21,19 +23,39 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name_az' => 'required',
-            'name_en' => 'required',
-            'name_ru' => 'required',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name_az' => 'required',
+                'name_en' => 'required',
+                'name_ru' => 'required',
+            ], [
+                'name_az.required' => 'Azərbaycan dilində ad daxil edilməlidir',
+                'name_en.required' => 'İngilis dilində ad daxil edilməlidir',
+                'name_ru.required' => 'Rus dilində ad daxil edilməlidir',
+            ]);
 
-        Category::create([
-            'name_az' => $request->name_az,
-            'name_en' => $request->name_en,
-            'name_ru' => $request->name_ru,
-        ]);
+            $category = new Category();
+            $category->name_az = $request->name_az;
+            $category->name_en = $request->name_en;
+            $category->name_ru = $request->name_ru;
+            $category->slug = Str::slug($request->name_az);
+            $category->status = 1;
+            
+            if($category->save()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Kateqoriya müvəffəqiyyətlə əlavə edildi'
+                ]);
+            }
 
-        return redirect()->route('admin.category.index')->with('success', 'Kateqoriya əlavə edildi');
+            throw new \Exception('Kateqoriya əlavə edilərkən xəta baş verdi');
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Xəta: ' . $e->getMessage()
+            ], 422);
+        }
     }
 
     public function edit($id)

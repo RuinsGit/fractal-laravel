@@ -15,6 +15,13 @@ return new class extends Migration
             $table->string('name_en');
             $table->string('name_ru');
             $table->string('slug');
+            $table->string('image')->nullable();
+            $table->string('image_alt_az')->nullable();
+            $table->string('image_alt_en')->nullable();
+            $table->string('image_alt_ru')->nullable();
+            $table->string('image_title_az')->nullable();
+            $table->string('image_title_en')->nullable();
+            $table->string('image_title_ru')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

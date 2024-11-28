@@ -37,6 +37,8 @@
 
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body data-topbar="dark">
@@ -69,7 +71,10 @@
 
 
     <!-- apexcharts -->
-    <script src="{{ asset('back/assets/') }}/libs/apexcharts/apexcharts.min.js"></script>
+    @if(Route::currentRouteName() == 'admin.dashboard')
+        <script src="{{ asset('back/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
+        <script src="{{ asset('back/assets/js/pages/dashboard.init.js') }}"></script>
+    @endif
 
     <!-- jquery.vectormap map -->
     <script src="{{ asset('back/assets/') }}/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js">
@@ -96,6 +101,7 @@
     <!-- Toastr bildirimleri -->
     {!! Toastr::message() !!}
     @stack('js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 </body>
 
 

@@ -26,7 +26,7 @@
                 <div class="col-xl-12">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Məhsul redaktə et</h4>
+                            <h4 class="card-title">Məhsul redakt et</h4>
                             <ul class="nav nav-pills nav-justified" role="tablist">
                                 <li class="nav-item waves-effect waves-light">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#az" role="tab">
@@ -303,7 +303,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="mb-3">
-                                            <label for="" class="form-label">Endirimli qiymət</label>
+                                            <label for="" class="form-label">Endirim Faizi</label>
                                             <input type="text" class="form-control" name="discount"
                                                 value="{{ $product->discount }}">
                                             @error('discount')
@@ -329,12 +329,15 @@
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Əsas şəkil</label>
-                                            <input type="file" class="form-control" accept=".png,.jpg,.jpeg,.svg"
-                                                name="image">
+                                            <input type="file" class="form-control" accept=".png,.jpg,.jpeg,.svg" name="image">
                                             <div class="upload-container mt-3 row">
                                                 <div class="mb-3 col-sm-6 col-md-3">
                                                     <div class="upload-image">
-                                                        <img src="{{ asset($product->image) }}" alt="">
+                                                        <img src="{{ asset($product->image_path) }}" 
+                                                             width="70" 
+                                                             height="70" 
+                                                             class="img-thumbnail" 
+                                                             alt="{{ $product->title_az }}">
                                                     </div>
                                                 </div>
                                             </div>
@@ -348,13 +351,16 @@
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Şəkillər</label>
-                                            <input type="file" class="form-control" multiple
-                                                accept=".png,.jpg,.jpeg,.svg" name="images[]">
+                                            <input type="file" class="form-control" multiple accept=".png,.jpg,.jpeg,.svg" name="images[]">
                                             <div class="upload-container mt-3 row">
-                                                @foreach ($product->images as $image)
-                                                    <div class="col-md-3 col-sm-6 mb-3">
+                                                @foreach($product->images as $image)
+                                                    <div class="mb-3 col-sm-6 col-md-3">
                                                         <div class="upload-image">
-                                                            <img src="{{ asset($image->image) }}" alt="">
+                                                            <img src="{{ asset('uploads/products/' . $image->image) }}" 
+                                                                 width="70" 
+                                                                 height="70" 
+                                                                 class="img-thumbnail" 
+                                                                 alt="{{ $product->title_az }}">
                                                             <i class="mdi mdi-close"></i>
                                                         </div>
                                                     </div>
@@ -369,12 +375,11 @@
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <div class="mb-3">Kateqoriya</div>
-                                        <select class="select2 form-control select2-multiple" name="category_id">
-                                            @foreach ($categories as $category)
-                                                <option value="{{ $category->id }}"
-                                                    {{ $product->category_id == $category->id ? 'selected' : '' }}>
-                                                    {{ $category->name }}</option>
-                                            @endforeach
+                                        <select class="select2 form-control select2-multiple" name="category_id" onchange="get_sub_categories(this)">
+                                            <option value="">Seçim edin</option>
+                                            <option value="1" {{ $product->category_id == 1 ? 'selected' : '' }}>Kurs 1</option>
+                                            <option value="2" {{ $product->category_id == 2 ? 'selected' : '' }}>Kurs 2</option>
+                                            <option value="3" {{ $product->category_id == 3 ? 'selected' : '' }}>Kurs 3</option>
                                         </select>
                                         @error('category_id')
                                             <div class="invalid-feedback" style="display: block">
@@ -385,11 +390,18 @@
                                     <div class="col-md-12 mb-3">
                                         <div class="mb-3">Alt kateqoriya</div>
                                         <select class="select2 form-control select2-multiple" name="sub_category_id">
-                                            @foreach ($sub_categories as $sub_category)
-                                                <option value="{{ $sub_category->id }}"
-                                                    {{ $product->sub_category_id == $sub_category->id ? 'selected' : '' }}>
-                                                    {{ $sub_category->name }}</option>
-                                            @endforeach
+                                            <option value="">Seçim edin</option>
+                                            <option value="1" data-category="1" {{ $product->sub_category_id == 1 ? 'selected' : '' }}>Kurs 1 Alt 1</option>
+                                            <option value="2" data-category="1" {{ $product->sub_category_id == 2 ? 'selected' : '' }}>Kurs 1 Alt 2</option>
+                                            <option value="3" data-category="1" {{ $product->sub_category_id == 3 ? 'selected' : '' }}>Kurs 1 Alt 3</option>
+                                            
+                                            <option value="4" data-category="2" {{ $product->sub_category_id == 4 ? 'selected' : '' }}>Kurs 2 Alt 1</option>
+                                            <option value="5" data-category="2" {{ $product->sub_category_id == 5 ? 'selected' : '' }}>Kurs 2 Alt 2</option>
+                                            <option value="6" data-category="2" {{ $product->sub_category_id == 6 ? 'selected' : '' }}>Kurs 2 Alt 3</option>
+                                            
+                                            <option value="7" data-category="3" {{ $product->sub_category_id == 7 ? 'selected' : '' }}>Kurs 3 Alt 1</option>
+                                            <option value="8" data-category="3" {{ $product->sub_category_id == 8 ? 'selected' : '' }}>Kurs 3 Alt 2</option>
+                                            <option value="9" data-category="3" {{ $product->sub_category_id == 9 ? 'selected' : '' }}>Kurs 3 Alt 3</option>
                                         </select>
                                         @error('sub_category_id')
                                             <div class="invalid-feedback" style="display: block">
@@ -445,6 +457,37 @@
                 .then(data => {
                     $('[name="sub_category_id"]').html(data.view);
                 });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Select2'yu başlat
+            $('.select2').select2();
+            
+            // Kategori değiştiğinde alt kategorileri filtrele
+            $('[name="category_id"]').on('change', function() {
+                let categoryId = $(this).val();
+                let $subCategorySelect = $('[name="sub_category_id"]');
+                
+                // Tüm alt kategorileri gizle
+                $subCategorySelect.find('option[data-category]').hide();
+                
+                // Seçim edin opsiyonunu göster
+                $subCategorySelect.find('option[value=""]').show();
+                
+                // Seçilen kategoriye ait alt kategorileri göster
+                $subCategorySelect.find('option[data-category="' + categoryId + '"]').show();
+                
+                // Select2'yu güncelle
+                $subCategorySelect.val('').trigger('change');
+            });
+            
+            // Sayfa yüklendiğinde seçili kategorinin alt kategorilerini göster
+            let selectedCategoryId = $('[name="category_id"]').val();
+            if(selectedCategoryId) {
+                $('[name="category_id"]').trigger('change');
+            }
         });
     </script>
 @endpush

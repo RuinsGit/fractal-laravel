@@ -26,6 +26,18 @@
                 <div class="col-xl-12">
                     <div class="card">
                         <div class="card-body">
+                            @if(session('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+
+                            @if(session('error'))
+                                <div class="alert alert-danger">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
+
                             <h4 class="card-title">Haqqımızda</h4>
                             <ul class="nav nav-pills nav-justified" role="tablist">
                                 <li class="nav-item waves-effect waves-light">
@@ -47,7 +59,7 @@
                                     </a>
                                 </li>
                             </ul>
-                            <form class="needs-validation" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('admin.about.update') }}" method="POST" class="needs-validation" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
                                     <div class="tab-content p-3 text-muted">

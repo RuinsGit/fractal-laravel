@@ -77,6 +77,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('edit');
             Route::post('/{id}/update', [ProductController::class, 'update'])->name('update');
             Route::get('/{id}/delete', [ProductController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}/get-sub-category', [ProductController::class, 'getSubCategory'])
+                ->name('admin.product.get-sub-category');
         });
 
         // Order Routes
@@ -93,11 +95,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/{id}/change-status', [ReviewController::class, 'changeStatus'])->name('change.status');
         });
 
-        // Settings Routes
+        // About Routes - Eski
         Route::get('/about', [AboutController::class, 'index'])->name('about');
         Route::post('/about/update', [AboutController::class, 'update'])->name('about.update');
+
+        // About Routes - Yeni (Bu şekilde değiştirin)
+        Route::get('/about', [AboutController::class, 'index'])->name('about');
+        Route::post('/about', [AboutController::class, 'update'])->name('about.update');
+
         Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-        Route::post('/contact/update', [ContactController::class, 'update'])->name('contact.update');
+        Route::post('/contact', [ContactController::class, 'update'])->name('contact.update');
 
         // Service Routes
         Route::prefix('service')->name('service.')->group(function () {

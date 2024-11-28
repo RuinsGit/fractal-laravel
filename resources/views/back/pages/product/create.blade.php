@@ -3,6 +3,36 @@
 @section('content')
     <div class="page-content">
         <div class="container-fluid">
+            
+            <!-- Bildirim alanı -->
+            <div class="row">
+                <div class="col-12">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @if($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                </div>
+            </div>
 
             <!-- start page title -->
             <div class="row">
@@ -301,7 +331,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="mb-3">
-                                            <label for="" class="form-label">Endirimli qiymət</label>
+                                            <label for="" class="form-label">Endirim Faizi</label>
                                             <input type="text" class="form-control" name="discount"
                                                 value="{{ old('discount') }}">
                                             @error('discount')
@@ -355,11 +385,9 @@
                                         <select class="select2 form-control select2-multiple" name="category_id"
                                             onchange="get_sub_categories(this)">
                                             <option value="">Seçim edin</option>
-                                            @foreach ($categories as $category)
-                                                <option value="{{ $category->id }}"
-                                                    {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                                    {{ $category->name }}</option>
-                                            @endforeach
+                                            <option value="1">Kurs 1</option>
+                                            <option value="2">Kurs 2</option>
+                                            <option value="3">Kurs 3</option>
                                         </select>
                                         @error('category_id')
                                             <div class="invalid-feedback" style="display: block">
@@ -371,11 +399,15 @@
                                         <div class="mb-3">Alt kateqoriya</div>
                                         <select class="select2 form-control select2-multiple" name="sub_category_id">
                                             <option value="">Seçim edin</option>
-                                            @foreach ($sub_categories as $sub_category)
-                                                <option value="{{ $sub_category->id }}"
-                                                    {{ old('sub_category_id') == $sub_category->id ? 'selected' : '' }}>
-                                                    {{ $sub_category->name }}</option>
-                                            @endforeach
+                                            <option value="1" data-category="1">Kurs 1 Alt 1</option>
+                                            <option value="2" data-category="1">Kurs 1 Alt 2</option>
+                                            <option value="3" data-category="1">Kurs 1 Alt 3</option>
+                                            <option value="4" data-category="2">Kurs 2 Alt 1</option>
+                                            <option value="5" data-category="2">Kurs 2 Alt 2</option>
+                                            <option value="6" data-category="2">Kurs 2 Alt 3</option>
+                                            <option value="7" data-category="3">Kurs 3 Alt 1</option>
+                                            <option value="8" data-category="3">Kurs 3 Alt 2</option>
+                                            <option value="9" data-category="3">Kurs 3 Alt 3</option>
                                         </select>
                                         @error('sub_category_id')
                                             <div class="invalid-feedback" style="display: block">

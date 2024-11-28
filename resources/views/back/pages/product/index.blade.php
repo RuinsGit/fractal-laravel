@@ -33,6 +33,21 @@
                 <div class="col-xl-12">
                     <div class="card">
                         <div class="card-body">
+                            <!-- Success Message -->
+                            @if(session('success'))
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ session('success') }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            @endif
+
+                            <!-- Error Message -->
+                            @if(session('error'))
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{ session('error') }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            @endif
 
                             <form>
                                 <div class="row mb-3 align-items-end justify-content-between">
@@ -131,13 +146,27 @@
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
                                                         <td>
-                                                            <img src="{{ asset($product->image) }}" width="70"
-                                                                height="70" alt="">
+                                                            <img src="{{ asset($product->image_path) }}" width="70"
+                                                                height="70" class="img-thumbnail" alt="{{ $product->title_az }}">
                                                         </td>
                                                         <td>{{ $product->title_az }}</td>
                                                         <td>{{ $product->category->name_az }}</td>
                                                         <td>{{ $product->sub_category->name_az }}</td>
-                                                        <td>{{ $product->price() }}</td>
+                                                        <td>
+                                                            @if($product->hasDiscount())
+                                                                <div>
+                                                                    <del class="text-muted">{{ $product->original_price_formatted }}</del>
+                                                                    <span class="badge bg-danger ms-1">-{{ $product->discount_percentage }}</span>
+                                                                </div>
+                                                                <div class="text-success fw-bold">
+                                                                    {{ $product->discounted_price_formatted }}
+                                                                </div>
+                                                            @else
+                                                                <div class="fw-bold">
+                                                                    {{ $product->original_price_formatted }}
+                                                                </div>
+                                                            @endif
+                                                        </td>
                                                         <td>{{ $product->created_at->format('d/m/Y H:i') }}</td>
                                                         <td>
                                                             <a href="{{ route('admin.product.edit', ['id' => $product->id]) }}"
@@ -175,13 +204,27 @@
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
                                                         <td>
-                                                            <img src="{{ asset($product->image) }}" width="70"
-                                                                height="70" alt="">
+                                                            <img src="{{ asset($product->image_path) }}" width="70"
+                                                                height="70" class="img-thumbnail" alt="{{ $product->title_en }}">
                                                         </td>
                                                         <td>{{ $product->title_en }}</td>
                                                         <td>{{ $product->category->name_en }}</td>
                                                         <td>{{ $product->sub_category->name_en }}</td>
-                                                        <td>{{ $product->price() }}</td>
+                                                        <td>
+                                                            @if($product->hasDiscount())
+                                                                <div>
+                                                                    <del class="text-muted">{{ $product->original_price_formatted }}</del>
+                                                                    <span class="badge bg-danger ms-1">-{{ $product->discount_percentage }}</span>
+                                                                </div>
+                                                                <div class="text-success fw-bold">
+                                                                    {{ $product->discounted_price_formatted }}
+                                                                </div>
+                                                            @else
+                                                                <div class="fw-bold">
+                                                                    {{ $product->original_price_formatted }}
+                                                                </div>
+                                                            @endif
+                                                        </td>
                                                         <td>{{ $product->created_at->format('d/m/Y H:i') }}</td>
                                                         <td>
                                                             <a href="{{ route('admin.product.edit', ['id' => $product->id]) }}"
@@ -219,13 +262,27 @@
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
                                                         <td>
-                                                            <img src="{{ asset($product->image) }}" width="70"
-                                                                height="70" alt="">
+                                                            <img src="{{ asset($product->image_path) }}" width="70"
+                                                                height="70" class="img-thumbnail" alt="{{ $product->title_ru }}">
                                                         </td>
                                                         <td>{{ $product->title_ru }}</td>
                                                         <td>{{ $product->category->name_ru }}</td>
                                                         <td>{{ $product->sub_category->name_ru }}</td>
-                                                        <td>{{ $product->price() }}</td>
+                                                        <td>
+                                                            @if($product->hasDiscount())
+                                                                <div>
+                                                                    <del class="text-muted">{{ $product->original_price_formatted }}</del>
+                                                                    <span class="badge bg-danger ms-1">-{{ $product->discount_percentage }}</span>
+                                                                </div>
+                                                                <div class="text-success fw-bold">
+                                                                    {{ $product->discounted_price_formatted }}
+                                                                </div>
+                                                            @else
+                                                                <div class="fw-bold">
+                                                                    {{ $product->original_price_formatted }}
+                                                                </div>
+                                                            @endif
+                                                        </td>
                                                         <td>{{ $product->created_at->format('d/m/Y H:i') }}</td>
                                                         <td>
                                                             <a href="{{ route('admin.product.edit', ['id' => $product->id]) }}"
@@ -260,21 +317,21 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function deleteItem(id) {
-            event.preventDefault();
-            let url = "{{ route('admin.product.destroy', ['id' => ':id']) }}".replace(':id', id);
             Swal.fire({
                 title: 'Silmək istədiyinizdən əminsiniz mi?',
+                text: "Bu əməliyyat geri qaytarıla bilməz!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Bəli!',
-                confirmCancelText: 'Xeyr!',
+                confirmButtonText: 'Bəli, sil!',
+                cancelButtonText: 'Xeyr!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.replace(url);
+                    let url = "{{ route('admin.product.destroy', ['id' => ':id']) }}".replace(':id', id);
+                    window.location.href = url;
                 }
-            })
+            });
         }
     </script>
 @endpush

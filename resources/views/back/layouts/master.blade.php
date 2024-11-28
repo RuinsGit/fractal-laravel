@@ -34,6 +34,9 @@
     <!-- App Css-->
     <link href="{{ asset('back/assets/') }}/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
     @stack('css')
+
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 
 <body data-topbar="dark">
@@ -86,6 +89,12 @@
 
     <!-- App js -->
     <script src="{{ asset('back/assets/') }}/js/app.js"></script>
+
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <!-- Toastr bildirimleri -->
+    {!! Toastr::message() !!}
     @stack('js')
 </body>
 

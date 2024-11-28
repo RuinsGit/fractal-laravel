@@ -2,20 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Contact extends Model
 {
     protected $fillable = [
+        'email',
+        'phone',
         'address_az',
         'address_en',
         'address_ru',
-        'phone',
-        'email',
+        'work_hours_az',
+        'work_hours_en',
+        'work_hours_ru',
         'facebook',
         'instagram',
-        'twitter',
-        'linkedin'
+        'youtube',
+        'logo',
+        'logo_2',
+        'favicon'
     ];
 }

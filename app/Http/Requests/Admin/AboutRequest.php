@@ -14,22 +14,28 @@ class AboutRequest extends FormRequest
     public function rules()
     {
         return [
-            'content_az' => 'required',
-            'content_en' => 'required',
-            'content_ru' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
+            'title_az' => 'required|string|max:255',
+            'title_en' => 'required|string|max:255',
+            'title_ru' => 'required|string|max:255',
+            'description_az' => 'required',
+            'description_en' => 'required',
+            'description_ru' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048'
         ];
     }
 
     public function messages()
     {
         return [
-            'content_az.required' => 'Məzmun (AZ) tələb olunur',
-            'content_en.required' => 'Məzmun (EN) tələb olunur',
-            'content_ru.required' => 'Məzmun (RU) tələb olunur',
-            'image.image' => 'Fayl şəkil formatında olmalıdır',
-            'image.mimes' => 'Şəkil formatı: jpeg, png, jpg və ya webp olmalıdır',
-            'image.max' => 'Şəkil həcmi maksimum 2MB ola bilər',
+            'title_az.required' => 'Başlıq (Az) tələb olunur',
+            'title_en.required' => 'Başlıq (En) tələb olunur',
+            'title_ru.required' => 'Başlıq (Ru) tələb olunur',
+            'description_az.required' => 'Mətn (Az) tələb olunur',
+            'description_en.required' => 'Mətn (En) tələb olunur',
+            'description_ru.required' => 'Mətn (Ru) tələb olunur',
+            'image.image' => 'Fayl şəkil olmalıdır',
+            'image.mimes' => 'Şəkil formatı: jpeg, png, jpg, svg olmalıdır',
+            'image.max' => 'Şəkil ölçüsü maksimum 2MB olmalıdır'
         ];
     }
 }

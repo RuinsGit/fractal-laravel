@@ -83,8 +83,24 @@
                         <span>Tənzimləmələr</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('admin.about') }}">Haqqımızda</a></li>
-                        <li><a href="{{ route('admin.contact') }}">Əlaqə</a></li>
+                        <li>
+                            <a href="{{ route('admin.about') }}">
+                                <i class="ri-information-line"></i>
+                                Haqqımızda
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.contact') }}">
+                                <i class="ri-contacts-line"></i>
+                                Əlaqə
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.contact-message.index') }}">
+                                <i class="ri-message-2-line"></i>
+                                Əlaqə müraciətləri
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

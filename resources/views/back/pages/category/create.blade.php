@@ -125,41 +125,132 @@
     <!-- End Page-content -->
 @endsection
 
-@push('js')
-<script>
-$(document).ready(function() {
-    $('form').on('submit', function(e) {
-        e.preventDefault();
-        
-        let formData = new FormData(this);
+@push('css')
+    <link href="{{ asset('back/assets/libs/select2/css/select2.min.css') }}" rel="stylesheet">
+@endpush
 
-        $.ajax({
-            url: $(this).attr('action'),
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Uğurlu!',
-                    text: 'Kateqoriya müvəffəqiyyətlə əlavə edildi',
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    window.location.href = "{{ route('admin.category.index') }}";
+@push('js')
+    <script src="{{ asset('back/assets/libs/select2/js/select2.min.js') }}"></script>
+    <script src="{{ asset('back/assets/js/pages/file-upload.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    @if(session('success'))
+        <script>
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Uğurlu!',
+                text: "{{ session('success') }}",
+                showConfirmButton: true,
+                confirmButtonText: 'Tamam',
+                timer: 3000
+            });
+        </script>
+    @endif
+
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Xəta!',
+                text: "{{ session('error') }}",
+                showConfirmButton: true,
+                confirmButtonText: 'Tamam',
+                timer: 3000
+            });
+        </script>
+    @endif
+
+    @if($errors->any())
+        <script>
+            Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: 'Diqqət!',
+                html: `
+                    <div style="text-align: left;">
+                        Zəhmət olmasa, bütün dillərdə məlumatları daxil edin:<br><br>
+                        @foreach($errors->all() as $error)
+                            - {{ $error }}<br>
+                        @endforeach
+                    </div>
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Tamam',
+                timer: 5000
+            });
+        </script>
+    @endif
+
+    <!-- Form submit kontrolü -->
+    <script>
+        $(document).ready(function() {
+            $('form').on('submit', function(e) {
+                e.preventDefault();
+                let hasError = false;
+                let errorMessage = '';
+
+                // AZ tab kontrolü
+                if (!$('#az input[name="name_az"]').val()) {
+                    errorMessage += 'Azərbaycan dilində məlumatları daxil edin<br>';
+                    hasError = true;
+                }
+
+                // EN tab kontrolü
+                if (!$('#en input[name="name_en"]').val()) {
+                    errorMessage += 'İngilis dilində məlumatları daxil edin<br>';
+                    hasError = true;
+                }
+
+                // RU tab kontrolü
+                if (!$('#ru input[name="name_ru"]').val()) {
+                    errorMessage += 'Rus dilində məlumatları daxil edin<br>';
+                    hasError = true;
+                }
+
+                if (hasError) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'warning',
+                        title: 'Diqqət!',
+                        html: errorMessage,
+                        showConfirmButton: true,
+                        confirmButtonText: 'Tamam',
+                        timer: 5000
+                    });
+                    return;
+                }
+
+                let formData = new FormData(this);
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Uğurlu!',
+                            text: 'Kateqoriya müvəffəqiyyətlə əlavə edildi',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.href = "{{ route('admin.category.index') }}";
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Xəta!',
+                            text: xhr.responseJSON?.message || 'Xəta baş verdi',
+                            confirmButtonText: 'Tamam'
+                        });
+                    }
                 });
-            },
-            error: function(xhr) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Xəta!',
-                    text: xhr.responseJSON?.message || 'Xəta baş verdi',
-                    confirmButtonText: 'Tamam'
-                });
-            }
+            });
         });
-    });
-});
-</script>
+    </script>
 @endpush

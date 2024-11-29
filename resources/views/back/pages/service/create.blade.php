@@ -65,56 +65,65 @@
 
                             <form class="needs-validation" method="POST" action="{{ route('admin.service.store') }}" enctype="multipart/form-data">
                                 @csrf
-                                <div class="row">
-                                    <div class="tab-content p-3 text-muted">
-                                        <div class="tab-pane active" id="az">
-                                            <div class="mb-3">
-                                                <label class="form-label">Başlıq (Az)</label>
-                                                <input type="text" name="title_az" value="{{ old('title_az') }}" class="form-control">
-                                                @error('title_az')
-                                                    <div class="invalid-feedback" style="display: block">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="tab-pane" id="en">
-                                            <div class="mb-3">
-                                                <label class="form-label">Başlıq (En)</label>
-                                                <input type="text" name="title_en" value="{{ old('title_en') }}" class="form-control">
-                                                @error('title_en')
-                                                    <div class="invalid-feedback" style="display: block">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="tab-pane" id="ru">
-                                            <div class="mb-3">
-                                                <label class="form-label">Başlıq (Ru)</label>
-                                                <input type="text" name="title_ru" value="{{ old('title_ru') }}" class="form-control">
-                                                @error('title_ru')
-                                                    <div class="invalid-feedback" style="display: block">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12">
+                                <div class="tab-content p-3 text-muted">
+                                    <div class="tab-pane active" id="az">
                                         <div class="mb-3">
-                                            <label class="form-label">İkon</label>
-                                            <input type="file" name="icon" class="form-control" accept=".png,.jpg,.jpeg,.svg,.webp">
-                                            @error('icon')
-                                                <div class="invalid-feedback" style="display: block">
-                                                    {{ $message }}
-                                                </div>
+                                            <label class="form-label">Başlıq (Az)</label>
+                                            <input type="text" name="title_az" value="{{ old('title_az') }}" class="form-control">
+                                            @error('title_az')
+                                                <div class="invalid-feedback" style="display: block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Mətn (Az)</label>
+                                            <textarea name="description_az" class="form-control summernote">{{ old('description_az') }}</textarea>
+                                            @error('description_az')
+                                                <div class="invalid-feedback" style="display: block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
+
+                                    <div class="tab-pane" id="en">
+                                        <div class="mb-3">
+                                            <label class="form-label">Başlıq (En)</label>
+                                            <input type="text" name="title_en" value="{{ old('title_en') }}" class="form-control">
+                                            @error('title_en')
+                                                <div class="invalid-feedback" style="display: block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Mətn (En)</label>
+                                            <textarea name="description_en" class="form-control summernote">{{ old('description_en') }}</textarea>
+                                            @error('description_en')
+                                                <div class="invalid-feedback" style="display: block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-pane" id="ru">
+                                        <div class="mb-3">
+                                            <label class="form-label">Başlıq (Ru)</label>
+                                            <input type="text" name="title_ru" value="{{ old('title_ru') }}" class="form-control">
+                                            @error('title_ru')
+                                                <div class="invalid-feedback" style="display: block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Mətn (Ru)</label>
+                                            <textarea name="description_ru" class="form-control summernote">{{ old('description_ru') }}</textarea>
+                                            @error('description_ru')
+                                                <div class="invalid-feedback" style="display: block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Şəkil</label>
+                                    <input type="file" name="image" class="form-control" accept="image/*">
+                                    @error('image')
+                                        <div class="invalid-feedback" style="display: block">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <div class="mb-3">
@@ -142,8 +151,71 @@
     
     <script>
         $(document).ready(function() {
-            $(".summernote").summernote();
-            $('.dropdown-toggle').dropdown();
+            // Summernote editörünü başlat
+            $('.summernote').summernote({
+                height: 200,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+
+            // Form gönderimi kontrolü
+            $('form').on('submit', function(e) {
+                let hasError = false;
+                let errorMessage = '';
+
+                // Başlık kontrolleri
+                if (!$('#az input[name="title_az"]').val().trim()) {
+                    errorMessage += 'Azərbaycan dilində başlıq daxil edin<br>';
+                    hasError = true;
+                }
+                if (!$('#en input[name="title_en"]').val().trim()) {
+                    errorMessage += 'İngilis dilində başlıq daxil edin<br>';
+                    hasError = true;
+                }
+                if (!$('#ru input[name="title_ru"]').val().trim()) {
+                    errorMessage += 'Rus dilində başlıq daxil edin<br>';
+                    hasError = true;
+                }
+
+                // Mətn kontrolleri
+                if (!$('#az textarea[name="description_az"]').val().trim()) {
+                    errorMessage += 'Azərbaycan dilində mətn daxil edin<br>';
+                    hasError = true;
+                }
+                if (!$('#en textarea[name="description_en"]').val().trim()) {
+                    errorMessage += 'İngilis dilində mətn daxil edin<br>';
+                    hasError = true;
+                }
+                if (!$('#ru textarea[name="description_ru"]').val().trim()) {
+                    errorMessage += 'Rus dilində mətn daxil edin<br>';
+                    hasError = true;
+                }
+
+                // Şəkil kontrolü
+                if (!$('input[name="image"]').val()) {
+                    errorMessage += 'Zəhmət olmasa, şəkil seçin<br>';
+                    hasError = true;
+                }
+
+                if (hasError) {
+                    e.preventDefault();
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'warning',
+                        title: 'Diqqət!',
+                        html: errorMessage,
+                        showConfirmButton: true,
+                        confirmButtonText: 'Tamam'
+                    });
+                }
+            });
         });
     </script>
 
@@ -197,50 +269,4 @@
             });
         </script>
     @endif
-
-    <script>
-        $(document).ready(function() {
-            $('form').on('submit', function(e) {
-                let hasError = false;
-                let errorMessage = '';
-
-               
-                if (!$('#az input[name="title_az"]').val().trim()) {
-                    errorMessage += 'Azərbaycan dilində başlıq daxil edin<br>';
-                    hasError = true;
-                }
-
-               
-                if (!$('#en input[name="title_en"]').val().trim()) {
-                    errorMessage += 'İngilis dilində başlıq daxil edin<br>';
-                    hasError = true;
-                }
-
-                
-                if (!$('#ru input[name="title_ru"]').val().trim()) {
-                    errorMessage += 'Rus dilində başlıq daxil edin<br>';
-                    hasError = true;
-                }
-
-                
-                if (!$('input[name="icon"]').val()) {
-                    errorMessage += 'Zəhmət olmasa, ikon seçin<br>';
-                    hasError = true;
-                }
-
-                if (hasError) {
-                    e.preventDefault();
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'warning',
-                        title: 'Diqqət!',
-                        html: errorMessage,
-                        showConfirmButton: true,
-                        confirmButtonText: 'Tamam',
-                        timer: 5000
-                    });
-                }
-            });
-        });
-    </script>
 @endpush

@@ -23,62 +23,40 @@ class ServiceController extends Controller
     public function store(ServiceRequest $request)
     {
         try {
-            // İkon yükleme işlemi
-            $iconName = null;
-            if ($request->hasFile('icon')) {
-                $icon = $request->file('icon');
-                $iconName = 'uploads/services/' . time() . '.' . $icon->getClientOriginalExtension();
+            // Şəkil yükləmə
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
                 
-                // Klasör yoksa oluştur
                 if (!file_exists(public_path('uploads/services'))) {
                     mkdir(public_path('uploads/services'), 0777, true);
                 }
                 
-                // Dosyayı yükle
-                if (!$icon->move(public_path('uploads/services'), basename($iconName))) {
-                    return redirect()
-                        ->back()
-                        ->withInput()
-                        ->with('error', 'İkon yüklənərkən xəta baş verdi');
-                }
+                $image->move(public_path('uploads/services'), $imageName);
+                $imagePath = 'uploads/services/' . $imageName;
             }
 
-            // Veritabanına kaydet
-            $service = Service::create([
+            Service::create([
                 'title_az' => $request->title_az,
                 'title_en' => $request->title_en,
                 'title_ru' => $request->title_ru,
-                'icon' => $iconName,
+                'description_az' => $request->description_az,
+                'description_en' => $request->description_en,
+                'description_ru' => $request->description_ru,
+                'image' => $imagePath ?? null,
                 'slug' => Str::slug($request->title_en),
-                'status' => 1
+                'status' => true
             ]);
 
-            if (!$service) {
-                // Eğer kayıt başarısız olursa yüklenen dosyayı sil
-                if ($iconName && file_exists(public_path($iconName))) {
-                    unlink(public_path($iconName));
-                }
-                
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with('error', 'Məlumatlar yadda saxlanılarkən xəta baş verdi');
-            }
-
-            return redirect()
-                ->route('admin.service.index')
-                ->with('success', 'Xidmət uğurla əlavə edildi!');
+            toastr()->success('Xidmət uğurla əlavə edildi!');
+            return redirect()->route('admin.service.index');
 
         } catch (\Exception $e) {
-            // Hata durumunda yüklenen dosyayı sil
-            if (isset($iconName) && file_exists(public_path($iconName))) {
-                unlink(public_path($iconName));
+            if (isset($imagePath) && file_exists(public_path($imagePath))) {
+                unlink(public_path($imagePath));
             }
-
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', 'Xəta baş verdi: ' . $e->getMessage());
+            toastr()->error('Xəta: ' . $e->getMessage());
+            return back()->withInput();
         }
     }
 
@@ -98,44 +76,44 @@ class ServiceController extends Controller
     {
         try {
             $service = Service::findOrFail($id);
-            $oldIcon = $service->icon;
 
-            if ($request->hasFile('icon')) {
-                // Yeni ikon yükle
-                $icon = $request->file('icon');
-                $iconName = 'uploads/services/' . time() . '.' . $icon->getClientOriginalExtension();
-                
-                if (!$icon->move(public_path('uploads/services'), basename($iconName))) {
-                    return redirect()
-                        ->back()
-                        ->withInput()
-                        ->with('error', 'İkon yüklənərkən xəta baş verdi');
+            // Yeni resim yüklendiyse
+            if ($request->hasFile('image')) {
+                // Eski resmi sil
+                if ($service->image && file_exists(public_path($service->image))) {
+                    unlink(public_path($service->image));
                 }
 
-                // Eski ikonu sil
-                if ($oldIcon && file_exists(public_path($oldIcon))) {
-                    unlink(public_path($oldIcon));
-                }
-
-                $service->icon = $iconName;
+                // Yeni resmi yükle
+                $image = $request->file('image');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/services'), $imageName);
+                $imagePath = 'uploads/services/' . $imageName;
             }
 
+            // Verileri güncelle
             $service->update([
                 'title_az' => $request->title_az,
                 'title_en' => $request->title_en,
                 'title_ru' => $request->title_ru,
+                'description_az' => $request->description_az,
+                'description_en' => $request->description_en,
+                'description_ru' => $request->description_ru,
+                'image' => $request->hasFile('image') ? $imagePath : $service->image,
                 'slug' => Str::slug($request->title_en)
             ]);
 
-            return redirect()
-                ->route('admin.service.index')
-                ->with('success', 'Xidmət uğurla yeniləndi!');
+            toastr()->success('Xidmət uğurla yeniləndi!');
+            return redirect()->route('admin.service.index');
 
         } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', 'Xəta baş verdi: ' . $e->getMessage());
+            // Hata durumunda yeni yüklenen resmi sil
+            if (isset($imagePath) && file_exists(public_path($imagePath))) {
+                unlink(public_path($imagePath));
+            }
+
+            toastr()->error('Xəta: ' . $e->getMessage());
+            return back()->withInput();
         }
     }
 

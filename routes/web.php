@@ -14,6 +14,9 @@ use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\ContactMessageController;
+use App\Http\Controllers\Admin\LeaderController;
+use App\Http\Controllers\Admin\GalleryController;
+use App\Http\Controllers\Admin\ProductVideoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,6 +94,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('edit');
             Route::post('/{id}/update', [ProductController::class, 'update'])->name('update');
             Route::get('/{id}/delete', [ProductController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}/show', [ProductController::class, 'show'])->name('show');
             Route::get('/get-sub-category/{category_id}', [ProductController::class, 'getSubCategory'])
                 ->name('get-sub-category');
         });
@@ -166,5 +170,33 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('contact-messages/{id}', [ContactMessageController::class, 'show'])->name('contact-message.show');
         Route::delete('contact-messages/{id}', [ContactMessageController::class, 'destroy'])->name('contact-message.destroy');
         Route::post('contact-messages/{id}/mark-as-read', [ContactMessageController::class, 'markAsRead'])->name('contact-message.mark-as-read');
+
+        // Leader Routes
+        Route::prefix('leader')->name('leader.')->controller(App\Http\Controllers\Admin\LeaderController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::post('/update/{id}', 'update')->name('update');
+            Route::get('/destroy/{id}', 'destroy')->name('destroy');
+        });
+
+        // Gallery Routes
+        Route::prefix('gallery')->name('gallery.')->controller(App\Http\Controllers\Admin\GalleryController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::post('/update/{id}', 'update')->name('update');
+            Route::get('/destroy/{id}', 'destroy')->name('destroy');
+        });
+
+        Route::group(['prefix' => 'product/video', 'as' => 'product.video.'], function () {
+            Route::get('/{video}/download', [ProductVideoController::class, 'download'])->name('download');
+            Route::post('/update-duration', [ProductVideoController::class, 'updateDuration'])->name('update-duration');
+            Route::post('/increment-view', [ProductVideoController::class, 'incrementView'])->name('increment-view');
+            Route::post('/rate', [ProductVideoController::class, 'rate'])->name('rate');
+            Route::delete('/{video}', [ProductVideoController::class, 'destroy'])->name('destroy');
+        });
     });
 });

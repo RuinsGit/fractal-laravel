@@ -225,6 +225,22 @@
                                             @enderror
                                         </div>
                                     </div>
+
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label class="form-label">Status</label>
+                                            <select name="status" class="form-control">
+                                                <option value="">Status seçin</option>
+                                                <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Aktiv</option>
+                                                <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Deaktiv</option>
+                                            </select>
+                                            @error('status')
+                                                <div class="invalid-feedback" style="display: block">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="mb-3">
                                     <button class="btn btn-primary" type="submit">Təsdiqlə</button>

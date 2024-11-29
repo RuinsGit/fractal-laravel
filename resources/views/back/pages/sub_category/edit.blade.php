@@ -179,16 +179,28 @@
 
                                     <div class="col-md-12">
                                         <div class="mb-3">
-                                            <label for="" class="form-label">Şəkil</label>
-                                            <input type="file" name="image" accept=".png,.jpg,.svg"
-                                                class="form-control">
-                                            <div class="upload-container row mt-3">
-                                                <div class="col-md-3 col-sm-6 mb-3">
-                                                    <div class="upload-image">
-                                                        <img src="{{ asset($sub_category->image) }}" alt="">
-                                                    </div>
+                                            <label class="form-label">Status</label>
+                                            <select name="status" class="form-control">
+                                                <option value="">Status seçin</option>
+                                                <option value="1" {{ old('status', $sub_category->status) == 1 ? 'selected' : '' }}>Aktiv</option>
+                                                <option value="0" {{ old('status', $sub_category->status) == 0 ? 'selected' : '' }}>Deaktiv</option>
+                                            </select>
+                                            @error('status')
+                                                <div class="invalid-feedback" style="display: block">
+                                                    {{ $message }}
                                                 </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label class="form-label">Mövcud Şəkil</label>
+                                            <div class="mb-3">
+                                                <img src="{{ asset($sub_category->image) }}" alt="" style="max-width: 100px; max-height: 100px;">
                                             </div>
+                                            <label class="form-label">Yeni Şəkil</label>
+                                            <input type="file" name="image" class="form-control">
                                             @error('image')
                                                 <div class="invalid-feedback" style="display: block">
                                                     {{ $message }}

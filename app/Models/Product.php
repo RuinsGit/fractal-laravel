@@ -6,7 +6,31 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'name_az',
+        'name_en',
+        'name_ru',
+        'title_az',
+        'title_en',
+        'title_ru',
+        'description_az',
+        'description_en',
+        'description_ru',
+        'category_id',
+        'sub_category_id',
+        'price',
+        'discount_percentage',
+        'discounted_price',
+        'thumbnail',
+        'preview_video',
+        'status',
+        'order',
+        'slug',
+        'rating',
+        'rating_count',
+        'total_videos',
+        'download_count'
+    ];
 
     public function category()
     {
@@ -15,53 +39,38 @@ class Product extends Model
 
     public function sub_category()
     {
-        return $this->belongsTo(SubCategory::class, 'sub_category_id');
+        return $this->belongsTo(SubCategory::class);
     }
 
-    public function images()
+    public function videos()
     {
-        return $this->hasMany(ProductImage::class);
+        return $this->hasMany(ProductVideo::class);
     }
 
-    public function getDiscountedPriceAttribute()
+    public function getFinalPriceAttribute()
     {
-        if ($this->hasDiscount()) {
-            $discountAmount = ($this->sale_price * min($this->discount, 100)) / 100;
-            return max($this->sale_price - $discountAmount, 0);
+        if ($this->discount_percentage > 0) {
+            $discountAmount = ($this->price * $this->discount_percentage) / 100;
+            return $this->price - $discountAmount;
         }
-        return $this->sale_price;
+        return $this->price;
     }
 
-    public function hasDiscount()
+    public function getFormattedPriceAttribute()
     {
-        return !is_null($this->discount) && $this->discount > 0;
+        return number_format($this->price, 2) . ' ₼';
     }
 
-    public function getOriginalPriceFormattedAttribute()
-    {
-        return number_format($this->sale_price, 2) . ' ₼';
-    }
-
-    public function getDiscountedPriceFormattedAttribute()
+    public function getFormattedDiscountedPriceAttribute()
     {
         return number_format($this->discounted_price, 2) . ' ₼';
     }
 
-    public function getImagePathAttribute()
+    public function getThumbnailPathAttribute()
     {
-        if ($this->image && file_exists(public_path('uploads/products/' . $this->image))) {
-            return 'uploads/products/' . $this->image;
+        if ($this->thumbnail && file_exists(public_path($this->thumbnail))) {
+            return $this->thumbnail;
         }
-        return 'back/assets/images/no-image.png'; // varsayılan resim
-    }
-
-    public function getDiscountPercentageAttribute()
-    {
-        return $this->discount ? min($this->discount, 100) . '%' : null;
-    }
-
-    public function price()
-    {
-        return $this->discounted_price;
+        return 'back/assets/images/no-image.png';
     }
 }

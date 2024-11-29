@@ -14,23 +14,30 @@ class ServiceRequest extends FormRequest
     public function rules()
     {
         return [
-            'title_az' => 'required|string|max:255',
-            'title_en' => 'required|string|max:255',
-            'title_ru' => 'required|string|max:255',
-            'icon' => $this->isMethod('POST') ? 'required|image|mimes:jpeg,png,jpg,svg,webp|max:2048' : 'nullable|image|mimes:jpeg,png,jpg,svg,webp|max:2048',
+            'title_az' => 'required',
+            'title_en' => 'required',
+            'title_ru' => 'required',
+            'description_az' => 'required',
+            'description_en' => 'required',
+            'description_ru' => 'required',
+            'image' => $this->isMethod('POST') ? 'required|image|mimes:jpeg,png,jpg,svg|max:2048' 
+                                              : 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048'
         ];
     }
 
     public function messages()
     {
         return [
-            'title_az.required' => 'Zəhmət olmasa, Azərbaycan dilində başlıq daxil edin',
-            'title_en.required' => 'Zəhmət olmasa, İngilis dilində başlıq daxil edin',
-            'title_ru.required' => 'Zəhmət olmasa, Rus dilində başlıq daxil edin',
-            'icon.required' => 'Zəhmət olmasa, ikon seçin',
-            'icon.image' => 'Fayl şəkil formatında olmalıdır',
-            'icon.mimes' => 'İkon formatı: jpeg, png, jpg, svg və ya webp olmalıdır',
-            'icon.max' => 'İkon həcmi maksimum 2MB ola bilər',
+            'title_az.required' => 'Azərbaycan dilində başlıq daxil edilməlidir',
+            'title_en.required' => 'İngilis dilində başlıq daxil edilməlidir',
+            'title_ru.required' => 'Rus dilində başlıq daxil edilməlidir',
+            'description_az.required' => 'Azərbaycan dilində mətn daxil edilməlidir',
+            'description_en.required' => 'İngilis dilində mətn daxil edilməlidir',
+            'description_ru.required' => 'Rus dilində mətn daxil edilməlidir',
+            'image.required' => 'Şəkil mütləq yüklənməlidir',
+            'image.image' => 'Fayl şəkil formatında olmalıdır',
+            'image.mimes' => 'Şəkil formatı: jpeg, png, jpg, svg olmalıdır',
+            'image.max' => 'Şəkil maksimum 2MB ola bilər'
         ];
     }
 }

@@ -1,495 +1,324 @@
 @extends('back.layouts.master')
 
 @section('content')
-    <div class="page-content">
-        <div class="container-fluid">
-            
-            <!-- Bildirim alanı -->
-            <div class="row">
-                <div class="col-12">
-                    @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-
-                    @if(session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-
-                    @if($errors->any())
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-                </div>
-            </div>
-
-            <!-- start page title -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                        <h4 class="mb-sm-0">Məhsullar</h4>
-
-                        <div class="page-title-right">
-                            <ol class="breadcrumb m-0">
-                                <li class="breadcrumb-item"><a href="{{ route('admin.product.index') }}">Məhsullar</a></li>
-                                <li class="breadcrumb-item active">Əlavə et</li>
-                            </ol>
-                        </div>
-
+<div class="page-content">
+    <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0">Məhsul Əlavə Et</h4>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="{{ route('admin.product.index') }}">Məhsullar</a></li>
+                            <li class="breadcrumb-item active">Əlavə et</li>
+                        </ol>
                     </div>
                 </div>
             </div>
-            <!-- end page title -->
+        </div>
 
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Məhsul əlavə et</h4>
-                            <ul class="nav nav-pills nav-justified" role="tablist">
-                                <li class="nav-item waves-effect waves-light">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="productForm" class="needs-validation" method="POST" action="{{ route('admin.product.store') }}" enctype="multipart/form-data">
+                            @csrf
+                            
+                            <!-- Dil Sekmeleri -->
+                            <ul class="nav nav-tabs nav-justified mb-3" role="tablist">
+                                <li class="nav-item">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#az" role="tab">
-                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                        <span class="d-none d-sm-block">AZ</span>
+                                        <span>AZ</span>
                                     </a>
                                 </li>
-                                <li class="nav-item waves-effect waves-light">
+                                <li class="nav-item">
                                     <a class="nav-link" data-bs-toggle="tab" href="#en" role="tab">
-                                        <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
-                                        <span class="d-none d-sm-block">EN</span>
+                                        <span>EN</span>
                                     </a>
                                 </li>
-                                <li class="nav-item waves-effect waves-light">
+                                <li class="nav-item">
                                     <a class="nav-link" data-bs-toggle="tab" href="#ru" role="tab">
-                                        <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
-                                        <span class="d-none d-sm-block">RU</span>
+                                        <span>RU</span>
                                     </a>
                                 </li>
                             </ul>
-                            <form class="needs-validation" method="POST" action="{{ route('admin.product.store') }}"
-                                enctype="multipart/form-data">
-                                @csrf
-                                <div class="row">
-                                    <div class="tab-content p-3 text-muted">
-                                        <div class="tab-pane active" id="az">
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Başlıq (Az)</label>
-                                                    <input type="text" name="title_az" value="{{ old('title_az') }}"
-                                                        class="form-control">
-                                                    @error('title_az')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Şəkil başlıq
-                                                        (Az)</label>
-                                                    <input type="text" name="image_title_az"
-                                                        value="{{ old('image_title_az') }}" class="form-control">
-                                                    @error('image_title_az')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Şəkil alt
-                                                        (Az)</label>
-                                                    <input type="text" name="image_alt_az"
-                                                        value="{{ old('image_alt_az') }}" class="form-control">
-                                                    @error('image_alt_az')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Meta title
-                                                        (Az)</label>
-                                                    <input type="text" name="meta_title_az"
-                                                        value="{{ old('meta_title_az') }}" class="form-control">
-                                                    @error('meta_title_az')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Meta description
-                                                        (Az)</label>
-                                                    <input type="text" name="meta_description_az"
-                                                        value="{{ old('meta_description_az') }}" class="form-control">
-                                                    @error('meta_description_az')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Mətn (Az)</label>
-                                                    <textarea name="description_az" class="summernote form-control">{{ old('description_az') }}</textarea>
-                                                    @error('description_az')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
 
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="tab-pane" id="en">
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Başlıq (En)</label>
-                                                    <input type="text" name="title_en" value="{{ old('title_en') }}"
-                                                        class="form-control">
-                                                    @error('title_en')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Şəkil başlıq
-                                                        (En)</label>
-                                                    <input type="text" name="image_title_en"
-                                                        value="{{ old('image_title_en') }}" class="form-control">
-                                                    @error('image_title_en')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Şəkil alt
-                                                        (En)</label>
-                                                    <input type="text" name="image_alt_en"
-                                                        value="{{ old('image_alt_en') }}" class="form-control">
-                                                    @error('image_alt_en')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Meta title
-                                                        (En)</label>
-                                                    <input type="text" name="meta_title_en"
-                                                        value="{{ old('meta_title_en') }}" class="form-control">
-                                                    @error('meta_title_en')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Meta description
-                                                        (En)</label>
-                                                    <input type="text" name="meta_description_en"
-                                                        value="{{ old('meta_description_en') }}" class="form-control">
-                                                    @error('meta_description_en')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Mətn (En)</label>
-                                                    <textarea name="description_en" class="summernote form-control">{{ old('description_en') }}</textarea>
-                                                    @error('description_en')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
+                            <!-- Tab məzmunu -->
+                            <div class="tab-content p-3">
+                                <!-- AZ Tab -->
+                                <div class="tab-pane active" id="az" role="tabpanel">
+                                    <div class="mb-3">
+                                        <label>Ad (AZ)</label>
+                                        <input type="text" name="name_az" class="form-control" value="{{ old('name_az') }}">
+                                        @error('name_az')<div class="text-danger">{{ $message }}</div>@enderror
+                                    </div>
 
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="tab-pane" id="ru">
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Başlıq (Ru)</label>
-                                                    <input type="text" name="title_ru" value="{{ old('title_ru') }}"
-                                                        class="form-control">
-                                                    @error('title_ru')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Şəkil başlıq
-                                                        (Ru)</label>
-                                                    <input type="text" name="image_title_ru"
-                                                        value="{{ old('image_title_ru') }}" class="form-control">
-                                                    @error('image_title_ru')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Şəkil alt
-                                                        (Ru)</label>
-                                                    <input type="text" name="image_alt_ru"
-                                                        value="{{ old('image_alt_ru') }}" class="form-control">
-                                                    @error('image_alt_ru')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Meta title
-                                                        (Ru)</label>
-                                                    <input type="text" name="meta_title_ru"
-                                                        value="{{ old('meta_title_ru') }}" class="form-control">
-                                                    @error('meta_title_ru')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Meta description
-                                                        (Ru)</label>
-                                                    <input type="text" name="meta_description_ru"
-                                                        value="{{ old('meta_description_ru') }}" class="form-control">
-                                                    @error('meta_description_ru')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Mətn (Ru)</label>
-                                                    <textarea name="description_ru" class="summernote form-control">{{ old('description_ru') }}</textarea>
-                                                    @error('description_ru')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
+                                    <div class="mb-3">
+                                        <label>Başlıq (AZ)</label>
+                                        <input type="text" name="title_az" class="form-control" value="{{ old('title_az') }}">
+                                        @error('title_az')<div class="text-danger">{{ $message }}</div>@enderror
+                                    </div>
 
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="" class="form-label">Satış qiyməti</label>
-                                            <input type="text" class="form-control" name="sale_price"
-                                                value="{{ old('sale_price') }}">
-                                            @error('sale_price')
-                                                <div class="invalid-feedback" style="display: block;">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="" class="form-label">Endirim Faizi</label>
-                                            <input type="text" class="form-control" name="discount"
-                                                value="{{ old('discount') }}">
-                                            @error('discount')
-                                                <div class="invalid-feedback" style="display: block;">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="" class="form-label">Say</label>
-                                            <input type="number" name="count" value="{{ old('count') }}"
-                                                class="form-control">
-                                            @error('count')
-                                                <div class="invalid-feedback" style="display: block;">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label for="" class="form-label">Əsas şəkil</label>
-                                            <input type="file" class="form-control" accept=".png,.jpg,.jpeg,.svg"
-                                                name="image">
-                                            <div class="upload-container mt-3 row">
-                                            </div>
-                                            @error('image')
-                                                <div class="invalid-feedback" style="display: block">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label for="" class="form-label">Şəkillər</label>
-                                            <input type="file" name="images[]" multiple class="form-control"
-                                                accept=".png,.svg,.jpg,.jpeg">
-                                            <div class="upload-container row mt-3"></div>
-                                            @error('images')
-                                                <div class="invalid-feedback" style="display: block">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 mb-3">
-                                        <div class="mb-3">Kateqoriya</div>
-                                        <select class="form-control select2" name="category_id" onchange="get_sub_categories(this)">
-                                            <option value="">Seçim edin</option>
-                                            @foreach($categories as $category)
-                                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                                    {{ $category->name_az }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('category_id')
-                                            <div class="invalid-feedback" style="display: block">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-12 mb-3">
-                                        <div class="mb-3">Alt kateqoriya</div>
-                                        <select class="form-control select2" name="sub_category_id">
-                                            <option value="">Seçim edin</option>
-                                        </select>
-                                        @error('sub_category_id')
-                                            <div class="invalid-feedback" style="display: block">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
+                                    <div class="mb-3">
+                                        <label>Təsvir (AZ)</label>
+                                        <textarea name="description_az" class="form-control summernote">{{ old('description_az') }}</textarea>
+                                        @error('description_az')<div class="text-danger">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
-                                <div class="mb-3">
-                                    <button class="btn btn-primary" type="submit">Təsdiqlə</button>
+
+                                <!-- EN Tab -->
+                                <div class="tab-pane" id="en" role="tabpanel">
+                                    <div class="mb-3">
+                                        <label>Ad (EN)</label>
+                                        <input type="text" name="name_en" class="form-control" value="{{ old('name_en') }}">
+                                        @error('name_en')<div class="text-danger">{{ $message }}</div>@enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label>Başlıq (EN)</label>
+                                        <input type="text" name="title_en" class="form-control" value="{{ old('title_en') }}">
+                                        @error('title_en')<div class="text-danger">{{ $message }}</div>@enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label>Təsvir (EN)</label>
+                                        <textarea name="description_en" class="form-control summernote">{{ old('description_en') }}</textarea>
+                                        @error('description_en')<div class="text-danger">{{ $message }}</div>@enderror
+                                    </div>
                                 </div>
-                            </form>
-                        </div>
+
+                                <!-- RU Tab -->
+                                <div class="tab-pane" id="ru" role="tabpanel">
+                                    <div class="mb-3">
+                                        <label>Ad (RU)</label>
+                                        <input type="text" name="name_ru" class="form-control" value="{{ old('name_ru') }}">
+                                        @error('name_ru')<div class="text-danger">{{ $message }}</div>@enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label>Başlıq (RU)</label>
+                                        <input type="text" name="title_ru" class="form-control" value="{{ old('title_ru') }}">
+                                        @error('title_ru')<div class="text-danger">{{ $message }}</div>@enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label>Təsvir (RU)</label>
+                                        <textarea name="description_ru" class="form-control summernote">{{ old('description_ru') }}</textarea>
+                                        @error('description_ru')<div class="text-danger">{{ $message }}</div>@enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Kateqoriya və Alt Kateqoriya -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label>Kateqoriya</label>
+                                    <select name="category_id" class="form-select" onchange="getSubCategories(this)">
+                                        <option value="">Seçin</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}">{{ $category->name_az }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('category_id')<div class="text-danger">{{ $message }}</div>@enderror
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Alt Kateqoriya</label>
+                                    <select name="sub_category_id" class="form-select">
+                                        <option value="">Əvvəlcə kateqoriya seçin</option>
+                                    </select>
+                                    @error('sub_category_id')<div class="text-danger">{{ $message }}</div>@enderror
+                                </div>
+                            </div>
+
+                            <!-- Qiymət və Endirim -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label>Qiymət</label>
+                                    <div class="input-group">
+                                        <input type="number" 
+                                               name="price" 
+                                               step="0.01" 
+                                               class="form-control" 
+                                               value="{{ old('price') }}" 
+                                               required>
+                                        <span class="input-group-text">₼</span>
+                                    </div>
+                                    @error('price')<div class="text-danger">{{ $message }}</div>@enderror
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Endirim Faizi</label>
+                                    <div class="input-group">
+                                        <input type="number" 
+                                               name="discount_percentage" 
+                                               class="form-control" 
+                                               value="{{ old('discount_percentage', 0) }}" 
+                                               min="0" 
+                                               max="100">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    @error('discount_percentage')<div class="text-danger">{{ $message }}</div>@enderror
+                                </div>
+                            </div>
+
+                            <!-- Əsas Media -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label>Əsas Şəkil</label>
+                                    <input type="file" name="thumbnail" class="form-control">
+                                    @error('thumbnail')<div class="text-danger">{{ $message }}</div>@enderror
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Önbaxış Videosu</label>
+                                    <input type="file" name="preview_video" class="form-control">
+                                    @error('preview_video')<div class="text-danger">{{ $message }}</div>@enderror
+                                </div>
+                            </div>
+
+                            <!-- Video Yükleme -->
+                            <div class="mb-3">
+                                <label>Video Faylları</label>
+                                <input type="file" name="videos[]" class="form-control" multiple accept="video/*">
+                                <small class="text-muted">Birdən çox video fayl seçə bilərsiniz</small>
+                                @error('videos')<div class="text-danger">{{ $message }}</div>@enderror
+                            </div>
+
+                            <!-- Status və Sıralama -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label>Status</label>
+                                    <select name="status" class="form-select">
+                                        <option value="1">Aktiv</option>
+                                        <option value="0">Deaktiv</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Sıralama</label>
+                                    <input type="number" name="order" class="form-control" value="{{ old('order', 0) }}">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Yadda Saxla</button>
+                        </form>
                     </div>
-                    <!-- end card -->
-                </div> <!-- end col -->
+                </div>
             </div>
-            <!-- end row -->
-
-        </div> <!-- container-fluid -->
+        </div>
     </div>
-    <!-- End Page-content -->
+</div>
 @endsection
 
-@push('css')
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-    <link href="{{ asset('back/assets') }}/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css">
-@endpush
-
 @push('js')
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-    <script src="{{ asset('back/assets') }}/libs/select2/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $(".summernote").summernote();
-            $('.dropdown-toggle').dropdown();
-        });
-    </script>
-    <!-- //Summernote JS - CDN Link -->
-    <script src="{{ asset('back/assets/js/pages/file-upload.js') }}"></script>
-    <script>
-        $('select').select2();
-    </script>
-
-    <script>
-        function get_sub_categories(elem) {
-            let category_id = elem.value;
-            let sub_category_select = $('[name="sub_category_id"]');
-            
-            // Kategori seçili değilse
-            if (!category_id) {
-                sub_category_select.html('<option value="">Seçim edin</option>');
-                return;
-            }
-
-            // Loading göster
-            sub_category_select.html('<option>Yüklənir...</option>');
-            
-            // Alt kategorileri getir
-            $.ajax({
-                url: "{{ route('admin.product.get-sub-category', '') }}/" + category_id,
-                type: 'GET',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    if (response.status === 'success') {
-                        sub_category_select.html(response.view);
-                    } else {
-                        sub_category_select.html('<option value="">Alt kateqoriya tapılmadı</option>');
-                    }
-                },
-                error: function(xhr) {
-                    console.error('AJAX Xətası:', xhr);
-                    sub_category_select.html('<option value="">Xəta baş verdi</option>');
-                }
-            });
+<script>
+    function getSubCategories(elem) {
+        let categoryId = elem.value;
+        let subCategorySelect = document.querySelector('[name="sub_category_id"]');
+        
+        if (!categoryId) {
+            subCategorySelect.innerHTML = '<option value="">Əvvəlcə kateqoriya seçin</option>';
+            return;
         }
 
-        // Sayfa yüklendiğinde
-        $(document).ready(function() {
-            // Select2'yi başlat
-            $('select').select2();
-            
-            // Seçili kategori varsa alt kategorileri getir
-            let selected_category = $('[name="category_id"]').val();
-            if (selected_category) {
-                get_sub_categories({ value: selected_category });
-            }
+        fetch(`/admin/product/get-sub-category/${categoryId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    subCategorySelect.innerHTML = data.view;
+                } else {
+                    subCategorySelect.innerHTML = '<option value="">Alt kateqoriya tapılmadı</option>';
+                }
+            })
+            .catch(error => {
+                console.error('Xəta:', error);
+                subCategorySelect.innerHTML = '<option value="">Xəta baş verdi</option>';
+            });
+    }
+
+    $(document).ready(function() {
+        $('.summernote').summernote({
+            height: 200,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['link']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ]
         });
-    </script>
+
+        $('.form-select').select2();
+
+        $('#productForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            // Form verilerini al
+            var formData = new FormData(this);
+            
+            // Loading modalı göster
+            $('#loadingModal').modal('show');
+            
+            $.ajax({
+                xhr: function() {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function(evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = ((evt.loaded / evt.total) * 100);
+                            $(".progress-bar").width(percentComplete + '%');
+                        }
+                    }, false);
+                    return xhr;
+                },
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    // Loading modalı gizle
+                    $('#loadingModal').modal('hide');
+                    
+                    // Başarılı mesajı göster
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Uğurlu!',
+                        text: 'Məhsul uğurla əlavə edildi',
+                        showConfirmButton: true,
+                        confirmButtonText: 'Tamam'
+                    }).then((result) => {
+                        // Listeye yönlendir
+                        window.location.href = "{{ route('admin.product.index') }}";
+                    });
+                },
+                error: function(xhr) {
+                    // Loading modalı gizle
+                    $('#loadingModal').modal('hide');
+                    
+                    // Hata mesajlarını göster
+                    var errors = xhr.responseJSON.errors;
+                    var errorMessage = '';
+                    
+                    $.each(errors, function(key, value) {
+                        errorMessage += value[0] + '<br>';
+                    });
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Xəta!',
+                        html: errorMessage,
+                        showConfirmButton: true,
+                        confirmButtonText: 'Tamam'
+                    });
+                }
+            });
+        });
+    });
+</script>
+@endpush
+
+@push('css')
+<link href="{{ asset('back/assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
 @endpush

@@ -57,13 +57,17 @@
                                         <div class="tab-pane active" id="az">
                                             <div class="col-md-12">
                                                 <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Başlıq (Az)</label>
-                                                    <input type="text" name="title_az" value="{{ $service->title_az }}"
-                                                        class="form-control">
+                                                    <label class="form-label">Başlıq (Az)</label>
+                                                    <input type="text" name="title_az" value="{{ $service->title_az }}" class="form-control">
                                                     @error('title_az')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
+                                                        <div class="invalid-feedback" style="display: block">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Mətn (Az)</label>
+                                                    <textarea name="description_az" class="form-control summernote">{{ $service->description_az }}</textarea>
+                                                    @error('description_az')
+                                                        <div class="invalid-feedback" style="display: block">{{ $message }}</div>
                                                     @enderror
                                                 </div>
                                             </div>
@@ -71,13 +75,17 @@
                                         <div class="tab-pane" id="en">
                                             <div class="col-md-12">
                                                 <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Başlıq (En)</label>
-                                                    <input type="text" name="title_en" value="{{ $service->title_en }}"
-                                                        class="form-control">
+                                                    <label class="form-label">Başlıq (En)</label>
+                                                    <input type="text" name="title_en" value="{{ $service->title_en }}" class="form-control">
                                                     @error('title_en')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
+                                                        <div class="invalid-feedback" style="display: block">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Mətn (En)</label>
+                                                    <textarea name="description_en" class="form-control summernote">{{ $service->description_en }}</textarea>
+                                                    @error('description_en')
+                                                        <div class="invalid-feedback" style="display: block">{{ $message }}</div>
                                                     @enderror
                                                 </div>
                                             </div>
@@ -85,13 +93,17 @@
                                         <div class="tab-pane" id="ru">
                                             <div class="col-md-12">
                                                 <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Başlıq (Ru)</label>
-                                                    <input type="text" name="title_ru" value="{{ $service->title_ru }}"
-                                                        class="form-control">
+                                                    <label class="form-label">Başlıq (Ru)</label>
+                                                    <input type="text" name="title_ru" value="{{ $service->title_ru }}" class="form-control">
                                                     @error('title_ru')
-                                                        <div class="invalid-feedback" style="display: block">
-                                                            {{ $message }}
-                                                        </div>
+                                                        <div class="invalid-feedback" style="display: block">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Mətn (Ru)</label>
+                                                    <textarea name="description_ru" class="form-control summernote">{{ $service->description_ru }}</textarea>
+                                                    @error('description_ru')
+                                                        <div class="invalid-feedback" style="display: block">{{ $message }}</div>
                                                     @enderror
                                                 </div>
                                             </div>
@@ -100,20 +112,18 @@
 
                                     <div class="col-md-12">
                                         <div class="mb-3">
-                                            <label for="" class="form-label">İkon</label>
-                                            <input type="file" name="icon" accept=".png,.jpg,.svg"
-                                                class="form-control">
+                                            <label class="form-label">Şəkil</label>
+                                            <input type="file" name="image" class="form-control" accept="image/*">
                                             <div class="upload-container row mt-3">
                                                 <div class="col-md-3 col-sm-6 mb-3">
-                                                    <div class="upload-image">
-                                                        <img src="{{ asset($service->icon) }}" alt="">
+                                                    <div class="upload-image" style="max-width: 200px; max-height: 200px; overflow: hidden;">
+                                                        <img src="{{ asset($service->image) }}" alt="" 
+                                                             style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px;">
                                                     </div>
                                                 </div>
                                             </div>
                                             @error('image')
-                                                <div class="invalid-feedback" style="display: block">
-                                                    {{ $message }}
-                                                </div>
+                                                <div class="invalid-feedback" style="display: block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>

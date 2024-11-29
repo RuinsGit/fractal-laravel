@@ -75,7 +75,7 @@
                                                         <td>
                                                             <div
                                                                 style="display:flex;align-items:center;justify-content:center;background-color: #446981; width:100px;height:100px">
-                                                                <img src="{{ asset($service->icon) }}" width="70"
+                                                                <img src="{{ asset($service->image) }}" width="70"
                                                                     height="70" alt="">
                                                             </div>
                                                         </td>
@@ -116,7 +116,7 @@
                                                         <td>
                                                             <div
                                                                 style="display:flex;align-items:center;justify-content:center;background-color: #446981; width:100px;height:100px">
-                                                                <img src="{{ asset($service->icon) }}" width="70"
+                                                                <img src="{{ asset($service->image) }}" width="70"
                                                                     height="70" alt="">
                                                             </div>
                                                         </td>
@@ -157,7 +157,7 @@
                                                         <td>
                                                             <div
                                                                 style="display:flex;align-items:center;justify-content:center;background-color: #446981; width:100px;height:100px">
-                                                                <img src="{{ asset($service->icon) }}" width="70"
+                                                                <img src="{{ asset($service->image) }}" width="70"
                                                                     height="70" alt="">
                                                             </div>
                                                         </td>

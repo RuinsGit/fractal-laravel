@@ -11,7 +11,10 @@ class Service extends Model
         'title_az',
         'title_en',
         'title_ru',
-        'icon',
+        'description_az',
+        'description_en',
+        'description_ru',
+        'image',
         'slug',
         'status'
     ];

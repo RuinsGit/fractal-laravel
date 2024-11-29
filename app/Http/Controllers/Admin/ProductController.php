@@ -8,31 +8,28 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\SubCategory;
 use App\Models\ProductImage;
+use App\Models\ProductVideo;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with(['category', 'sub_category'])
-            ->when(request('category_id'), function($q) {
-                return $q->where('category_id', request('category_id'));
-            })
-            ->when(request('sub_category_id'), function($q) {
-                return $q->where('sub_category_id', request('sub_category_id')); 
-            })
-            ->when(request('search'), function($q) {
-                return $q->where('title_az', 'LIKE', '%'.request('search').'%')
-                        ->orWhere('title_en', 'LIKE', '%'.request('search').'%')
-                        ->orWhere('title_ru', 'LIKE', '%'.request('search').'%');
-            })
+        $products = Product::with(['category', 'sub_category', 'videos'])
+            ->withCount('videos as total_videos')
             ->latest()
-            ->paginate(request('limit', 10));
+            ->paginate(10);
+
+        // Her ürün için indirimli fiyatı hesapla
+        foreach ($products as $product) {
+            $product->final_price = $product->final_price;
+        }
 
         $categories = Category::all();
         $sub_categories = SubCategory::all();
-        
+
         return view('back.pages.product.index', compact('products', 'categories', 'sub_categories'));
     }
 
@@ -45,106 +42,122 @@ class ProductController extends Controller
         return view('back.pages.product.create', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
         try {
-            // Validation kuralları
-            $rules = [
-                'category_id' => 'required',
-                'sub_category_id' => 'required',
-                'title_az' => 'required',
-                'description_az' => 'required',
-                'sale_price' => 'required|numeric',
-                'count' => 'required|integer|min:0',
-                'image' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048'
-            ];
+            DB::beginTransaction();
 
-            // Validation mesajları
-            $messages = [
-                'category_id.required' => 'Kateqoriya seçimi mütləqdir',
-                'sub_category_id.required' => 'Alt kateqoriya seçimi mütləqdir',
-                'title_az.required' => 'Başlıq (AZ) sahəsi mütləqdir',
-                'description_az.required' => 'Mətn (AZ) sahəsi mütləqdir',
-                'sale_price.required' => 'Satış qiyməti mütləqdir',
-                'sale_price.numeric' => 'Satış qiyməti rəqəm olmalıdır',
-                'count.required' => 'Məhsul sayı mütləqdir',
-                'count.integer' => 'Məhsul sayı tam rəqəm olmalıdır',
-                'count.min' => 'Məhsul sayı 0-dan kiçik ola bilməz',
-                'image.required' => 'Şəkil mütləqdir',
-                'image.image' => 'Fayl şəkil formatında olmalıdır',
-                'image.mimes' => 'Şəkil formatı: jpeg, png, jpg və ya svg olmalıdır',
-                'image.max' => 'Şəkil həcmi maksimum 2MB ola bilər'
-            ];
-
-            // Validation'ı çalıştır
-            $validated = $request->validate($rules, $messages);
-
-            // Resim yükleme
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = time() . '.' . $image->getClientOriginalExtension();
-                
-                // Klasörü oluştur (eğer yoksa)
+            // Thumbnail yükleme
+            if ($request->hasFile('thumbnail')) {
+                $thumbnail = $request->file('thumbnail');
+                $thumbnailName = time() . '_thumbnail.' . $thumbnail->getClientOriginalExtension();
                 $uploadPath = public_path('uploads/products');
+                
                 if (!file_exists($uploadPath)) {
                     mkdir($uploadPath, 0777, true);
                 }
                 
-                $image->move($uploadPath, $imageName);
+                $thumbnail->move($uploadPath, $thumbnailName);
+                $thumbnailPath = 'uploads/products/' . $thumbnailName;
             }
 
-            // Ürün oluştur
+            // Preview video yükleme
+            $previewVideoPath = null;
+            if ($request->hasFile('preview_video')) {
+                $previewVideo = $request->file('preview_video');
+                $previewVideoName = time() . '_preview.' . $previewVideo->getClientOriginalExtension();
+                $uploadPath = public_path('uploads/products/videos');
+                
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0777, true);
+                }
+                
+                $previewVideo->move($uploadPath, $previewVideoName);
+                $previewVideoPath = 'uploads/products/videos/' . $previewVideoName;
+            }
+
+            // İndirimli fiyat hesaplama
+            $price = floatval($request->price);
+            $discountPercentage = floatval($request->discount_percentage ?? 0);
+            
+            // İndirimli fiyatı hesapla
+            $discountedPrice = $price;
+            if ($discountPercentage > 0) {
+                $discountAmount = ($price * $discountPercentage) / 100;
+                $discountedPrice = $price - $discountAmount;
+            }
+
+            // Ürünü oluştur
             $product = Product::create([
+                'name_az' => $request->name_az,
+                'name_en' => $request->name_en,
+                'name_ru' => $request->name_ru,
+                'title_az' => $request->title_az,
+                'title_en' => $request->title_en,
+                'title_ru' => $request->title_ru,
+                'description_az' => $request->description_az,
+                'description_en' => $request->description_en,
+                'description_ru' => $request->description_ru,
                 'category_id' => $request->category_id,
                 'sub_category_id' => $request->sub_category_id,
-                'title_az' => $request->title_az,
-                'title_en' => $request->title_az, // AZ dilindeki başlığı kullan
-                'title_ru' => $request->title_az, // AZ dilindeki başlığı kullan
-                'description_az' => $request->description_az,
-                'description_en' => $request->description_az, // AZ dilindeki açıklamayı kullan
-                'description_ru' => $request->description_az, // AZ dilindeki açıklamayı kullan
-                'image' => $imageName ?? null,
-                'image_title_az' => $request->image_title_az,
-                'image_title_en' => $request->image_title_az, // AZ dilindeki başlığı kullan
-                'image_title_ru' => $request->image_title_az, // AZ dilindeki başlığı kullan
-                'image_alt_az' => $request->image_alt_az,
-                'image_alt_en' => $request->image_alt_az, // AZ dilindeki alt metni kullan
-                'image_alt_ru' => $request->image_alt_az, // AZ dilindeki alt metni kullan
-                'meta_title_az' => $request->meta_title_az,
-                'meta_title_en' => $request->meta_title_az, // AZ dilindeki meta başlığı kullan
-                'meta_title_ru' => $request->meta_title_az, // AZ dilindeki meta başlığı kullan
-                'meta_description_az' => $request->meta_description_az,
-                'meta_description_en' => $request->meta_description_az, // AZ dilindeki meta açıklamayı kullan
-                'meta_description_ru' => $request->meta_description_az, // AZ dilindeki meta açıklamayı kullan
-                'sale_price' => $request->sale_price,
-                'discount' => $request->discount ?? 0,
-                'count' => $request->count,
-                'slug' => \Str::slug($request->title_az),
-                'status' => 1
+                'price' => $price,
+                'discount_percentage' => $discountPercentage,
+                'discounted_price' => $discountedPrice,
+                'thumbnail' => $thumbnailPath ?? null,
+                'preview_video' => $previewVideoPath,
+                'status' => $request->status ?? 1,
+                'order' => $request->order ?? 0,
+                'slug' => Str::slug($request->name_az)
             ]);
 
-            // Çoklu resim yükleme
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
-                    $imageName = time() . rand(1, 1000) . '.' . $image->getClientOriginalExtension();
-                    $image->move(public_path('uploads/products'), $imageName);
+            // Video yükleme işlemi
+            if ($request->hasFile('videos')) {
+                $uploadPath = public_path('uploads/products/videos');
+                
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0777, true);
+                }
+
+                foreach ($request->file('videos') as $key => $video) {
+                    $videoName = time() . '_' . uniqid() . '.' . $video->getClientOriginalExtension();
+                    $videoPath = 'uploads/products/videos/' . $videoName;
                     
-                    ProductImage::create([
+                    // Videoyu yükle
+                    $video->move($uploadPath, $videoName);
+
+                    // Video kaydını oluştur
+                    ProductVideo::create([
                         'product_id' => $product->id,
-                        'image' => $imageName
+                        'title' => 'Video ' . ($key + 1),
+                        'video_path' => $videoPath,
+                        'order' => $key + 1
                     ]);
                 }
+
+                // Toplam video sayısını güncelle
+                $product->update([
+                    'total_videos' => $product->videos()->count()
+                ]);
             }
 
-            return redirect()
-                ->route('admin.product.index')
-                ->with('success', 'Məhsul uğurla əlavə edildi');
+            DB::commit();
+            toastr()->success('Məhsul uğurla əlavə edildi!');
+            return redirect()->route('admin.product.index');
 
         } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->with('error', 'Xəta baş verdi: ' . $e->getMessage())
-                ->withInput();
+            DB::rollBack();
+            
+            // Yüklenen dosyaları temizle
+            if (isset($thumbnailPath) && file_exists(public_path($thumbnailPath))) {
+                unlink(public_path($thumbnailPath));
+            }
+            
+            if (isset($videoPath) && file_exists(public_path($videoPath))) {
+                unlink(public_path($videoPath));
+            }
+
+            toastr()->error('Xəta: ' . $e->getMessage());
+            return back()->withInput();
         }
     }
 
@@ -157,85 +170,77 @@ class ProductController extends Controller
         return view('back.pages.product.edit', compact('product', 'categories', 'sub_categories'));
     }
 
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, $id)
     {
         try {
             $product = Product::findOrFail($id);
+            $data = $request->validated();
 
-            // Validation
-            $request->validate([
-                'title_az' => 'required',
-                'category_id' => 'required',
-                'sub_category_id' => 'required',
-                'sale_price' => 'required|numeric|min:0',
-                'count' => 'required|integer|min:0',
-                'discount' => 'nullable|numeric|min:0|max:100',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
-                'images.*' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048'
-            ]);
+            // Discount percentage null ise 0 olarak ayarla
+            $data['discount_percentage'] = $data['discount_percentage'] ?? 0;
 
-            // Ana resim işleme
-            if ($request->hasFile('image')) {
+            // Resim yükleme işlemi
+            if ($request->hasFile('thumbnail')) {
                 // Eski resmi sil
-                if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {
-                    unlink(public_path('uploads/products/' . $product->image));
+                if ($product->thumbnail && file_exists(public_path($product->thumbnail))) {
+                    unlink(public_path($product->thumbnail));
                 }
 
-                $image = $request->file('image');
+                // Yeni resmi yükle
+                $image = $request->file('thumbnail');
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
+                
+                // Klasör yoksa oluştur
+                if (!file_exists(public_path('uploads/products'))) {
+                    mkdir(public_path('uploads/products'), 0777, true);
+                }
+                
                 $image->move(public_path('uploads/products'), $imageName);
-                $product->image = 'uploads/products/' . $imageName;
+                $data['thumbnail'] = 'uploads/products/' . $imageName;
             }
 
-            // Ürün bilgilerini güncelle
+            // İndirimli fiyat hesaplama
+            $price = floatval($request->price);
+            $discountPercentage = floatval($request->discount_percentage ?? 0);
+            
+            // İndirimli fiyatı hesapla
+            $discountedPrice = $price;
+            if ($discountPercentage > 0) {
+                $discountAmount = ($price * $discountPercentage) / 100;
+                $discountedPrice = $price - $discountAmount;
+            }
+
             $product->update([
-                'title_az' => $request->title_az,
-                'title_en' => $request->title_en,
-                'title_ru' => $request->title_ru,
-                'image_title_az' => $request->image_title_az,
-                'image_title_en' => $request->image_title_en,
-                'image_title_ru' => $request->image_title_ru,
-                'image_alt_az' => $request->image_alt_az,
-                'image_alt_en' => $request->image_alt_en,
-                'image_alt_ru' => $request->image_alt_ru,
-                'meta_title_az' => $request->meta_title_az,
-                'meta_title_en' => $request->meta_title_en,
-                'meta_title_ru' => $request->meta_title_ru,
-                'meta_description_az' => $request->meta_description_az,
-                'meta_description_en' => $request->meta_description_en,
-                'meta_description_ru' => $request->meta_description_ru,
-                'description_az' => $request->description_az,
-                'description_en' => $request->description_en,
-                'description_ru' => $request->description_ru,
-                'category_id' => $request->category_id,
-                'sub_category_id' => $request->sub_category_id,
-                'sale_price' => $request->sale_price,
-                'discount' => $request->discount ?? 0,
-                'count' => $request->count,
+                'name_az' => $data['name_az'],
+                'name_en' => $data['name_en'],
+                'name_ru' => $data['name_ru'],
+                'title_az' => $data['title_az'],
+                'title_en' => $data['title_en'],
+                'title_ru' => $data['title_ru'],
+                'description_az' => $data['description_az'],
+                'description_en' => $data['description_en'],
+                'description_ru' => $data['description_ru'],
+                'category_id' => $data['category_id'],
+                'sub_category_id' => $data['sub_category_id'],
+                'price' => $price,
+                'discount_percentage' => $discountPercentage,
+                'discounted_price' => $discountedPrice,
+                'status' => $data['status'],
+                'order' => $data['order'],
+                'thumbnail' => $data['thumbnail'] ?? $product->thumbnail
             ]);
 
-            // Çoklu resim işleme
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
-                    $imageName = time() . '_' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
-                    $image->move(public_path('uploads/products'), $imageName);
-                    
-                    ProductImage::create([
-                        'product_id' => $product->id,
-                        'image' => 'uploads/products/' . $imageName
-                    ]);
-                }
-            }
-
-            return redirect()
-                ->route('admin.product.index')
-                ->with('success', 'Məhsul uğurla yeniləndi');
+            toastr()->success('Məhsul uğurla yeniləndi!');
+            return redirect()->route('admin.product.index');
 
         } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->with('error', 'Xəta baş verdi: ' . $e->getMessage())
-                ->withInput();
+            // Hata durumunda yeni yüklenen resmi sil
+            if (isset($data['thumbnail']) && file_exists(public_path($data['thumbnail']))) {
+                unlink(public_path($data['thumbnail']));
+            }
+
+            toastr()->error('Xəta: ' . $e->getMessage());
+            return back()->withInput();
         }
     }
 
@@ -309,5 +314,49 @@ class ProductController extends Controller
                 'message' => 'Xəta baş verdi: ' . $e->getMessage()
             ], 422);
         }
+    }
+
+    public function show($id)
+    {
+        $product = Product::with('videos')
+            ->withCount('videos')
+            ->findOrFail($id);
+
+        // Tüm videoların toplam süresini hesapla
+        $totalSeconds = $product->videos->sum('duration');
+        
+        // Toplam süreyi formatla
+        if ($totalSeconds < 60) {
+            $product->total_duration = $totalSeconds . ' saniyə';
+        } elseif ($totalSeconds < 3600) {
+            $minutes = floor($totalSeconds / 60);
+            $product->total_duration = $minutes . ' dəqiqə';
+        } else {
+            $hours = floor($totalSeconds / 3600);
+            $minutes = floor(($totalSeconds % 3600) / 60);
+            $product->total_duration = $hours . ' saat ' . ($minutes > 0 ? $minutes . ' dəqiqə' : '');
+        }
+
+        // Her video için süreyi formatla
+        foreach ($product->videos as $video) {
+            $duration = $video->duration;
+            if ($duration < 60) {
+                $video->formatted_duration = $duration . ' saniyə';
+            } elseif ($duration < 3600) {
+                $minutes = floor($duration / 60);
+                $seconds = $duration % 60;
+                $video->formatted_duration = $minutes . ':' . sprintf('%02d', $seconds) . ' dəqiqə';
+            } else {
+                $hours = floor($duration / 3600);
+                $minutes = floor(($duration % 3600) / 60);
+                $seconds = $duration % 60;
+                $video->formatted_duration = sprintf('%d:%02d:%02d', $hours, $minutes, $seconds);
+            }
+        }
+
+        // Toplam indirme sayısı
+        $product->total_downloads = $product->videos->sum('download_count');
+
+        return view('back.pages.product.show', compact('product'));
     }
 }

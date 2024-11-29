@@ -78,6 +78,20 @@
                 </li>
 
                 <li>
+                    <a href="{{ route('admin.leader.index') }}" class="waves-effect">
+                        <i class="ri-team-line"></i>
+                        <span>Rəhbərlik</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.gallery.index') }}" class="waves-effect">
+                        <i class="ri-gallery-line"></i>
+                        <span>Qalereya</span>
+                    </a>
+                </li>
+
+                <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-settings-2-line"></i>
                         <span>Tənzimləmələr</span>

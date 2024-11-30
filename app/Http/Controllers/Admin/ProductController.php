@@ -47,45 +47,33 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
 
-            // Thumbnail yükleme
+            // Debug için
+            \Log::info('Product store başladı', $request->all());
+
+            // Thumbnail işlemi
+            $thumbnailPath = null;
             if ($request->hasFile('thumbnail')) {
-                $thumbnail = $request->file('thumbnail');
-                $thumbnailName = time() . '_thumbnail.' . $thumbnail->getClientOriginalExtension();
-                $uploadPath = public_path('uploads/products');
-                
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0777, true);
-                }
-                
-                $thumbnail->move($uploadPath, $thumbnailName);
-                $thumbnailPath = 'uploads/products/' . $thumbnailName;
+                $thumbnailPath = $this->uploadImage($request->file('thumbnail'), 'products');
+                \Log::info('Thumbnail yüklendi', ['path' => $thumbnailPath]);
             }
 
-            // Preview video yükleme
+            // Preview video işlemi
             $previewVideoPath = null;
             if ($request->hasFile('preview_video')) {
-                $previewVideo = $request->file('preview_video');
-                $previewVideoName = time() . '_preview.' . $previewVideo->getClientOriginalExtension();
-                $uploadPath = public_path('uploads/products/videos');
-                
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0777, true);
-                }
-                
-                $previewVideo->move($uploadPath, $previewVideoName);
-                $previewVideoPath = 'uploads/products/videos/' . $previewVideoName;
+                $previewVideoPath = $this->uploadVideo($request->file('preview_video'), 'products/videos/previews');
+                \Log::info('Preview video yüklendi', ['path' => $previewVideoPath]);
             }
 
             // İndirimli fiyat hesaplama
             $price = floatval($request->price);
             $discountPercentage = floatval($request->discount_percentage ?? 0);
-            
-            // İndirimli fiyatı hesapla
-            $discountedPrice = $price;
-            if ($discountPercentage > 0) {
-                $discountAmount = ($price * $discountPercentage) / 100;
-                $discountedPrice = $price - $discountAmount;
-            }
+            $discountedPrice = $this->calculateDiscountedPrice($price, $discountPercentage);
+
+            \Log::info('Fiyat hesaplandı', [
+                'price' => $price,
+                'discount' => $discountPercentage,
+                'discounted_price' => $discountedPrice
+            ]);
 
             // Ürünü oluştur
             $product = Product::create([
@@ -103,61 +91,101 @@ class ProductController extends Controller
                 'price' => $price,
                 'discount_percentage' => $discountPercentage,
                 'discounted_price' => $discountedPrice,
-                'thumbnail' => $thumbnailPath ?? null,
+                'thumbnail' => $thumbnailPath,
                 'preview_video' => $previewVideoPath,
                 'status' => $request->status ?? 1,
                 'order' => $request->order ?? 0,
                 'slug' => Str::slug($request->name_az)
             ]);
 
+            \Log::info('Ürün oluşturuldu', ['product_id' => $product->id]);
+
             // Video yükleme işlemi
             if ($request->hasFile('videos')) {
-                $uploadPath = public_path('uploads/products/videos');
-                
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0777, true);
-                }
-
                 foreach ($request->file('videos') as $key => $video) {
-                    $videoName = time() . '_' . uniqid() . '.' . $video->getClientOriginalExtension();
-                    $videoPath = 'uploads/products/videos/' . $videoName;
-                    
-                    // Videoyu yükle
-                    $video->move($uploadPath, $videoName);
-
-                    // Video kaydını oluştur
-                    ProductVideo::create([
-                        'product_id' => $product->id,
-                        'title' => 'Video ' . ($key + 1),
-                        'video_path' => $videoPath,
-                        'order' => $key + 1
-                    ]);
+                    $uploadedVideo = ProductVideo::uploadVideo($video, $product->id, $key + 1);
+                    \Log::info('Video yüklendi', ['video_id' => $uploadedVideo->id]);
                 }
-
-                // Toplam video sayısını güncelle
-                $product->update([
-                    'total_videos' => $product->videos()->count()
-                ]);
             }
 
             DB::commit();
-            toastr()->success('Məhsul uğurla əlavə edildi!');
-            return redirect()->route('admin.product.index');
+            \Log::info('İşlem başarıyla tamamlandı');
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Məhsul uğurla əlavə edildi',
+                    'redirect' => route('admin.product.index')
+                ]);
+            }
+
+            return redirect()
+                ->route('admin.product.index')
+                ->with('success', 'Məhsul uğurla əlavə edildi');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
-            // Yüklenen dosyaları temizle
-            if (isset($thumbnailPath) && file_exists(public_path($thumbnailPath))) {
-                unlink(public_path($thumbnailPath));
-            }
-            
-            if (isset($videoPath) && file_exists(public_path($videoPath))) {
-                unlink(public_path($videoPath));
+            \Log::error('Ürün ekleme hatası', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            $this->cleanupFiles([$thumbnailPath, $previewVideoPath]);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Xəta baş verdi: ' . $e->getMessage()
+                ], 422);
             }
 
-            toastr()->error('Xəta: ' . $e->getMessage());
-            return back()->withInput();
+            return back()
+                ->withInput()
+                ->with('error', 'Xəta baş verdi: ' . $e->getMessage());
+        }
+    }
+
+    // Yardımcı metodlar
+    private function uploadImage($file, $path)
+    {
+        $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $uploadPath = 'uploads/' . $path;
+        
+        if (!file_exists(public_path($uploadPath))) {
+            mkdir(public_path($uploadPath), 0777, true);
+        }
+        
+        $file->move(public_path($uploadPath), $fileName);
+        return $uploadPath . '/' . $fileName;
+    }
+
+    private function uploadVideo($file, $path)
+    {
+        $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $uploadPath = 'uploads/' . $path;
+        
+        if (!file_exists(public_path($uploadPath))) {
+            mkdir(public_path($uploadPath), 0777, true);
+        }
+        
+        $file->move(public_path($uploadPath), $fileName);
+        return $uploadPath . '/' . $fileName;
+    }
+
+    private function calculateDiscountedPrice($price, $discountPercentage)
+    {
+        if ($discountPercentage > 0) {
+            return $price - ($price * $discountPercentage / 100);
+        }
+        return $price;
+    }
+
+    private function cleanupFiles($paths)
+    {
+        foreach ($paths as $path) {
+            if ($path && file_exists(public_path($path))) {
+                unlink(public_path($path));
+            }
         }
     }
 
@@ -358,5 +386,38 @@ class ProductController extends Controller
         $product->total_downloads = $product->videos->sum('download_count');
 
         return view('back.pages.product.show', compact('product'));
+    }
+
+    /**
+     * Başarılı yanıt döndürür
+     */
+    private function successResponse($route, $message)
+    {
+        if (request()->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => $message,
+                'redirect' => route($route)
+            ]);
+        }
+
+        toastr()->success($message);
+        return redirect()->route($route);
+    }
+
+    /**
+     * Hata yanıtı döndürür
+     */
+    private function errorResponse($message)
+    {
+        if (request()->ajax()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $message
+            ], 422);
+        }
+
+        toastr()->error($message);
+        return back()->withInput();
     }
 }

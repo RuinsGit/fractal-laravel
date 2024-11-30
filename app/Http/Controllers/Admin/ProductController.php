@@ -95,7 +95,7 @@ class ProductController extends Controller
                 'preview_video' => $previewVideoPath,
                 'status' => $request->status ?? 1,
                 'order' => $request->order ?? 0,
-                'slug' => Str::slug($request->name_az)
+                'slug' => $this->createUniqueSlug($request->name_az)
             ]);
 
             \Log::info('Ürün oluşturuldu', ['product_id' => $product->id]);
@@ -419,5 +419,19 @@ class ProductController extends Controller
 
         toastr()->error($message);
         return back()->withInput();
+    }
+
+    private function createUniqueSlug($title)
+    {
+        $slug = Str::slug($title);
+        $count = 1;
+
+        // Slug'ın benzersiz olup olmadığını kontrol et
+        while (Product::where('slug', $slug)->exists()) {
+            $slug = Str::slug($title) . '-' . $count;
+            $count++;
+        }
+
+        return $slug;
     }
 }

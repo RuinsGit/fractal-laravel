@@ -18,97 +18,141 @@
             </div>
         </div>
 
-        <!-- Ürün Detayları -->
+        <!-- Üst Bölüm - Resim, Video ve İstatistikler -->
         <div class="row">
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <!-- Sol Taraf - Ürün Bilgileri -->
-                            <div class="col-md-8">
-                                <h4>{{ $product->name_az }}</h4>
-                                <p class="text-muted">{{ $product->title_az }}</p>
-                                
-                                <div class="mt-4">
-                                    <h5>Qiymət Məlumatları</h5>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <p><strong>Əsas Qiymət:</strong> {{ $product->formatted_price }}</p>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <p><strong>Endirim:</strong> {{ $product->discount_percentage }}%</p>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <p><strong>Son Qiymət:</strong> {{ $product->formatted_discounted_price }}</p>
-                                        </div>
-                                    </div>
+                            <!-- Resim -->
+                            <div class="col-md-4">
+                                <div class="position-relative rounded overflow-hidden" style="height: 300px;">
+                                    <img src="{{ asset($product->thumbnail) }}" 
+                                         class="w-100 h-100 object-fit-cover" 
+                                         alt="{{ $product->name_az }}">
                                 </div>
                             </div>
                             
-                            <!-- Sağ Taraf - İstatistikler -->
+                            <!-- Önizleme Videosu -->
                             <div class="col-md-4">
-                                <div class="card bg-light">
+                                <div class="position-relative rounded overflow-hidden" style="height: 300px;">
+                                    <video id="previewVideo" class="w-100 h-100 object-fit-cover" controls>
+                                        <source src="{{ asset($product->preview_video) }}" type="video/mp4">
+                                    </video>
+                                </div>
+                            </div>
+
+                            <!-- İstatistikler -->
+                            <div class="col-md-4">
+                                <div class="card bg-light h-100">
                                     <div class="card-body">
-                                        <h5>Video Statistikaları</h5>
-                                        <div class="mt-3">
-                                            <p>
-                                                <i class="fas fa-video me-2"></i>
-                                                <strong>Video Sayı:</strong> {{ $product->total_videos }}
-                                            </p>
-                                            <p>
-                                                <i class="fas fa-clock me-2"></i>
-                                                <strong>Ümumi Müddət:</strong> {{ $product->total_duration }}
-                                            </p>
-                                            <p>
-                                                <i class="fas fa-download me-2"></i>
-                                                <strong>Yükləmə Sayı:</strong> {{ $product->total_downloads }}
-                                            </p>
-                                            <p>
-                                                <i class="fas fa-star me-2 text-warning"></i>
-                                                <strong>Ortalama Reytinq:</strong> {{ $product->average_rating }}
-                                            </p>
+                                        <h5 class="card-title mb-4">Məhsul Statistikaları</h5>
+                                        
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="flex-shrink-0">
+                                                <div class="avatar-sm">
+                                                    <span class="avatar-title bg-primary-subtle text-primary rounded">
+                                                        <i class="fas fa-video fs-3"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-1">Ümumi Video</h6>
+                                                <p class="text-muted mb-0">{{ $product->videos->count() }} video</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="flex-shrink-0">
+                                                <div class="avatar-sm">
+                                                    <span class="avatar-title bg-warning-subtle text-warning rounded">
+                                                        <i class="fas fa-clock fs-3"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-1">Ümumi Müddət</h6>
+                                                <p class="text-muted mb-0">{{ gmdate("H:i:s", $product->videos->sum('duration')) }}</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="flex-shrink-0">
+                                                <div class="avatar-sm">
+                                                    <span class="avatar-title bg-success-subtle text-success rounded">
+                                                        <i class="fas fa-download fs-3"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-1">Ümumi Yükləmə</h6>
+                                                <p class="text-muted mb-0">{{ $product->videos->sum('download_count') }} dəfə</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <div class="avatar-sm">
+                                                    <span class="avatar-title bg-info-subtle text-info rounded">
+                                                        <i class="fas fa-star fs-3"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-1">Ortalama Reytinq</h6>
+                                                <p class="text-muted mb-0">
+                                                    {{ number_format($product->videos->avg('rating'), 1) }}
+                                                    <span class="text-warning ms-2">
+                                                        @for($i = 1; $i <= 5; $i++)
+                                                            <i class="fas fa-star {{ $i <= round($product->videos->avg('rating')) ? 'text-warning' : 'text-muted' }}"></i>
+                                                        @endfor
+                                                    </span>
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Videolar Listesi -->
+                        <!-- Videolar Tablosu -->
                         <div class="row mt-4">
                             <div class="col-12">
-                                <h5>Videolar</h5>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered">
-                                        <thead>
+                                    <table class="table table-striped table-bordered">
+                                        <thead class="table-dark">
                                             <tr>
-                                                <th>№</th>
-                                                <th>Başlıq</th>
-                                                <th>Müddət</th>
-                                                <th>Yükləmə</th>
-                                                <th>Baxış</th>
-                                                <th>Reytinq</th>
-                                                <th>Əməliyyatlar</th>
+                                                <th class="text-center" style="width: 50px">#</th>
+                                                <th>Video Adı</th>
+                                                <th class="text-center" style="width: 120px">Müddət</th>
+                                                <th class="text-center" style="width: 100px">Baxış</th>
+                                                <th class="text-center" style="width: 100px">Yükləmə</th>
+                                                <th class="text-center" style="width: 150px">Reytinq</th>
+                                                <th class="text-center" style="width: 150px">Əməliyyatlar</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach($product->videos as $video)
                                             <tr>
-                                                <td>{{ $loop->iteration }}</td>
+                                                <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $video->title }}</td>
-                                                <td>{{ gmdate("i:s", $video->duration) }}</td>
-                                                <td>{{ $video->download_count }}</td>
-                                                <td>{{ $video->view_count }}</td>
-                                                <td>
+                                                <td class="text-center">{{ gmdate("i:s", $video->duration) }}</td>
+                                                <td class="text-center">{{ $video->view_count }}</td>
+                                                <td class="text-center">{{ $video->download_count }}</td>
+                                                <td class="text-center">
                                                     @for($i = 1; $i <= 5; $i++)
                                                         <i class="fas fa-star {{ $i <= $video->rating ? 'text-warning' : 'text-muted' }}"></i>
                                                     @endfor
                                                 </td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-primary" onclick="playVideo('{{ asset($video->video_path) }}')">
-                                                        <i class="fas fa-play"></i>
+                                                <td class="text-center">
+                                                    <button type="button" 
+                                                            class="btn btn-primary btn-sm" 
+                                                            onclick="playVideo('{{ asset($video->video_path) }}', {{ $video->id }})">
+                                                        <i class="fas fa-play me-1"></i> Oynat
                                                     </button>
-                                                    <a href="{{ route('admin.product.video.download', $video->id) }}" class="btn btn-sm btn-success">
-                                                        <i class="fas fa-download"></i>
+                                                    <a href="{{ route('admin.product.video.download', $video->id) }}" 
+                                                       class="btn btn-success btn-sm">
+                                                        <i class="fas fa-download me-1"></i> Yüklə
                                                     </a>
                                                 </td>
                                             </tr>
@@ -130,10 +174,10 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Video Önizləmə</h5>
+                <h5 class="modal-title">Video Oynatıcı</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-0">
                 <video id="videoPlayer" class="w-100" controls>
                     Your browser does not support the video tag.
                 </video>
@@ -145,7 +189,7 @@
 
 @push('js')
 <script>
-function playVideo(videoUrl) {
+function playVideo(videoUrl, videoId) {
     const player = document.getElementById('videoPlayer');
     player.src = videoUrl;
     player.load();
@@ -153,7 +197,7 @@ function playVideo(videoUrl) {
     const modal = new bootstrap.Modal(document.getElementById('videoModal'));
     modal.show();
     
-    // Video izlenme sayısını artır
+    // İzlenme sayısını artır
     $.post('{{ route("admin.product.video.increment-view") }}', {
         _token: '{{ csrf_token() }}',
         video_id: videoId
@@ -170,5 +214,27 @@ document.getElementById('videoModal').addEventListener('hidden.bs.modal', functi
 @endpush
 
 @push('css')
-<link href="{{ asset('back/assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+<style>
+.object-fit-cover {
+    object-fit: cover;
+}
+
+.avatar-sm {
+    height: 3rem;
+    width: 3rem;
+}
+
+.avatar-title {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    width: 100%;
+}
+
+.bg-primary-subtle { background-color: rgba(85, 110, 230, 0.1); }
+.bg-warning-subtle { background-color: rgba(255, 199, 0, 0.1); }
+.bg-success-subtle { background-color: rgba(10, 179, 156, 0.1); }
+.bg-info-subtle { background-color: rgba(41, 156, 219, 0.1); }
+</style>
 @endpush

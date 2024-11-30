@@ -105,8 +105,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // ------------------------- Order Routes Started -------------------------
         Route::prefix('order')->name('order.')->group(function () {
             Route::get('/', [OrderController::class, 'index'])->name('index');
-            Route::get('/{id}/detail', [OrderController::class, 'detail'])->name('detail');
-            Route::post('/{id}/change-status', [OrderController::class, 'changeStatus'])->name('change.status');
+            Route::get('/detail/{id}', [OrderController::class, 'detail'])->name('detail');
+            Route::post('/{id}/change-status', [OrderController::class, 'changeStatus'])->name('change-status');
+            Route::get('/{id}/destroy', [OrderController::class, 'destroy'])->name('destroy');
         });
         // ------------------------- Order Routes Ended -------------------------
 

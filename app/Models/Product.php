@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'name_az',
         'name_en',
@@ -25,52 +29,30 @@ class Product extends Model
         'preview_video',
         'status',
         'order',
-        'slug',
-        'rating',
-        'rating_count',
-        'total_videos',
-        'download_count'
+        'slug'
     ];
 
+    // Category ilişkisi
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
+    // SubCategory ilişkisi
     public function sub_category()
     {
         return $this->belongsTo(SubCategory::class);
     }
 
+    // OrderProducts ilişkisi
+    public function orderProducts()
+    {
+        return $this->hasMany(OrderProduct::class);
+    }
+
+    // Videos ilişkisi
     public function videos()
     {
         return $this->hasMany(ProductVideo::class);
-    }
-
-    public function getFinalPriceAttribute()
-    {
-        if ($this->discount_percentage > 0) {
-            $discountAmount = ($this->price * $this->discount_percentage) / 100;
-            return $this->price - $discountAmount;
-        }
-        return $this->price;
-    }
-
-    public function getFormattedPriceAttribute()
-    {
-        return number_format($this->price, 2) . ' ₼';
-    }
-
-    public function getFormattedDiscountedPriceAttribute()
-    {
-        return number_format($this->discounted_price, 2) . ' ₼';
-    }
-
-    public function getThumbnailPathAttribute()
-    {
-        if ($this->thumbnail && file_exists(public_path($this->thumbnail))) {
-            return $this->thumbnail;
-        }
-        return 'back/assets/images/no-image.png';
     }
 }

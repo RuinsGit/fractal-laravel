@@ -158,49 +158,72 @@
 @endsection
 
 @push('js')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function deleteItem(id) {
-            event.preventDefault();
-            let url = "{{ route('admin.order.destroy', ['id' => ':id']) }}".replace(':id', id);
-            Swal.fire({
-                title: 'Silmək istədiyinizdən əminsiniz mi?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Bəli!',
-                confirmCancelText: 'Xeyr!',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.replace(url);
-                }
-            })
-        }
-    </script>
+<script>
+$(document).ready(function() {
+    // Tarih seçici için
+    $('.input-daterange').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        todayHighlight: true,
+        language: 'az'
+    });
 
-    <script>
-        function change_status(elem) {
-            let status = elem.value;
-            let id = elem.getAttribute('data-id');
-            let url = `/admin/order/${id}/change-status`;
-            fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        '_token': "{{ csrf_token() }}",
-                        'status': status
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status == 'success') {
-                        setInterval(() => window.location.reload(), 1500);
-                    }
-                })
-        }
-    </script>
+    // Limit değiştiğinde formu otomatik gönder
+    $('select[name="limit"]').on('change', function() {
+        $(this).closest('form').submit();
+    });
+
+    // Status değiştiğinde AJAX ile güncelle
+    $('.change-status').on('change', function() {
+        let status = $(this).val();
+        let id = $(this).data('id');
+        
+        $.ajax({
+            url: `/admin/order/${id}/change-status`,
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                status: status
+            },
+            success: function(response) {
+                if(response.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Uğurlu!',
+                        text: 'Status uğurla yeniləndi',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            },
+            error: function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Xəta!',
+                    text: 'Status yenilənərkən xəta baş verdi',
+                    showConfirmButton: true
+                });
+            }
+        });
+    });
+
+    // Silme işlemi için SweetAlert2
+    function deleteItem(id) {
+        Swal.fire({
+            title: 'Silmək istədiyinizdən əminsiniz?',
+            text: "Bu əməliyyat geri alına bilməz!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Bəli, sil!',
+            cancelButtonText: 'Xeyr'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/admin/order/${id}/destroy`;
+            }
+        });
+    }
+});
+</script>
 @endpush

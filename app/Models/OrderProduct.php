@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderProduct extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'order_id',
         'product_id',
@@ -14,15 +16,17 @@ class OrderProduct extends Model
         'product_price',
         'count'
     ];
-    
-    // İlişkiler
+
+    protected $with = ['product'];
+
     public function order()
     {
         return $this->belongsTo(Order::class);
     }
-    
+
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class, 'product_id')
+                    ->withTrashed();
     }
 }

@@ -148,7 +148,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="pagination justify-content-end">
-                                    {{ $products->links() }}
+                                    {{ $products->withQueryString()->links('pagination::bootstrap-4') }}
                                 </div>
                             </div>
                         </div>
@@ -271,8 +271,22 @@
 
 @push('js')
 <script>
+    // Alt kategori seçimi için AJAX
+    $('select[name="category_id"]').change(function() {
+        let categoryId = $(this).val();
+        let subCategorySelect = $('select[name="sub_category_id"]');
+        
+        if (categoryId) {
+            $.get("{{ route('admin.product.get-sub-category', '') }}/" + categoryId, function(data) {
+                subCategorySelect.html(data.view);
+            });
+        } else {
+            subCategorySelect.html('<option value="">Alt Kateqoriya Seçin</option>');
+        }
+    });
+
     // Filter
-    $('.filter-select').change(function() {
+    $('.filter-select, select[name="sub_category_id"]').change(function() {
         filterProducts();
     });
 
@@ -280,26 +294,51 @@
         filterProducts();
     });
 
+    // Enter tuşu ile arama
+    $('input[name="search"]').keypress(function(e) {
+        if (e.which == 13) {
+            filterProducts();
+        }
+    });
+
     function filterProducts() {
         let url = new URL(window.location.href);
+        let params = new URLSearchParams(url.search);
         
-        // Filterleri URL'e əlavə et
-        $('.filter-select').each(function() {
-            if ($(this).val()) {
-                url.searchParams.set($(this).attr('name'), $(this).val());
-            } else {
-                url.searchParams.delete($(this).attr('name'));
-            }
-        });
-
-        // Axtarış
-        let search = $('input[name="search"]').val();
-        if (search) {
-            url.searchParams.set('search', search);
+        // Kategori
+        let categoryId = $('select[name="category_id"]').val();
+        if (categoryId) {
+            params.set('category_id', categoryId);
         } else {
-            url.searchParams.delete('search');
+            params.delete('category_id');
         }
 
+        // Alt kategori
+        let subCategoryId = $('select[name="sub_category_id"]').val();
+        if (subCategoryId) {
+            params.set('sub_category_id', subCategoryId);
+        } else {
+            params.delete('sub_category_id');
+        }
+
+        // Status
+        let status = $('select[name="status"]').val();
+        if (status) {
+            params.set('status', status);
+        } else {
+            params.delete('status');
+        }
+
+        // Arama
+        let search = $('input[name="search"]').val();
+        if (search) {
+            params.set('search', search);
+        } else {
+            params.delete('search');
+        }
+
+        // Yeni URL oluştur ve yönlendir
+        url.search = params.toString();
         window.location.href = url.toString();
     }
 
@@ -349,6 +388,46 @@
             $(this).find('video').each(function() {
                 this.pause();
                 this.currentTime = 0;
+            });
+        });
+
+        // Silme işlemi için
+        $('.btn-danger').on('click', function(e) {
+            e.preventDefault();
+            var deleteUrl = $(this).attr('href');
+            
+            Swal.fire({
+                title: 'Silmək istədiyinizə əminsiniz?',
+                text: "Bu əməliyyat geri alına bilməz!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Bəli, sil!',
+                cancelButtonText: 'Xeyr'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: deleteUrl,
+                        type: 'GET',
+                        success: function() {
+                            Swal.fire(
+                                'Silindi!',
+                                'Məhsul uğurla silindi.',
+                                'success'
+                            ).then(() => {
+                                window.location.reload();
+                            });
+                        },
+                        error: function() {
+                            Swal.fire(
+                                'Xəta!',
+                                'Məhsul silinərkən xəta baş verdi.',
+                                'error'
+                            );
+                        }
+                    });
+                }
             });
         });
     });

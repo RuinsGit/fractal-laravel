@@ -15,18 +15,36 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['category', 'sub_category', 'videos'])
-            ->withCount('videos as total_videos')
-            ->latest()
-            ->paginate(10);
+        $query = Product::with(['category', 'sub_category', 'videos']);
 
-        // Her ürün için indirimli fiyatı hesapla
-        foreach ($products as $product) {
-            $product->final_price = $product->final_price;
+        // Kategori filtresi
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
         }
 
+        // Alt kategori filtresi
+        if ($request->filled('sub_category_id')) {
+            $query->where('sub_category_id', $request->sub_category_id);
+        }
+
+        // Status filtresi
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Arama filtresi
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name_az', 'like', "%{$search}%")
+                  ->orWhere('name_en', 'like', "%{$search}%")
+                  ->orWhere('name_ru', 'like', "%{$search}%");
+            });
+        }
+
+        $products = $query->latest()->paginate(10)->withQueryString();
         $categories = Category::all();
         $sub_categories = SubCategory::all();
 
@@ -276,31 +294,30 @@ class ProductController extends Controller
     {
         try {
             $product = Product::findOrFail($id);
-
-            // Ana resmi sil
-            if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {
-                unlink(public_path('uploads/products/' . $product->image));
-            }
-
-            // Diğer resimleri sil
-            foreach ($product->images as $image) {
-                if (file_exists(public_path('uploads/products/' . $image->image))) {
-                    unlink(public_path('uploads/products/' . $image->image));
+            
+            // Ürüne ait videoları sil
+            foreach($product->videos as $video) {
+                if(file_exists(public_path($video->video_path))) {
+                    unlink(public_path($video->video_path));
                 }
-                $image->delete();
+                $video->delete();
             }
-
+            
+            // Ürün resmini sil
+            if($product->thumbnail && file_exists(public_path($product->thumbnail))) {
+                unlink(public_path($product->thumbnail));
+            }
+            
             // Ürünü sil
             $product->delete();
-
-            return redirect()
-                ->route('admin.product.index')
-                ->with('success', 'Məhsul uğurla silindi');
-
+            
+            // toastr bildirimini kaldırdık
+            return redirect()->route('admin.product.index');
+            
         } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->with('error', 'Xəta baş verdi: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Məhsul silinərkən xəta baş verdi'
+            ], 500);
         }
     }
 
@@ -319,7 +336,7 @@ class ProductController extends Controller
             if ($sub_categories->isEmpty()) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Bu kateqoriyaya aid alt kateqoriya tapılmadı'
+                    'message' => 'Bu kateqoriya aid alt kateqoriya tapılmadı'
                 ]);
             }
 

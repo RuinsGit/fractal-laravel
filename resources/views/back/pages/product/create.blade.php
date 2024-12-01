@@ -515,20 +515,26 @@
 @push('css')
 <link href="{{ asset('back/assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
 <style>
-/* Ana Kart Tasarımı */
+/* Modern Kart Tasarımı */
 .card {
     border: none;
-    border-radius: 16px;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    border-radius: 20px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.05);
     transition: all 0.3s ease;
     background: #fff;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 35px rgba(0,0,0,0.1);
 }
 
 .card-header {
     background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
     color: white;
-    border-radius: 16px 16px 0 0;
-    padding: 1.2rem 1.5rem;
+    border-radius: 20px 20px 0 0;
+    padding: 1.5rem;
     border: none;
 }
 
@@ -538,47 +544,43 @@
 
 /* Form Elemanları */
 .form-control, .form-select {
-    border: 2px solid #e2e8f0;
-    padding: 0.7rem 1rem;
-    border-radius: 10px;
+    border: 2px solid #e5e7eb;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
     font-size: 0.95rem;
     transition: all 0.2s ease;
+    background-color: #f9fafb;
 }
 
 .form-control:focus, .form-select:focus {
     border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
     background-color: #fff;
-}
-
-.form-control::placeholder {
-    color: #94a3b8;
 }
 
 /* Etiketler */
 label {
     font-weight: 500;
-    color: #1e293b;
+    color: #374151;
     margin-bottom: 0.5rem;
     font-size: 0.95rem;
-    display: block;
 }
 
 /* Tab Tasarımı */
 .nav-tabs {
     border: none;
-    background: #f1f5f9;
-    border-radius: 12px;
-    padding: 0.4rem;
+    background: #f3f4f6;
+    border-radius: 15px;
+    padding: 0.5rem;
     margin-bottom: 2rem;
 }
 
 .nav-tabs .nav-link {
     border: none;
-    padding: 0.8rem 2rem;
-    border-radius: 8px;
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
     font-weight: 500;
-    color: #64748b;
+    color: #6b7280;
     transition: all 0.3s ease;
 }
 
@@ -595,8 +597,8 @@ label {
 /* Video Bölümü */
 .video-item {
     background: #fff;
-    border: 2px solid #e2e8f0 !important;
-    border-radius: 12px;
+    border: 2px solid #e5e7eb !important;
+    border-radius: 15px;
     padding: 1.5rem !important;
     margin-bottom: 1rem;
     transition: all 0.3s ease;
@@ -605,13 +607,12 @@ label {
 .video-item:hover {
     border-color: #6366f1 !important;
     box-shadow: 0 5px 15px rgba(99, 102, 241, 0.1);
-    transform: translateY(-2px);
 }
 
 /* Butonlar */
 .btn {
-    padding: 0.7rem 1.5rem;
-    border-radius: 10px;
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
     font-weight: 500;
     transition: all 0.3s ease;
     border: none;
@@ -647,45 +648,41 @@ label {
     box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
 }
 
-/* Input Group */
-.input-group-text {
-    background: #f1f5f9;
-    border: 2px solid #e2e8f0;
-    border-left: none;
-    color: #64748b;
-    border-radius: 0 10px 10px 0;
-    padding: 0.7rem 1rem;
-}
-
 /* Select2 Özelleştirme */
 .select2-container--default .select2-selection--single {
-    border: 2px solid #e2e8f0;
-    height: 45px;
-    border-radius: 10px;
-    background-color: #fff;
+    border: 2px solid #e5e7eb;
+    height: 48px;
+    border-radius: 12px;
+    background-color: #f9fafb;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 43px;
+    line-height: 46px;
     padding-left: 1rem;
-    color: #1e293b;
+    color: #374151;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 43px;
+    height: 46px;
+}
+
+.select2-dropdown {
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 /* Summernote Özelleştirme */
 .note-editor.note-frame {
-    border: 2px solid #e2e8f0;
-    border-radius: 10px;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
 }
 
 .note-editor.note-frame .note-toolbar {
-    background: #f8fafc;
-    border-bottom: 2px solid #e2e8f0;
-    border-radius: 10px 10px 0 0;
-    padding: 0.5rem;
+    background: #f9fafb;
+    border-bottom: 2px solid #e5e7eb;
+    border-radius: 12px 12px 0 0;
+    padding: 0.8rem;
 }
 
 /* Animasyonlar */
@@ -696,14 +693,6 @@ label {
 
 .tab-pane {
     animation: fadeIn 0.3s ease-in-out;
-}
-
-/* Hata Mesajları */
-.text-danger {
-    color: #ef4444;
-    font-size: 0.85rem;
-    margin-top: 0.4rem;
-    display: block;
 }
 
 /* Responsive Düzenlemeler */
@@ -721,128 +710,27 @@ label {
     }
 }
 
-/* Ana Bildirim Stilleri */
-.alert {
-    padding: 1rem 1.5rem;
+/* Loading Modal */
+.loading-modal {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(5px);
+}
+
+.loading-modal .modal-content {
+    background: transparent;
     border: none;
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    animation: slideIn 0.3s ease-out;
+    box-shadow: none;
 }
 
-/* Başarı Bildirimi */
-.alert-success {
-    background: linear-gradient(145deg, #10b981 0%, #059669 100%);
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+.progress {
+    height: 8px;
+    border-radius: 10px;
+    background: rgba(99, 102, 241, 0.1);
 }
 
-/* Hata Bildirimi */
-.alert-danger {
-    background: linear-gradient(145deg, #ef4444 0%, #dc2626 100%);
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
-}
-
-/* Uyarı Bildirimi */
-.alert-warning {
-    background: linear-gradient(145deg, #f59e0b 0%, #d97706 100%);
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
-}
-
-/* SweetAlert2 Özelleştirmeleri */
-.swal2-popup {
-    border-radius: 16px !important;
-    padding: 2rem !important;
-}
-
-.swal2-title {
-    font-size: 1.5rem !important;
-    font-weight: 600 !important;
-    color: #1e293b !important;
-}
-
-.swal2-html-container {
-    font-size: 1rem !important;
-    color: #64748b !important;
-}
-
-.swal2-confirm {
-    background: linear-gradient(145deg, #6366f1 0%, #4f46e5 100%) !important;
-    border-radius: 10px !important;
-    padding: 0.8rem 1.5rem !important;
-    font-weight: 500 !important;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35) !important;
-    border: none !important;
-}
-
-.swal2-confirm:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
-}
-
-/* Animasyonlar */
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-/* Bildirim İkonları */
-.alert::before {
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    font-size: 1.2rem;
-}
-
-.alert-success::before {
-    content: "\f00c";
-}
-
-.alert-danger::before {
-    content: "\f071";
-}
-
-.alert-warning::before {
-    content: "\f06a";
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .alert {
-        padding: 1rem;
-        font-size: 0.9rem;
-    }
-    
-    .swal2-popup {
-        padding: 1.5rem !important;
-    }
-    
-    .swal2-title {
-        font-size: 1.2rem !important;
-    }
-    
-    .swal2-html-container {
-        font-size: 0.9rem !important;
-    }
+.progress-bar {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border-radius: 10px;
 }
 </style>
 @endpush

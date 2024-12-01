@@ -451,4 +451,30 @@ class ProductController extends Controller
 
         return $slug;
     }
+
+    public function deleteVideo($id)
+    {
+        try {
+            $video = ProductVideo::findOrFail($id);
+            
+            // Video dosyasını fiziksel olarak sil
+            if ($video->video_path && file_exists(public_path($video->video_path))) {
+                unlink(public_path($video->video_path));
+            }
+            
+            // Veritabanından sil
+            $video->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Video uğurla silindi'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Video silinərkən xəta baş verdi'
+            ], 500);
+        }
+    }
 }

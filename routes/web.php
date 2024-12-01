@@ -97,6 +97,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{id}/show', [ProductController::class, 'show'])->name('show');
             Route::get('/get-sub-category/{category_id}', [ProductController::class, 'getSubCategory'])
                 ->name('get-sub-category');
+            
+            Route::delete('/video/{id}', [ProductController::class, 'deleteVideo'])->name('video.delete');
         });
         // ------------------------- Products Routes Ended -------------------------
         

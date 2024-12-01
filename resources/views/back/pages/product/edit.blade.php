@@ -248,7 +248,7 @@
                                                 <td>
                                                     <button type="button" 
                                                             class="btn btn-danger btn-sm"
-                                                            onclick="deleteVideo('{{ route('admin.product.video.destroy', $video->id) }}')">
+                                                            onclick="deleteVideo({{ $video->id }})">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </td>
@@ -317,21 +317,34 @@
             });
     }
 
-    function deleteVideo(url) {
-        Swal.fire({
-            title: 'Əminsiniz?',
-            text: "Bu video silinəcək!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Bəli, sil!',
-            cancelButtonText: 'Xeyr'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = url;
-            }
-        });
+    function deleteVideo(videoId) {
+        if (confirm('Bu videoyu silmək istədiyinizdən əminsiniz?')) {
+            // CSRF token'ı al
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            // Fetch API ile DELETE isteği gönder
+            fetch(`/admin/product/video/${videoId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Başarılı ise sayfayı yenile
+                    window.location.reload();
+                } else {
+                    alert('Video silinərkən xəta baş verdi');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Video silinərkən xəta baş verdi');
+            });
+        }
     }
 
     $(document).ready(function() {

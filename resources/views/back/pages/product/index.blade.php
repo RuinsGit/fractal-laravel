@@ -451,5 +451,178 @@
 @endpush
 
 @push('css')
-<link href="{{ asset('back/assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+<style>
+/* Ana Değişkenler */
+:root {
+    --primary: #3b82f6;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --info: #0ea5e9;
+    --dark: #1e293b;
+    --light: #f8fafc;
+    --gray: #e2e8f0;
+}
+
+/* Sayfa Düzeni */
+.page-content {
+    background: var(--light);
+    margin-top: 50px;
+    padding: 1.5rem;
+}
+
+/* Kartlar */
+.card {
+    background: white;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Tablo Tasarımı */
+.table {
+    margin: 0;
+}
+
+.table th {
+    background: var(--dark);
+    color: white;
+    font-weight: 500;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    border: none;
+}
+
+.table td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    border-color: var(--gray);
+}
+
+/* İşlem Butonları */
+td .btn {
+    padding: 0;
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    margin: 2px 0;
+    border: none;
+}
+
+td .btn i {
+    font-size: 0.75rem;
+}
+
+td .btn-info {
+    background: var(--info);
+    color: white;
+}
+
+td .btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+td .btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+td .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Form Elemanları */
+.form-select, 
+.form-control {
+    border: 1px solid var(--gray);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+/* Badge Stilleri */
+.badge {
+    padding: 0.35em 0.65em;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+.bg-success {
+    background: var(--success) !important;
+}
+
+.bg-danger {
+    background: var(--danger) !important;
+}
+
+.bg-info {
+    background: var(--info) !important;
+}
+
+/* Pagination */
+.pagination {
+    margin: 1rem 0 0;
+    gap: 0.25rem;
+}
+
+.page-link {
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    color: var(--dark);
+}
+
+.page-item.active .page-link {
+    background: var(--primary);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .page-content {
+        padding: 1rem;
+    }
+    
+    td .btn {
+        margin: 2px;
+    }
+}
+
+/* Scroll Bar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gray);
+    border-radius: 3px;
+}
+
+/* Animasyonlar */
+.table tr {
+    transition: all 0.2s ease;
+}
+
+.table tr:hover {
+    background: rgba(0,0,0,0.01);
+}
+
+.btn {
+    transition: all 0.2s ease;
+}
+</style>
 @endpush

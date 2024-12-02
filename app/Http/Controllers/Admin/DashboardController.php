@@ -13,11 +13,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        
         $thirtyDaysAgo = Carbon::now()->subDays(30);
         $previousThirtyDays = Carbon::now()->subDays(60);
 
-        
+        // Satış İstatistikleri
         $totalSales = Order::where('status', '!=', 4)->sum('total_price');
         $currentMonthSales = Order::where('status', '!=', 4)
             ->where('created_at', '>=', $thirtyDaysAgo)
@@ -29,7 +28,7 @@ class DashboardController extends Controller
             ? round((($currentMonthSales - $previousMonthSales) / $previousMonthSales) * 100, 2)
             : 100;
 
-        
+        // Sifariş İstatistikleri
         $totalOrders = Order::count();
         $currentMonthOrders = Order::where('created_at', '>=', $thirtyDaysAgo)->count();
         $previousMonthOrders = Order::whereBetween('created_at', [$previousThirtyDays, $thirtyDaysAgo])->count();
@@ -37,7 +36,7 @@ class DashboardController extends Controller
             ? round((($currentMonthOrders - $previousMonthOrders) / $previousMonthOrders) * 100, 2)
             : 100;
 
-        
+        // Məhsul İstatistikleri
         $totalProducts = Product::count();
         $currentMonthProducts = Product::where('created_at', '>=', $thirtyDaysAgo)->count();
         $previousMonthProducts = Product::whereBetween('created_at', [$previousThirtyDays, $thirtyDaysAgo])->count();
@@ -45,7 +44,7 @@ class DashboardController extends Controller
             ? round((($currentMonthProducts - $previousMonthProducts) / $previousMonthProducts) * 100, 2)
             : 100;
 
-        
+        // İstifadəçi İstatistikleri
         $totalCustomers = User::count();
         $currentMonthCustomers = User::where('created_at', '>=', $thirtyDaysAgo)->count();
         $previousMonthCustomers = User::whereBetween('created_at', [$previousThirtyDays, $thirtyDaysAgo])->count();
@@ -53,10 +52,10 @@ class DashboardController extends Controller
             ? round((($currentMonthCustomers - $previousMonthCustomers) / $previousMonthCustomers) * 100, 2)
             : 100;
 
-      
+        // Son Sifarişlər
         $recentOrders = Order::latest()->take(5)->get();
 
-        
+        // Qrafik Məlumatları
         $chartData = [];
         $chartLabels = [];
         

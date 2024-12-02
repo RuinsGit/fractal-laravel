@@ -24,8 +24,24 @@
                 <li>
                     <a href="{{ route('admin.dashboard') }}" class="waves-effect">
                         <i class="ri-dashboard-line"></i>
-                        <span>Ana Səhifə</span>
+                        <span>Dashboard</span>
                     </a>
+                </li>
+
+                <li class="menu-item has-submenu">
+                    <a href="#" class="waves-effect">
+                        <i class="ri-home-line"></i>
+                        <span>Ana Səhifə</span>
+                        <i class="ri-arrow-down-s-line submenu-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="{{ route('admin.home.title.index') }}">Başlıq</a></li>
+                        <li><a href="{{ route('admin.home.ouradvantages.index') }}">Üstünlüklərimiz</a></li>
+                        <li><a href="{{ route('admin.home.studyprogram.index') }}">Təhsil Proqramı</a></li>
+                        <li><a href="{{ route('admin.home.header.index') }}">Navbar</a></li>
+                        <li><a href="{{ route('admin.home.partners.index') }}">Tərəfdaşlar</a></li>
+                        <li><a href="{{ route('admin.home.services.index') }}">Xidmətlər</a></li>
+                    </ul>
                 </li>
 
                 <li>

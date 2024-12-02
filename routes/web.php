@@ -17,6 +17,8 @@ use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\LeaderController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\ProductVideoController;
+use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -159,13 +161,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 
         // ------------------------- Blog Routes Started -------------------------
-        Route::prefix('blog')->name('blog.')->controller(BlogController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/store', 'store')->name('store');
-            Route::get('/edit/{id}', 'edit')->name('edit');
-            Route::post('/update/{id}', 'update')->name('update');
-            Route::get('/destroy/{id}', 'destroy')->name('destroy');
+        Route::prefix('blog')->name('blog.')->group(function () {
+            Route::get('/', [BlogController::class, 'index'])->name('index');
+            Route::get('/create', [BlogController::class, 'create'])->name('create');
+            Route::post('/store', [BlogController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [BlogController::class, 'edit'])->name('edit');
+            Route::post('/{id}/update', [BlogController::class, 'update'])->name('update');
+            Route::get('/{id}/delete', [BlogController::class, 'destroy'])->name('destroy');
         });
         // ------------------------- Blog Routes Ended -------------------------
 
@@ -202,15 +204,40 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/{video}', [ProductVideoController::class, 'destroy'])->name('destroy');
         });
 
-        // Comment Routes
-        Route::group(['prefix' => 'comment', 'as' => 'comment.'], function () {
-            Route::get('/', [App\Http\Controllers\Admin\CommentController::class, 'index'])->name('index');
-            Route::get('/create', [App\Http\Controllers\Admin\CommentController::class, 'create'])->name('create');
-            Route::post('/store', [App\Http\Controllers\Admin\CommentController::class, 'store'])->name('store');
-            Route::get('/edit/{id}', [App\Http\Controllers\Admin\CommentController::class, 'edit'])->name('edit');
-            Route::post('/update/{id}', [App\Http\Controllers\Admin\CommentController::class, 'update'])->name('update');
-            Route::get('/destroy/{id}', [App\Http\Controllers\Admin\CommentController::class, 'destroy'])->name('destroy');
-            Route::get('/status/{id}', [App\Http\Controllers\Admin\CommentController::class, 'status'])->name('status');
+        // Comment routes
+        Route::prefix('comment')->name('comment.')->controller(CommentController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::post('/update/{id}', 'update')->name('update');
+            Route::get('/delete/{id}', 'destroy')->name('destroy');
+        });
+
+        // Ana Səhifə Routes
+        Route::prefix('home')->name('home.')->controller(HomeController::class)->group(function () {
+            // Header routes
+            Route::get('/header', 'headerIndex')->name('header.index');
+            Route::post('/header', 'headerStore')->name('header.store');
+
+            // Title routes
+            Route::get('/title', 'titleIndex')->name('title.index');
+            Route::post('/title', 'titleUpdate')->name('title.update');
+
+            // Our Advantages routes
+            Route::get('/ouradvantages', 'ourAdvantagesIndex')->name('ouradvantages.index');
+            Route::post('/ouradvantages', 'ourAdvantagesUpdate')->name('ouradvantages.update');
+
+            // Study Program routes
+            Route::get('/studyprogram', 'studyProgramIndex')->name('studyprogram.index');
+            Route::post('/studyprogram', 'studyProgramUpdate')->name('studyprogram.update');
+
+            // Partners routes
+            Route::get('/partners', 'partnersIndex')->name('partners.index');
+            Route::post('/partners', 'partnersUpdate')->name('partners.update');
+
+            // Services routes
+            Route::get('/services', 'servicesIndex')->name('services.index');
+            Route::post('/services', 'servicesUpdate')->name('services.update');
         });
     });
 });

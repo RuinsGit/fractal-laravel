@@ -29,53 +29,180 @@
                                 </a>
                             </div>
 
-                            <div class="table-responsive">
-                                <table class="table table-responsive mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Şəkil</th>
-                                            <th>Ad</th>
-                                            <th>Vəzifə</th>
-                                            <th>Başlıq</th>
-                                            <th>Status</th>
-                                            <th>Əməliyyatlar</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($comments as $comment)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>
-                                                    <img src="{{ asset($comment->image) }}" 
-                                                         alt="Comment Image" 
-                                                         class="rounded avatar-sm">
-                                                </td>
-                                                <td>{{ $comment->name }}</td>
-                                                <td>{{ $comment->position }}</td>
-                                                <td>{{ $comment->title }}</td>
-                                                <td>
-                                                    <div class="form-check form-switch form-switch-lg">
-                                                        <input class="form-check-input" 
-                                                               type="checkbox"
-                                                               onchange="changeStatus({{ $comment->id }})"
-                                                               {{ $comment->status ? 'checked' : '' }}>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <a href="{{ route('admin.comment.edit', $comment->id) }}" 
-                                                       class="btn btn-primary btn-sm">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <button class="btn btn-danger btn-sm" 
-                                                            onclick="deleteItem({{ $comment->id }})">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                            <ul class="nav nav-tabs nav-tabs-custom nav-justified mb-3" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#az" role="tab">
+                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                        <span class="d-none d-sm-block">AZ</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#en" role="tab">
+                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                        <span class="d-none d-sm-block">EN</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#ru" role="tab">
+                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                        <span class="d-none d-sm-block">RU</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="az" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Şəkil</th>
+                                                    <th>Ad</th>
+                                                    <th>Vəzifə</th>
+                                                    <th>Başlıq (AZ)</th>
+                                                    <th>Status</th>
+                                                    <th>Əməliyyatlar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($comments as $comment)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>
+                                                            <img src="{{ asset($comment->image) }}" 
+                                                                 alt="Comment Image" 
+                                                                 class="rounded avatar-sm">
+                                                        </td>
+                                                        <td>{{ $comment->name }}</td>
+                                                        <td>{{ $comment->position }}</td>
+                                                        <td>{{ $comment->title_az }}</td>
+                                                        <td>
+                                                            <div class="form-check form-switch form-switch-lg">
+                                                                <input class="form-check-input" 
+                                                                       type="checkbox"
+                                                                       onchange="changeStatus({{ $comment->id }})"
+                                                                       {{ $comment->status ? 'checked' : '' }}>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <a href="{{ route('admin.comment.edit', $comment->id) }}" 
+                                                               class="btn btn-primary btn-sm">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <button class="btn btn-danger btn-sm" 
+                                                                    onclick="deleteItem({{ $comment->id }})">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane" id="en" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Şəkil</th>
+                                                    <th>Ad</th>
+                                                    <th>Vəzifə</th>
+                                                    <th>Başlıq (EN)</th>
+                                                    <th>Status</th>
+                                                    <th>Əməliyyatlar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($comments as $comment)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>
+                                                            <img src="{{ asset($comment->image) }}" 
+                                                                 alt="Comment Image" 
+                                                                 class="rounded avatar-sm">
+                                                        </td>
+                                                        <td>{{ $comment->name }}</td>
+                                                        <td>{{ $comment->position }}</td>
+                                                        <td>{{ $comment->title_en }}</td>
+                                                        <td>
+                                                            <div class="form-check form-switch form-switch-lg">
+                                                                <input class="form-check-input" 
+                                                                       type="checkbox"
+                                                                       onchange="changeStatus({{ $comment->id }})"
+                                                                       {{ $comment->status ? 'checked' : '' }}>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <a href="{{ route('admin.comment.edit', $comment->id) }}" 
+                                                               class="btn btn-primary btn-sm">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <button class="btn btn-danger btn-sm" 
+                                                                    onclick="deleteItem({{ $comment->id }})">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane" id="ru" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Şəkil</th>
+                                                    <th>Ad</th>
+                                                    <th>Vəzifə</th>
+                                                    <th>Başlıq (RU)</th>
+                                                    <th>Status</th>
+                                                    <th>Əməliyyatlar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($comments as $comment)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>
+                                                            <img src="{{ asset($comment->image) }}" 
+                                                                 alt="Comment Image" 
+                                                                 class="rounded avatar-sm">
+                                                        </td>
+                                                        <td>{{ $comment->name }}</td>
+                                                        <td>{{ $comment->position }}</td>
+                                                        <td>{{ $comment->title_ru }}</td>
+                                                        <td>
+                                                            <div class="form-check form-switch form-switch-lg">
+                                                                <input class="form-check-input" 
+                                                                       type="checkbox"
+                                                                       onchange="changeStatus({{ $comment->id }})"
+                                                                       {{ $comment->status ? 'checked' : '' }}>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <a href="{{ route('admin.comment.edit', $comment->id) }}" 
+                                                               class="btn btn-primary btn-sm">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <button class="btn btn-danger btn-sm" 
+                                                                    onclick="deleteItem({{ $comment->id }})">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

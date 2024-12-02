@@ -143,12 +143,12 @@ class SubCategoryController extends Controller
             ]);
 
             if ($request->hasFile('image')) {
-                // Eski resmi sil
+                
                 if (File::exists(public_path($sub_category->image))) {
                     File::delete(public_path($sub_category->image));
                 }
 
-                // Yeni resmi yükle
+                
                 $image = $request->file('image');
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('uploads/sub_categories'), $imageName);

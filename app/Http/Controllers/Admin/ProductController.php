@@ -19,22 +19,22 @@ class ProductController extends Controller
     {
         $query = Product::with(['category', 'sub_category', 'videos']);
 
-        // Kategori filtresi
+        
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }
 
-        // Alt kategori filtresi
+        
         if ($request->filled('sub_category_id')) {
             $query->where('sub_category_id', $request->sub_category_id);
         }
 
-        // Status filtresi
+        
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Arama filtresi
+        
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -65,24 +65,24 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
 
-            // Debug için
+            
             \Log::info('Product store başladı', $request->all());
 
-            // Thumbnail işlemi
+            
             $thumbnailPath = null;
             if ($request->hasFile('thumbnail')) {
                 $thumbnailPath = $this->uploadImage($request->file('thumbnail'), 'products');
                 \Log::info('Thumbnail yüklendi', ['path' => $thumbnailPath]);
             }
 
-            // Preview video işlemi
+            
             $previewVideoPath = null;
             if ($request->hasFile('preview_video')) {
                 $previewVideoPath = $this->uploadVideo($request->file('preview_video'), 'products/videos/previews');
                 \Log::info('Preview video yüklendi', ['path' => $previewVideoPath]);
             }
 
-            // İndirimli fiyat hesaplama
+            
             $price = floatval($request->price);
             $discountPercentage = floatval($request->discount_percentage ?? 0);
             $discountedPrice = $this->calculateDiscountedPrice($price, $discountPercentage);
@@ -93,7 +93,7 @@ class ProductController extends Controller
                 'discounted_price' => $discountedPrice
             ]);
 
-            // Ürünü oluştur
+            
             $product = Product::create([
                 'name_az' => $request->name_az,
                 'name_en' => $request->name_en,
@@ -118,7 +118,7 @@ class ProductController extends Controller
 
             \Log::info('Ürün oluşturuldu', ['product_id' => $product->id]);
 
-            // Video yükleme işlemi
+            
             if ($request->hasFile('videos')) {
                 foreach ($request->file('videos') as $key => $video) {
                     $uploadedVideo = ProductVideo::uploadVideo($video, $product->id, $key + 1);
@@ -163,7 +163,7 @@ class ProductController extends Controller
         }
     }
 
-    // Yardımcı metodlar
+    
     private function uploadImage($file, $path)
     {
         $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
@@ -222,21 +222,21 @@ class ProductController extends Controller
             $product = Product::findOrFail($id);
             $data = $request->validated();
 
-            // Discount percentage null ise 0 olarak ayarla
+            
             $data['discount_percentage'] = $data['discount_percentage'] ?? 0;
 
-            // Resim yükleme işlemi
+            
             if ($request->hasFile('thumbnail')) {
-                // Eski resmi sil
+               
                 if ($product->thumbnail && file_exists(public_path($product->thumbnail))) {
                     unlink(public_path($product->thumbnail));
                 }
 
-                // Yeni resmi yükle
+                
                 $image = $request->file('thumbnail');
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
                 
-                // Klasör yoksa oluştur
+                
                 if (!file_exists(public_path('uploads/products'))) {
                     mkdir(public_path('uploads/products'), 0777, true);
                 }
@@ -245,11 +245,11 @@ class ProductController extends Controller
                 $data['thumbnail'] = 'uploads/products/' . $imageName;
             }
 
-            // İndirimli fiyat hesaplama
+            
             $price = floatval($request->price);
             $discountPercentage = floatval($request->discount_percentage ?? 0);
             
-            // İndirimli fiyatı hesapla
+            
             $discountedPrice = $price;
             if ($discountPercentage > 0) {
                 $discountAmount = ($price * $discountPercentage) / 100;
@@ -280,7 +280,7 @@ class ProductController extends Controller
             return redirect()->route('admin.product.index');
 
         } catch (\Exception $e) {
-            // Hata durumunda yeni yüklenen resmi sil
+           
             if (isset($data['thumbnail']) && file_exists(public_path($data['thumbnail']))) {
                 unlink(public_path($data['thumbnail']));
             }
@@ -295,7 +295,7 @@ class ProductController extends Controller
         try {
             $product = Product::findOrFail($id);
             
-            // Ürüne ait videoları sil
+            
             foreach($product->videos as $video) {
                 if(file_exists(public_path($video->video_path))) {
                     unlink(public_path($video->video_path));
@@ -303,15 +303,15 @@ class ProductController extends Controller
                 $video->delete();
             }
             
-            // Ürün resmini sil
+            
             if($product->thumbnail && file_exists(public_path($product->thumbnail))) {
                 unlink(public_path($product->thumbnail));
             }
             
-            // Ürünü sil
+            
             $product->delete();
             
-            // toastr bildirimini kaldırdık
+            
             return redirect()->route('admin.product.index');
             
         } catch (\Exception $e) {
@@ -324,10 +324,10 @@ class ProductController extends Controller
     public function getSubCategory($category_id)
     {
         try {
-            // Kategoriyi kontrol et
+            
             $category = Category::findOrFail($category_id);
             
-            // Alt kategorileri getir
+            
             $sub_categories = SubCategory::where('category_id', $category_id)
                 ->where('status', 1)
                 ->orderBy('name_az')
@@ -340,7 +340,7 @@ class ProductController extends Controller
                 ]);
             }
 
-            // View'i hazırla
+            
             $view = '<option value="">Seçim edin</option>';
             foreach ($sub_categories as $sub) {
                 $view .= '<option value="'.$sub->id.'">'.$sub->name_az.'</option>';
@@ -367,10 +367,10 @@ class ProductController extends Controller
             ->withCount('videos')
             ->findOrFail($id);
 
-        // Tüm videoların toplam süresini hesapla
+        
         $totalSeconds = $product->videos->sum('duration');
         
-        // Toplam süreyi formatla
+        
         if ($totalSeconds < 60) {
             $product->total_duration = $totalSeconds . ' saniyə';
         } elseif ($totalSeconds < 3600) {
@@ -382,7 +382,7 @@ class ProductController extends Controller
             $product->total_duration = $hours . ' saat ' . ($minutes > 0 ? $minutes . ' dəqiqə' : '');
         }
 
-        // Her video için süreyi formatla
+        
         foreach ($product->videos as $video) {
             $duration = $video->duration;
             if ($duration < 60) {
@@ -399,7 +399,7 @@ class ProductController extends Controller
             }
         }
 
-        // Toplam indirme sayısı
+        
         $product->total_downloads = $product->videos->sum('download_count');
 
         return view('back.pages.product.show', compact('product'));
@@ -443,7 +443,7 @@ class ProductController extends Controller
         $slug = Str::slug($title);
         $count = 1;
 
-        // Slug'ın benzersiz olup olmadığını kontrol et
+        
         while (Product::where('slug', $slug)->exists()) {
             $slug = Str::slug($title) . '-' . $count;
             $count++;
@@ -457,12 +457,12 @@ class ProductController extends Controller
         try {
             $video = ProductVideo::findOrFail($id);
             
-            // Video dosyasını fiziksel olarak sil
+            
             if ($video->video_path && file_exists(public_path($video->video_path))) {
                 unlink(public_path($video->video_path));
             }
             
-            // Veritabanından sil
+            
             $video->delete();
             
             return response()->json([

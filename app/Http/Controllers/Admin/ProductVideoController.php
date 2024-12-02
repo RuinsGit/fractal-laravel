@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\Response;
 
 class ProductVideoController extends Controller
 {
-    // Video indirme
+    
     public function download(ProductVideo $video)
     {
         try {
-            // İndirme sayısını artır
+            
             $video->increment('download_count');
             
             $path = public_path($video->video_path);
@@ -28,7 +28,7 @@ class ProductVideoController extends Controller
         }
     }
 
-    // Video süresini güncelle
+    
     public function updateDuration(Request $request)
     {
         try {
@@ -46,7 +46,7 @@ class ProductVideoController extends Controller
         }
     }
 
-    // İzlenme sayısını artır
+    
     public function incrementView(Request $request)
     {
         try {
@@ -63,7 +63,7 @@ class ProductVideoController extends Controller
         }
     }
 
-    // Video derecelendirme
+    
     public function rate(Request $request)
     {
         try {

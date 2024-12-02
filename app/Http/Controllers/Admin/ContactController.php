@@ -42,7 +42,7 @@ class ContactController extends Controller
                 $contact->logo_2 = 'uploads/contact/' . $logo2Name;
             }
 
-            // Favicon işleme
+            
             if ($request->hasFile('favicon')) {
                 if ($contact->favicon && file_exists(public_path($contact->favicon))) {
                     unlink(public_path($contact->favicon));
@@ -53,7 +53,7 @@ class ContactController extends Controller
                 $contact->favicon = 'uploads/contact/' . $faviconName;
             }
 
-            // Diğer alanları güncelle
+           
             $contact->fill($request->only([
                 'email',
                 'phone',

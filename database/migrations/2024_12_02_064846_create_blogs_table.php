@@ -10,16 +10,28 @@ return new class extends Migration
     {
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
+            
+            // Çok dilli içerik alanları
             $table->string('title_az');
             $table->string('title_en');
             $table->string('title_ru');
+            
             $table->text('description_az');
             $table->text('description_en');
             $table->text('description_ru');
+            
+            // Resim alanı
             $table->string('image');
+            
+            // İstatistik alanları
+            $table->integer('view_count')->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->string('slug');
-            $table->boolean('status')->default(true);
+            
+            // Tarih alanları
+            $table->timestamp('published_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

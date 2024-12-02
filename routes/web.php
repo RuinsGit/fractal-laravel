@@ -159,13 +159,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 
         // ------------------------- Blog Routes Started -------------------------
-        Route::prefix('blog')->name('blog.')->group(function () {
-            Route::get('/', [BlogController::class, 'index'])->name('index');
-            Route::get('/create', [BlogController::class, 'create'])->name('create');
-            Route::post('/store', [BlogController::class, 'store'])->name('store');
-            Route::get('/{id}/edit', [BlogController::class, 'edit'])->name('edit');
-            Route::post('/{id}/update', [BlogController::class, 'update'])->name('update');
-            Route::get('/{id}/delete', [BlogController::class, 'destroy'])->name('destroy');
+        Route::prefix('blog')->name('blog.')->controller(BlogController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::post('/update/{id}', 'update')->name('update');
+            Route::get('/destroy/{id}', 'destroy')->name('destroy');
         });
         // ------------------------- Blog Routes Ended -------------------------
 
@@ -200,6 +200,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/increment-view', [ProductVideoController::class, 'incrementView'])->name('increment-view');
             Route::post('/rate', [ProductVideoController::class, 'rate'])->name('rate');
             Route::delete('/{video}', [ProductVideoController::class, 'destroy'])->name('destroy');
+        });
+
+        // Comment Routes
+        Route::group(['prefix' => 'comment', 'as' => 'comment.'], function () {
+            Route::get('/', [App\Http\Controllers\Admin\CommentController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Admin\CommentController::class, 'create'])->name('create');
+            Route::post('/store', [App\Http\Controllers\Admin\CommentController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [App\Http\Controllers\Admin\CommentController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [App\Http\Controllers\Admin\CommentController::class, 'update'])->name('update');
+            Route::get('/destroy/{id}', [App\Http\Controllers\Admin\CommentController::class, 'destroy'])->name('destroy');
+            Route::get('/status/{id}', [App\Http\Controllers\Admin\CommentController::class, 'status'])->name('status');
         });
     });
 });

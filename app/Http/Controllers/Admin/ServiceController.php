@@ -122,7 +122,7 @@ class ServiceController extends Controller
         try {
             $service = Service::findOrFail($id);
             
-            // İkonu sil
+            
             if ($service->icon && file_exists(public_path($service->icon))) {
                 unlink(public_path($service->icon));
             }

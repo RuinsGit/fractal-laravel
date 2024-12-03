@@ -35,12 +35,12 @@
                         <i class="ri-arrow-down-s-line submenu-arrow"></i>
                     </a>
                     <ul class="submenu">
-                        <li><a href="{{ route('admin.home.title.index') }}">Başlıq</a></li>
-                        <li><a href="{{ route('admin.home.ouradvantages.index') }}">Üstünlüklərimiz</a></li>
-                        <li><a href="{{ route('admin.home.studyprogram.index') }}">Təhsil Proqramı</a></li>
-                        <li><a href="{{ route('admin.home.header.index') }}">Navbar</a></li>
-                        <li><a href="{{ route('admin.home.partners.index') }}">Tərəfdaşlar</a></li>
-                        <li><a href="{{ route('admin.home.services.index') }}">Xidmətlər</a></li>
+                        <li><a href="{{ route('admin.home.header.index') }}">Başlıq</a></li>
+                        <li><a href="">Üstünlüklərimiz</a></li>
+                        <li><a href="">Təhsil Proqramı</a></li>
+                        <li><a href="">Navbar</a></li>
+                        <li><a href="">Tərəfdaşlar</a></li>
+                        <li><a href="">Xidmətlər</a></li>
                     </ul>
                 </li>
 
@@ -87,9 +87,9 @@
                 </li>
 
                 <li>
-                    <a href="{{ route('admin.comment.index') }}" class="waves-effect">
-                        <i class="ri-chat-quote-line"></i>
-                        <span>Müştəri Rəyləri</span>
+                    <a href="{{ route('admin.review.index') }}" class="waves-effect">
+                        <i class="ri-star-line"></i>
+                        <span>Rəylər</span>
                     </a>
                 </li>
 

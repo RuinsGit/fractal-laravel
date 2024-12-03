@@ -9,20 +9,18 @@ class Header extends Model
 {
     use HasFactory;
 
-    protected $table = 'headers';
-
     protected $fillable = [
-        'home_az', 'home_en', 'home_ru',
-        'about_az', 'about_en', 'about_ru',
-        'vision_az', 'vision_en', 'vision_ru',
-        'history_az', 'history_en', 'history_ru',
-        'leadership_az', 'leadership_en', 'leadership_ru',
-        'services_az', 'services_en', 'services_ru',
-        'our_services_az', 'our_services_en', 'our_services_ru',
-        'courses_az', 'courses_en', 'courses_ru',
-        'education_program_az', 'education_program_en', 'education_program_ru',
         'image',
-        'status',
-        'order'
+        'home_az', 'about_az', 'vision_az', 'history_az', 'leadership_az', 'services_az', 'our_services_az',
+        'courses_az', 'study_program_az', 'digital_psychology_az', 'human_design_az', 'media_az', 'gallery_az',
+        'blogs_az', 'contact_az',
+        
+        'home_en', 'about_en', 'vision_en', 'history_en', 'leadership_en', 'services_en', 'our_services_en',
+        'courses_en', 'study_program_en', 'digital_psychology_en', 'human_design_en', 'media_en', 'gallery_en',
+        'blogs_en', 'contact_en',
+        
+        'home_ru', 'about_ru', 'vision_ru', 'history_ru', 'leadership_ru', 'services_ru', 'our_services_ru',
+        'courses_ru', 'study_program_ru', 'digital_psychology_ru', 'human_design_ru', 'media_ru', 'gallery_ru',
+        'blogs_ru', 'contact_ru',
     ];
-} 
+}

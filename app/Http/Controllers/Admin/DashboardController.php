@@ -13,6 +13,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        ini_set('memory_limit', '4096M');
         $thirtyDaysAgo = Carbon::now()->subDays(30);
         $previousThirtyDays = Carbon::now()->subDays(60);
 
@@ -28,6 +29,7 @@ class DashboardController extends Controller
             ? round((($currentMonthSales - $previousMonthSales) / $previousMonthSales) * 100, 2)
             : 100;
 
+
         // Sifariş İstatistikleri
         $totalOrders = Order::count();
         $currentMonthOrders = Order::where('created_at', '>=', $thirtyDaysAgo)->count();
@@ -35,6 +37,7 @@ class DashboardController extends Controller
         $orderGrowth = $previousMonthOrders > 0 
             ? round((($currentMonthOrders - $previousMonthOrders) / $previousMonthOrders) * 100, 2)
             : 100;
+
 
         // Məhsul İstatistikleri
         $totalProducts = Product::count();

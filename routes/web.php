@@ -17,8 +17,7 @@ use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\LeaderController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\ProductVideoController;
-use App\Http\Controllers\Admin\HomeController;
-use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\HeaderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -204,40 +203,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/{video}', [ProductVideoController::class, 'destroy'])->name('destroy');
         });
 
-        // Comment routes
-        Route::prefix('comment')->name('comment.')->controller(CommentController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::post('/store', 'store')->name('store');
-            Route::get('/edit/{id}', 'edit')->name('edit');
-            Route::post('/update/{id}', 'update')->name('update');
-            Route::get('/delete/{id}', 'destroy')->name('destroy');
-        });
-
-        // Ana Səhifə Routes
-        Route::prefix('home')->name('home.')->controller(HomeController::class)->group(function () {
-            // Header routes
-            Route::get('/header', 'headerIndex')->name('header.index');
-            Route::post('/header', 'headerStore')->name('header.store');
-
-            // Title routes
-            Route::get('/title', 'titleIndex')->name('title.index');
-            Route::post('/title', 'titleUpdate')->name('title.update');
-
-            // Our Advantages routes
-            Route::get('/ouradvantages', 'ourAdvantagesIndex')->name('ouradvantages.index');
-            Route::post('/ouradvantages', 'ourAdvantagesUpdate')->name('ouradvantages.update');
-
-            // Study Program routes
-            Route::get('/studyprogram', 'studyProgramIndex')->name('studyprogram.index');
-            Route::post('/studyprogram', 'studyProgramUpdate')->name('studyprogram.update');
-
-            // Partners routes
-            Route::get('/partners', 'partnersIndex')->name('partners.index');
-            Route::post('/partners', 'partnersUpdate')->name('partners.update');
-
-            // Services routes
-            Route::get('/services', 'servicesIndex')->name('services.index');
-            Route::post('/services', 'servicesUpdate')->name('services.update');
+        // Home Routes
+        Route::prefix('home')->name('home.')->group(function () {
+            // Header Routes
+            Route::prefix('header')->name('header.')->group(function () {
+                Route::get('/', [HeaderController::class, 'index'])->name('index');
+                Route::get('/create', [HeaderController::class, 'create'])->name('create');
+                Route::post('/store', [HeaderController::class, 'store'])->name('store');
+                Route::get('/edit/{id}', [HeaderController::class, 'edit'])->name('edit');
+                Route::post('/update/{id}', [HeaderController::class, 'update'])->name('update');
+                Route::get('/destroy/{id}', [HeaderController::class, 'destroy'])->name('destroy');
+                Route::get('/status/{id}', [HeaderController::class, 'status'])->name('status');
+            });
         });
     });
 });

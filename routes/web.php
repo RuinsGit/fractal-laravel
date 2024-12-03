@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\LeaderController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\ProductVideoController;
 use App\Http\Controllers\Admin\HeaderController;
+use App\Http\Controllers\Admin\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -215,6 +216,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/destroy/{id}', [HeaderController::class, 'destroy'])->name('destroy');
                 Route::get('/status/{id}', [HeaderController::class, 'status'])->name('status');
             });
+        });
+
+        // Comment Routes
+        Route::prefix('comment')->name('comment.')->controller(CommentController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::post('/update/{id}', 'update')->name('update');
+            Route::get('/destroy/{id}', 'destroy')->name('destroy');
+            Route::get('/status/{id}', 'status')->name('status');
         });
     });
 });

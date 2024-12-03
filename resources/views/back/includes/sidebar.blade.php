@@ -87,8 +87,8 @@
                 </li>
 
                 <li>
-                    <a href="{{ route('admin.review.index') }}" class="waves-effect">
-                        <i class="ri-star-line"></i>
+                    <a href="{{ route('admin.comment.index') }}" class="waves-effect">
+                        <i class="ri-chat-quote-line"></i>
                         <span>Rəylər</span>
                     </a>
                 </li>

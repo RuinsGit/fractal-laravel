@@ -18,7 +18,7 @@ use App\Http\Controllers\Admin\LeaderController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\ProductVideoController;
 use App\Http\Controllers\Admin\HeaderController;
-use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\CompanyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -215,6 +215,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/update/{id}', [HeaderController::class, 'update'])->name('update');
                 Route::get('/destroy/{id}', [HeaderController::class, 'destroy'])->name('destroy');
                 Route::get('/status/{id}', [HeaderController::class, 'status'])->name('status');
+            });
+
+            // Company Routes
+            Route::prefix('company')->name('company.')->group(function () {
+                Route::get('/', [CompanyController::class, 'index'])->name('index');
+                Route::get('/create', [CompanyController::class, 'create'])->name('create');
+                Route::post('/store', [CompanyController::class, 'store'])->name('store');
+                Route::get('/edit/{id}', [CompanyController::class, 'edit'])->name('edit');
+                Route::post('/update/{id}', [CompanyController::class, 'update'])->name('update');
+                Route::get('/destroy/{id}', [CompanyController::class, 'destroy'])->name('destroy');
+                Route::get('/status/{id}', [CompanyController::class, 'status'])->name('status');
             });
         });
 

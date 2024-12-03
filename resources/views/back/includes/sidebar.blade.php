@@ -36,7 +36,7 @@
                     </a>
                     <ul class="submenu">
                         <li><a href="{{ route('admin.home.header.index') }}">Başlıq</a></li>
-                        <li><a href="">Üstünlüklərimiz</a></li>
+                        <li><a href="{{ route('admin.home.company.index') }}">sirket adimiz</a></li>
                         <li><a href="">Təhsil Proqramı</a></li>
                         <li><a href="">Navbar</a></li>
                         <li><a href="">Tərəfdaşlar</a></li>

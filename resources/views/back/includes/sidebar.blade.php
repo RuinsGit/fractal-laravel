@@ -28,10 +28,6 @@
                     </a>
                 </li>
 
-                
-
-
-
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-settings-2-line"></i>
@@ -74,10 +70,8 @@
                                 Üstünlüklərimiz
                             </a>
                         </li>
-                      
                     </ul>
                 </li>
-
 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -97,10 +91,29 @@
                                 Vizyonumuz
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('admin.history.index') }}">
+                                <i class="ri-time-line"></i>
+                                Tarixlərimiz
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
-
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-book-open-line"></i>
+                        <span>Təhsil</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href="{{ route('admin.course.index') }}">
+                                <i class="ri-graduation-cap-line"></i>
+                                Kurslar
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
                 <li>
                     <a href="{{ route('admin.category.index') }}" class="waves-effect">

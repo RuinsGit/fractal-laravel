@@ -26,6 +26,8 @@ use App\Http\Controllers\Admin\CompanyNameController;
 use App\Http\Controllers\Admin\AdvantageController;
 use App\Http\Controllers\Admin\AboutCompanyController;
 use App\Http\Controllers\Admin\AboutVisionController;
+use App\Http\Controllers\Admin\HistoryController;
+use App\Http\Controllers\Admin\CourseController;
 
 
 
@@ -342,6 +344,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/destroy/{id}', [AboutVisionController::class, 'destroy'])->name('destroy');
                 Route::get('/status/{id}', [AboutVisionController::class, 'status'])->name('status');
             });
+        });
+
+        // History Routes
+        Route::prefix('history')->name('history.')->group(function () {
+            Route::get('/', [HistoryController::class, 'index'])->name('index');
+            Route::get('/create', [HistoryController::class, 'create'])->name('create');
+            Route::post('/store', [HistoryController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [HistoryController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [HistoryController::class, 'update'])->name('update');
+            Route::get('/destroy/{id}', [HistoryController::class, 'destroy'])->name('destroy');
+            Route::get('/status/{id}', [HistoryController::class, 'status'])->name('status');
+        });
+
+        // Course Routes
+        Route::prefix('course')->name('course.')->group(function () {
+            Route::get('/', [CourseController::class, 'index'])->name('index');
+            Route::get('/create', [CourseController::class, 'create'])->name('create');
+            Route::post('/store', [CourseController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [CourseController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [CourseController::class, 'update'])->name('update');
+            Route::get('/destroy/{id}', [CourseController::class, 'destroy'])->name('destroy');
+            Route::get('/status/{id}', [CourseController::class, 'status'])->name('status');
         });
     });
 });

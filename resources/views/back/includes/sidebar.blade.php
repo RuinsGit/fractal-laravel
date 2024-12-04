@@ -103,16 +103,48 @@
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-book-open-line"></i>
-                        <span>Təhsil</span>
+                        <span>Başlığ</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         <li>
                             <a href="{{ route('admin.course.index') }}">
-                                <i class="ri-graduation-cap-line"></i>
-                                Kurslar
+                                <i class="ri-book-open-line"></i>
+                                Kurslar Başlığı
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.services-title.index') }}">
+                                <i class="ri-service-line"></i>
+                                Xidmətlər Başlığı
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.education-title.index') }}">
+                                <i class="ri-book-read-line"></i>
+                                Tədris Başlığı
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.digital-psychology-title.index') }}">
+                                <i class="ri-user-heart-line"></i>
+                                 Psixologiya Başlığı
                             </a>
                         </li>
                     </ul>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.psychology-text.index') }}" class="waves-effect">
+                        <i class="ri-file-text-line"></i>
+                        <span>Psixologiya Mətnləri</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.human-design.index') }}" class="waves-effect">
+                        <i class="ri-user-heart-line"></i>
+                        <span>İnsan Dizaynı</span>
+                    </a>
                 </li>
 
                 <li>

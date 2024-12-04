@@ -28,6 +28,11 @@ use App\Http\Controllers\Admin\AboutCompanyController;
 use App\Http\Controllers\Admin\AboutVisionController;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Admin\ServicesTitleController;
+use App\Http\Controllers\Admin\EducationTitleController;
+use App\Http\Controllers\Admin\DigitalPsychologyTitleController;
+use App\Http\Controllers\Admin\PsychologyTextController;
+use App\Http\Controllers\Admin\HumanDesignController;
 
 
 
@@ -366,6 +371,48 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/update/{id}', [CourseController::class, 'update'])->name('update');
             Route::get('/destroy/{id}', [CourseController::class, 'destroy'])->name('destroy');
             Route::get('/status/{id}', [CourseController::class, 'status'])->name('status');
+        });
+
+        // Services Title Routes
+        Route::prefix('services-title')->name('services-title.')->group(function () {
+            Route::get('/', [ServicesTitleController::class, 'index'])->name('index');
+            Route::post('/update', [ServicesTitleController::class, 'update'])->name('update');
+        });
+
+        // Education Title Routes
+        Route::prefix('education-title')->name('education-title.')->group(function () {
+            Route::get('/', [EducationTitleController::class, 'index'])->name('index');
+            Route::post('/update', [EducationTitleController::class, 'update'])->name('update');
+            Route::get('/status/{id}', [EducationTitleController::class, 'status'])->name('status');
+        });
+
+        // Digital Psychology Title Routes
+        Route::prefix('digital-psychology-title')->name('digital-psychology-title.')->group(function () {
+            Route::get('/', [DigitalPsychologyTitleController::class, 'index'])->name('index');
+            Route::post('/update', [DigitalPsychologyTitleController::class, 'update'])->name('update');
+            Route::get('/status/{id}', [DigitalPsychologyTitleController::class, 'status'])->name('status');
+        });
+
+        // Psychology Text Routes
+        Route::prefix('psychology-text')->name('psychology-text.')->group(function () {
+            Route::get('/', [PsychologyTextController::class, 'index'])->name('index');
+            Route::get('/create', [PsychologyTextController::class, 'create'])->name('create');
+            Route::post('/store', [PsychologyTextController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [PsychologyTextController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}', [PsychologyTextController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [PsychologyTextController::class, 'destroy'])->name('destroy');
+            Route::get('/status/{id}', [PsychologyTextController::class, 'status'])->name('status');
+        });
+
+        // Human Design Routes
+        Route::prefix('human-design')->name('human-design.')->group(function () {
+            Route::get('/', [HumanDesignController::class, 'index'])->name('index');
+            Route::get('/create', [HumanDesignController::class, 'create'])->name('create');
+            Route::post('/store', [HumanDesignController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [HumanDesignController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}', [HumanDesignController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [HumanDesignController::class, 'destroy'])->name('destroy');
+            Route::get('/status/{id}', [HumanDesignController::class, 'status'])->name('status');
         });
     });
 });

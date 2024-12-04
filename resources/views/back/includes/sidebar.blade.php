@@ -69,16 +69,36 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.contact-message.index') }}">
-                                <i class="ri-message-2-line"></i>
-                                sss
+                            <a href="{{ route('admin.home.advantages.index') }}">
+                                <i class="ri-award-line"></i>
+                                Üstünlüklərimiz
                             </a>
                         </li>
+                      
                     </ul>
                 </li>
 
 
-
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-team-line"></i>
+                        <span>Haqqımızda</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href="{{ route('admin.about.company.index') }}">
+                                <i class="ri-history-line"></i>
+                                Şirkətimiz haqqında
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.about.vision.index') }}">
+                                <i class="ri-eye-line"></i>
+                                Vizyonumuz
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
 
 

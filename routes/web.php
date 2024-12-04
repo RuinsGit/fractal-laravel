@@ -23,6 +23,9 @@ use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\StudyProgramController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\CompanyNameController;
+use App\Http\Controllers\Admin\AdvantageController;
+use App\Http\Controllers\Admin\AboutCompanyController;
+use App\Http\Controllers\Admin\AboutVisionController;
 
 
 
@@ -280,6 +283,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/destroy/{id}', [CompanyNameController::class, 'destroy'])->name('destroy');
                 Route::get('/status/{id}', [CompanyNameController::class, 'status'])->name('status');
             });
+
+            // Advantages Routes
+            Route::prefix('advantages')->name('advantages.')->group(function () {
+                Route::get('/', [AdvantageController::class, 'index'])->name('index');
+                Route::get('/create', [AdvantageController::class, 'create'])->name('create');
+                Route::post('/store', [AdvantageController::class, 'store'])->name('store');
+                Route::get('/edit/{id}', [AdvantageController::class, 'edit'])->name('edit');
+                Route::post('/update/{id}', [AdvantageController::class, 'update'])->name('update');
+                Route::get('/destroy/{id}', [AdvantageController::class, 'destroy'])->name('destroy');
+                Route::get('/status/{id}', [AdvantageController::class, 'status'])->name('status');
+            });
         });
 
         // Comment Routes
@@ -302,6 +316,32 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/update/{id}', [CompanyNameController::class, 'update'])->name('update');
             Route::get('/destroy/{id}', [CompanyNameController::class, 'destroy'])->name('destroy');
             Route::get('/status/{id}', [CompanyNameController::class, 'status'])->name('status');
+        });
+
+        // About Company Routes
+        Route::prefix('about')->name('about.')->group(function () {
+            Route::prefix('company')->name('company.')->group(function () {
+                Route::get('/', [AboutCompanyController::class, 'index'])->name('index');
+                Route::get('/create', [AboutCompanyController::class, 'create'])->name('create');
+                Route::post('/store', [AboutCompanyController::class, 'store'])->name('store');
+                Route::get('/edit/{id}', [AboutCompanyController::class, 'edit'])->name('edit');
+                Route::post('/update/{id}', [AboutCompanyController::class, 'update'])->name('update');
+                Route::get('/destroy/{id}', [AboutCompanyController::class, 'destroy'])->name('destroy');
+                Route::get('/status/{id}', [AboutCompanyController::class, 'status'])->name('status');
+            });
+        });
+
+        // About Vision Routes
+        Route::prefix('about')->name('about.')->group(function () {
+            Route::prefix('vision')->name('vision.')->group(function () {
+                Route::get('/', [AboutVisionController::class, 'index'])->name('index');
+                Route::get('/create', [AboutVisionController::class, 'create'])->name('create');
+                Route::post('/store', [AboutVisionController::class, 'store'])->name('store');
+                Route::get('/edit/{id}', [AboutVisionController::class, 'edit'])->name('edit');
+                Route::post('/update/{id}', [AboutVisionController::class, 'update'])->name('update');
+                Route::get('/destroy/{id}', [AboutVisionController::class, 'destroy'])->name('destroy');
+                Route::get('/status/{id}', [AboutVisionController::class, 'status'])->name('status');
+            });
         });
     });
 });

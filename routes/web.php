@@ -21,6 +21,8 @@ use App\Http\Controllers\Admin\HeaderController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\StudyProgramController;
+use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\CompanyNameController;
 
 
 
@@ -267,6 +269,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
                     Route::get('/status/{id}', 'status')->name('status');
                 });
             });
+
+            // Company Names Routes
+            Route::prefix('company-names')->name('company-names.')->group(function () {
+                Route::get('/', [CompanyNameController::class, 'index'])->name('index');
+                Route::get('/create', [CompanyNameController::class, 'create'])->name('create');
+                Route::post('/store', [CompanyNameController::class, 'store'])->name('store');
+                Route::get('/edit/{id}', [CompanyNameController::class, 'edit'])->name('edit');
+                Route::post('/update/{id}', [CompanyNameController::class, 'update'])->name('update');
+                Route::get('/destroy/{id}', [CompanyNameController::class, 'destroy'])->name('destroy');
+                Route::get('/status/{id}', [CompanyNameController::class, 'status'])->name('status');
+            });
         });
 
         // Comment Routes
@@ -278,6 +291,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/update/{id}', 'update')->name('update');
             Route::get('/destroy/{id}', 'destroy')->name('destroy');
             Route::get('/status/{id}', 'status')->name('status');
+        });
+
+        // Company Name Routes
+        Route::prefix('company-names')->name('company-names.')->group(function () {
+            Route::get('/', [CompanyNameController::class, 'index'])->name('index');
+            Route::get('/create', [CompanyNameController::class, 'create'])->name('create');
+            Route::post('/store', [CompanyNameController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [CompanyNameController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [CompanyNameController::class, 'update'])->name('update');
+            Route::get('/destroy/{id}', [CompanyNameController::class, 'destroy'])->name('destroy');
+            Route::get('/status/{id}', [CompanyNameController::class, 'status'])->name('status');
         });
     });
 });

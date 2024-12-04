@@ -47,7 +47,7 @@
                         <li>
                             <a href="{{ route('admin.home.company.index') }}">
                                 <i class="ri-contacts-line"></i>
-                                Şirkət Adımız
+                                Şirkət
                             </a>
                         </li>
                         <li>
@@ -60,6 +60,12 @@
                             <a href="{{ route('admin.home.study-programs.index') }}">
                                 <i class="ri-book-line"></i>
                                 Təhsil Proqramları
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.home.company-names.index') }}">
+                                <i class="ri-building-line"></i>
+                                Şirkət Haqqında
                             </a>
                         </li>
                         <li>

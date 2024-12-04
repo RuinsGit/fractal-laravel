@@ -1,18 +1,17 @@
 @extends('back.layouts.master')
-@section('title', 'Şirkət Siyahısı')
+@section('title', 'Təhsil Proqramları')
 
 @section('content')
     <div class="page-content">
         <div class="container-fluid">
-            <!-- start page title -->
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                        <h4 class="mb-sm-0">Şirkət Siyahısı</h4>
+                        <h4 class="mb-sm-0">Təhsil Proqramları</h4>
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
                                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Ana Səhifə</a></li>
-                                <li class="breadcrumb-item active">Şirkət</li>
+                                <li class="breadcrumb-item active">Təhsil Proqramları</li>
                             </ol>
                         </div>
                     </div>
@@ -24,9 +23,9 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h4 class="card-title">Şirkət Siyahısı</h4>
-                                @if($companyCount == 0)
-                                    <a href="{{ route('admin.home.company.create') }}" class="btn btn-primary waves-effect waves-light">
+                                <h4 class="card-title">Təhsil Proqramları</h4>
+                                @if($programs->count() == 0)
+                                    <a href="{{ route('admin.home.study-programs.create') }}" class="btn btn-primary waves-effect waves-light">
                                         <i class="fas fa-plus"></i> Yeni
                                     </a>
                                 @endif
@@ -74,34 +73,40 @@
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Mətn 1</th>
-                                                            <th>Mətn 2</th>
-                                                            <th>Mətn 3</th>
+                                                            <th>Şəkil</th>
+                                                            <th>Ad</th>
+                                                            <th>Mətn</th>
+                                                            <th>Təsvir</th>
                                                             <th>Status</th>
                                                             <th>Əməliyyatlar</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach($companies as $company)
+                                                        @foreach($programs as $program)
                                                             <tr>
                                                                 <td>{{ $loop->iteration }}</td>
-                                                                <td>{{ $company->text_1_az }}</td>
-                                                                <td>{{ $company->text_2_az }}</td>
-                                                                <td>{{ $company->text_3_az }}</td>
+                                                                <td>
+                                                                    <img src="{{ asset('uploads/study-programs/' . $program->image) }}" 
+                                                                         alt="Program Image" 
+                                                                         width="100">
+                                                                </td>
+                                                                <td>{{ $program->name_az }}</td>
+                                                                <td>{{ Str::limit($program->text_az, 50) }}</td>
+                                                                <td>{{ Str::limit($program->description_az, 50) }}</td>
                                                                 <td>
                                                                     <button type="button" 
-                                                                        onclick="changeStatus({{ $company->id }})"
-                                                                        class="btn btn-{{ $company->status == 1 ? 'success' : 'danger' }} btn-sm status-button-{{ $company->id }}">
-                                                                        {{ $company->status == 1 ? 'Aktiv' : 'Deaktiv' }}
+                                                                        onclick="changeStatus({{ $program->id }})"
+                                                                        class="btn btn-{{ $program->status == 1 ? 'success' : 'danger' }} btn-sm status-button-{{ $program->id }}">
+                                                                        {{ $program->status == 1 ? 'Aktiv' : 'Deaktiv' }}
                                                                     </button>
                                                                 </td>
                                                                 <td>
-                                                                    <a href="{{ route('admin.home.company.edit', $company->id) }}" 
+                                                                    <a href="{{ route('admin.home.study-programs.edit', $program->id) }}" 
                                                                         class="btn btn-warning btn-sm">
                                                                         <i class="fas fa-edit"></i>
                                                                     </a>
                                                                     <button type="button" 
-                                                                        onclick="deleteData({{ $company->id }})"
+                                                                        onclick="deleteData({{ $program->id }})"
                                                                         class="btn btn-danger btn-sm">
                                                                         <i class="fas fa-trash"></i>
                                                                     </button>
@@ -117,34 +122,40 @@
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Text 1</th>
-                                                            <th>Text 2</th>
-                                                            <th>Text 3</th>
+                                                            <th>Image</th>
+                                                            <th>Name</th>
+                                                            <th>Text</th>
+                                                            <th>Description</th>
                                                             <th>Status</th>
-                                                            <th>Operations</th>
+                                                            <th>Actions</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach($companies as $company)
+                                                        @foreach($programs as $program)
                                                             <tr>
                                                                 <td>{{ $loop->iteration }}</td>
-                                                                <td>{{ $company->text_1_en }}</td>
-                                                                <td>{{ $company->text_2_en }}</td>
-                                                                <td>{{ $company->text_3_en }}</td>
+                                                                <td>
+                                                                    <img src="{{ asset('uploads/study-programs/' . $program->image) }}" 
+                                                                         alt="Program Image" 
+                                                                         width="100">
+                                                                </td>
+                                                                <td>{{ $program->name_en }}</td>
+                                                                <td>{{ Str::limit($program->text_en, 50) }}</td>
+                                                                <td>{{ Str::limit($program->description_en, 50) }}</td>
                                                                 <td>
                                                                     <button type="button" 
-                                                                        onclick="changeStatus({{ $company->id }})"
-                                                                        class="btn btn-{{ $company->status == 1 ? 'success' : 'danger' }} btn-sm status-button-{{ $company->id }}">
-                                                                        {{ $company->status == 1 ? 'Active' : 'Deactive' }}
+                                                                        onclick="changeStatus({{ $program->id }})"
+                                                                        class="btn btn-{{ $program->status == 1 ? 'success' : 'danger' }} btn-sm status-button-{{ $program->id }}">
+                                                                        {{ $program->status == 1 ? 'Active' : 'Inactive' }}
                                                                     </button>
                                                                 </td>
                                                                 <td>
-                                                                    <a href="{{ route('admin.home.company.edit', $company->id) }}" 
+                                                                    <a href="{{ route('admin.home.study-programs.edit', $program->id) }}" 
                                                                         class="btn btn-warning btn-sm">
                                                                         <i class="fas fa-edit"></i>
                                                                     </a>
                                                                     <button type="button" 
-                                                                        onclick="deleteData({{ $company->id }})"
+                                                                        onclick="deleteData({{ $program->id }})"
                                                                         class="btn btn-danger btn-sm">
                                                                         <i class="fas fa-trash"></i>
                                                                     </button>
@@ -160,34 +171,40 @@
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Текст 1</th>
-                                                            <th>Текст 2</th>
-                                                            <th>Текст 3</th>
+                                                            <th>Изображение</th>
+                                                            <th>Имя</th>
+                                                            <th>Текст</th>
+                                                            <th>Описание</th>
                                                             <th>Статус</th>
-                                                            <th>Операции</th>
+                                                            <th>Действия</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach($companies as $company)
+                                                        @foreach($programs as $program)
                                                             <tr>
                                                                 <td>{{ $loop->iteration }}</td>
-                                                                <td>{{ $company->text_1_ru }}</td>
-                                                                <td>{{ $company->text_2_ru }}</td>
-                                                                <td>{{ $company->text_3_ru }}</td>
+                                                                <td>
+                                                                    <img src="{{ asset('uploads/study-programs/' . $program->image) }}" 
+                                                                         alt="Program Image" 
+                                                                         width="100">
+                                                                </td>
+                                                                <td>{{ $program->name_ru }}</td>
+                                                                <td>{{ Str::limit($program->text_ru, 50) }}</td>
+                                                                <td>{{ Str::limit($program->description_ru, 50) }}</td>
                                                                 <td>
                                                                     <button type="button" 
-                                                                        onclick="changeStatus({{ $company->id }})"
-                                                                        class="btn btn-{{ $company->status == 1 ? 'success' : 'danger' }} btn-sm status-button-{{ $company->id }}">
-                                                                        {{ $company->status == 1 ? 'Активный' : 'Неактивный' }}
+                                                                        onclick="changeStatus({{ $program->id }})"
+                                                                        class="btn btn-{{ $program->status == 1 ? 'success' : 'danger' }} btn-sm status-button-{{ $program->id }}">
+                                                                        {{ $program->status == 1 ? 'Активный' : 'Неактивный' }}
                                                                     </button>
                                                                 </td>
                                                                 <td>
-                                                                    <a href="{{ route('admin.home.company.edit', $company->id) }}" 
+                                                                    <a href="{{ route('admin.home.study-programs.edit', $program->id) }}" 
                                                                         class="btn btn-warning btn-sm">
                                                                         <i class="fas fa-edit"></i>
                                                                     </a>
                                                                     <button type="button" 
-                                                                        onclick="deleteData({{ $company->id }})"
+                                                                        onclick="deleteData({{ $program->id }})"
                                                                         class="btn btn-danger btn-sm">
                                                                         <i class="fas fa-trash"></i>
                                                                     </button>
@@ -209,38 +226,24 @@
     </div>
 @endsection
 
-@push('css')
-    <link href="{{ asset('back/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('back/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('back/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet">
-@endpush
-
 @push('js')
-    <script src="{{ asset('back/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('back/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('back/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('back/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         function changeStatus(id) {
             $.ajax({
-                url: `{{ route('admin.home.company.status', '') }}/${id}`,
+                url: `{{ route('admin.home.study-programs.status', '') }}/${id}`,
                 type: 'GET',
                 success: function(response) {
                     if(response.status === 'success') {
-                        let buttons = document.querySelectorAll(`.status-button-${id}`);
-                        buttons.forEach(button => {
-                            if(response.newStatus) {
-                                button.classList.remove('btn-danger');
-                                button.classList.add('btn-success');
-                                button.textContent = 'Aktiv';
-                            } else {
-                                button.classList.remove('btn-success');
-                                button.classList.add('btn-danger');
-                                button.textContent = 'Deaktiv';
-                            }
-                        });
+                        let button = $(`.status-button-${id}`);
+                        if(response.newStatus) {
+                            button.removeClass('btn-danger').addClass('btn-success');
+                            button.text('Aktiv');
+                        } else {
+                            button.removeClass('btn-success').addClass('btn-danger');
+                            button.text('Deaktiv');
+                        }
 
                         Swal.fire({
                             title: 'Uğurlu!',
@@ -280,7 +283,7 @@
                 cancelButtonText: 'Xeyr'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = `{{ route('admin.home.company.destroy', '') }}/${id}`;
+                    window.location.href = `{{ route('admin.home.study-programs.destroy', '') }}/${id}`;
                 }
             });
         }

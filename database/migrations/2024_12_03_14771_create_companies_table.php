@@ -10,9 +10,15 @@ return new class extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->text('text_1')->nullable();
-            $table->text('text_2')->nullable();
-            $table->text('text_3')->nullable();
+            $table->text('text_1_az')->nullable();
+            $table->text('text_2_az')->nullable();
+            $table->text('text_3_az')->nullable();
+            $table->text('text_1_en')->nullable();
+            $table->text('text_2_en')->nullable();
+            $table->text('text_3_en')->nullable();
+            $table->text('text_1_ru')->nullable();
+            $table->text('text_2_ru')->nullable();
+            $table->text('text_3_ru')->nullable();
             $table->boolean('status')->default(1);
             $table->timestamps();
         });

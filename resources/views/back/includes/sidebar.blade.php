@@ -28,21 +28,53 @@
                     </a>
                 </li>
 
-                <li class="menu-item has-submenu">
-                    <a href="#" class="waves-effect">
-                        <i class="ri-home-line"></i>
+                
+
+
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-settings-2-line"></i>
                         <span>Ana Səhifə</span>
-                        <i class="ri-arrow-down-s-line submenu-arrow"></i>
                     </a>
-                    <ul class="submenu">
-                        <li><a href="{{ route('admin.home.header.index') }}">Başlıq</a></li>
-                        <li><a href="{{ route('admin.home.company.index') }}">sirket adimiz</a></li>
-                        <li><a href="">Təhsil Proqramı</a></li>
-                        <li><a href="">Navbar</a></li>
-                        <li><a href="">Tərəfdaşlar</a></li>
-                        <li><a href="">Xidmətlər</a></li>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href="{{ route('admin.home.header.index') }}">
+                                <i class="ri-information-line"></i>
+                                Header
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.home.company.index') }}">
+                                <i class="ri-contacts-line"></i>
+                                Şirkət Adımız
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.home.partners.index') }}">
+                                <i class="ri-team-line"></i>
+                                Partnyorlar
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.home.study-programs.index') }}">
+                                <i class="ri-book-line"></i>
+                                Təhsil Proqramları
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.contact-message.index') }}">
+                                <i class="ri-message-2-line"></i>
+                                sss
+                            </a>
+                        </li>
                     </ul>
                 </li>
+
+
+
+
+
 
                 <li>
                     <a href="{{ route('admin.category.index') }}" class="waves-effect">

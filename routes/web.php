@@ -19,6 +19,11 @@ use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\ProductVideoController;
 use App\Http\Controllers\Admin\HeaderController;
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\Admin\StudyProgramController;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -226,6 +231,41 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/update/{id}', [CompanyController::class, 'update'])->name('update');
                 Route::get('/destroy/{id}', [CompanyController::class, 'destroy'])->name('destroy');
                 Route::get('/status/{id}', [CompanyController::class, 'status'])->name('status');
+            });
+
+            // Partner Routes
+            Route::prefix('partners')->name('partners.')->group(function () {
+                Route::get('/', [PartnerController::class, 'index'])->name('index');
+                Route::get('/create', [PartnerController::class, 'create'])->name('create');
+                Route::post('/store', [PartnerController::class, 'store'])->name('store');
+                Route::get('/edit/{id}', [PartnerController::class, 'edit'])->name('edit');
+                Route::post('/update/{id}', [PartnerController::class, 'update'])->name('update');
+                Route::get('/destroy/{id}', [PartnerController::class, 'destroy'])->name('destroy');
+                Route::get('/status/{id}', [PartnerController::class, 'status'])->name('status');
+            });
+
+            // Study Program Routes
+            Route::prefix('study-programs')->name('study-programs.')->group(function () {
+                Route::get('/', [StudyProgramController::class, 'index'])->name('index');
+                Route::get('/create', [StudyProgramController::class, 'create'])->name('create');
+                Route::post('/store', [StudyProgramController::class, 'store'])->name('store');
+                Route::get('/edit/{id}', [StudyProgramController::class, 'edit'])->name('edit');
+                Route::post('/update/{id}', [StudyProgramController::class, 'update'])->name('update');
+                Route::get('/destroy/{id}', [StudyProgramController::class, 'destroy'])->name('destroy');
+                Route::get('/status/{id}', [StudyProgramController::class, 'status'])->name('status');
+            });
+
+            // Study Program Content Routes
+            Route::prefix('home')->name('home.')->group(function () {
+                Route::prefix('study-program-contents')->name('study-program-contents.')->controller(StudyProgramContentController::class)->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/create', 'create')->name('create');
+                    Route::post('/store', 'store')->name('store');
+                    Route::get('/edit/{id}', 'edit')->name('edit');
+                    Route::post('/update/{id}', 'update')->name('update');
+                    Route::get('/destroy/{id}', 'destroy')->name('destroy');
+                    Route::get('/status/{id}', 'status')->name('status');
+                });
             });
         });
 

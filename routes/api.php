@@ -8,22 +8,21 @@ use App\Http\Controllers\Api\SubCategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\PartnerController;
+use App\Http\Controllers\Api\EducationTitleController;
+use App\Http\Controllers\Api\StudyingProgramController;
 use App\Http\Controllers\Api\CompanyNameController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Blog Routes
 Route::get('/blogs', [BlogController::class, 'index']);
 
 // Category Routes
@@ -38,14 +37,26 @@ Route::prefix('sub-categories')->group(function () {
     Route::get('/{id}', [SubCategoryController::class, 'show']);
 });
 
-// Kategori bazlı alt kategoriler
-Route::get('categories/{categoryId}/sub-categories', [SubCategoryController::class, 'getByCategory']);
+// Category bazlı SubCategories
+Route::get('/categories/{categoryId}/sub-categories', [SubCategoryController::class, 'getByCategory']);
 
-// Education Title Routes
-Route::prefix('education-titles')->group(function () {
-    Route::get('/', [EducationTitleController::class, 'index']);
-    Route::get('/{id}', [EducationTitleController::class, 'show']);
+// Product Routes
+Route::prefix('products')->group(function () {
+    Route::get('/', [ProductController::class, 'index']);
+    Route::get('/{id}', [ProductController::class, 'show']);
 });
+
+// Company Route
+Route::get('/company', [CompanyController::class, 'index']);
+
+// Partner Routes
+Route::prefix('partners')->group(function () {
+    Route::get('/', [PartnerController::class, 'index']);
+    Route::get('/{id}', [PartnerController::class, 'show']);
+});
+
+// Education Title Route
+Route::get('/education-titles', [EducationTitleController::class, 'index']);
 
 // Studying Program Route
 Route::get('/studying-programs', [StudyingProgramController::class, 'index']);

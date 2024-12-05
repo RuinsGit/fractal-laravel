@@ -1,8 +1,6 @@
 <!-- ========== Left Sidebar Start ========== -->
 <div class="vertical-menu">
-
     <div data-simplebar class="h-100">
-
         <!-- User details -->
         <div class="user-profile text-center mt-3">
             <div class="">
@@ -10,8 +8,7 @@
             </div>
             <div class="mt-3">
                 <h4 class="font-size-16 mb-1">{{ auth()->user()->name }}</h4>
-                <span class="text-muted"><i class="ri-record-circle-line align-middle font-size-14 text-success"></i>
-                    Online</span>
+                <span class="text-muted"><i class="ri-record-circle-line align-middle font-size-14 text-success"></i> Online</span>
             </div>
         </div>
 
@@ -146,6 +143,12 @@
                         <span>İnsan Dizaynı</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('admin.human-content.index') }}">
+                        <i class="ri-user-heart-line"></i>
+                        <span>İnsan Məzmunu</span>
+                    </a>
+                </li>
 
                 <li>
                     <a href="{{ route('admin.category.index') }}" class="waves-effect">
@@ -208,6 +211,27 @@
                         <i class="ri-gallery-line"></i>
                         <span>Qalereya</span>
                     </a>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-gallery-line"></i>
+                        <span>Qaleriya Content</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href="{{ route('admin.gallery-title.index') }}">
+                                <i class="ri-text-wrap"></i>
+                                Başlıqlar
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.about') }}">
+                                <i class="ri-information-line"></i>
+                                Haqqımızda
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <li>

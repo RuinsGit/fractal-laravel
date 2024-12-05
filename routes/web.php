@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\EducationTitleController;
 use App\Http\Controllers\Admin\DigitalPsychologyTitleController;
 use App\Http\Controllers\Admin\PsychologyTextController;
 use App\Http\Controllers\Admin\HumanDesignController;
+use App\Http\Controllers\Admin\HumanContentController;
 
 
 
@@ -413,6 +414,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::put('/update/{id}', [HumanDesignController::class, 'update'])->name('update');
             Route::delete('/destroy/{id}', [HumanDesignController::class, 'destroy'])->name('destroy');
             Route::get('/status/{id}', [HumanDesignController::class, 'status'])->name('status');
+        });
+
+        // Human Content Routes
+        Route::prefix('human-content')->name('human-content.')->group(function () {
+            Route::get('/', [HumanContentController::class, 'index'])->name('index');
+            Route::get('/create', [HumanContentController::class, 'create'])->name('create');
+            Route::post('/store', [HumanContentController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [HumanContentController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}', [HumanContentController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [HumanContentController::class, 'destroy'])->name('destroy');
+            Route::get('/status/{id}', [HumanContentController::class, 'status'])->name('status');
+        });
+
+        // Gallery Title Routes
+        Route::prefix('gallery-title')->name('gallery-title.')->controller(App\Http\Controllers\Admin\GalleryTitleController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::post('/update/{id}', 'update')->name('update');
+            Route::get('/destroy/{id}', 'destroy')->name('destroy');
+            Route::get('/status/{id}', 'status')->name('status');
         });
     });
 });

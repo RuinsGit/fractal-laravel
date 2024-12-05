@@ -226,6 +226,12 @@
                             </a>
                         </li>
                         <li>
+            <a href="{{ route('admin.gallery-video.index') }}">
+                <i class="ri-video-line"></i>
+                Videolar
+            </a>
+        </li>
+                        <li>
                             <a href="{{ route('admin.about') }}">
                                 <i class="ri-information-line"></i>
                                 Haqqımızda

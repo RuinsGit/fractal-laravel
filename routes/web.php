@@ -34,6 +34,7 @@ use App\Http\Controllers\Admin\DigitalPsychologyTitleController;
 use App\Http\Controllers\Admin\PsychologyTextController;
 use App\Http\Controllers\Admin\HumanDesignController;
 use App\Http\Controllers\Admin\HumanContentController;
+use App\Http\Controllers\Admin\GalleryVideoController;
 
 
 
@@ -429,6 +430,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Gallery Title Routes
         Route::prefix('gallery-title')->name('gallery-title.')->controller(App\Http\Controllers\Admin\GalleryTitleController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::post('/update/{id}', 'update')->name('update');
+            Route::get('/destroy/{id}', 'destroy')->name('destroy');
+            Route::get('/status/{id}', 'status')->name('status');
+        });
+
+        // Gallery Video Routes
+        Route::prefix('gallery-video')->name('gallery-video.')->controller(App\Http\Controllers\Admin\GalleryVideoController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/create', 'create')->name('create');
             Route::post('/store', 'store')->name('store');

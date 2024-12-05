@@ -31,4 +31,14 @@ class Product extends Model
     {
         return $this->hasMany(ProductVideo::class);
     }
+
+    public function getNameAttribute()
+    {
+        return $this->getAttribute('name_' . app()->getLocale());
+    }
+
+    public function getTitleAttribute()
+    {
+        return $this->getAttribute('title_' . app()->getLocale());
+    }
 }

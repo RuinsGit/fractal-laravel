@@ -8,11 +8,11 @@ class CategoryResource extends JsonResource
 {
     public function toArray($request)
     {
+        $locale = app()->getLocale();
+        
         return [
             'id' => $this->id,
-            'name_az' => $this->name_az,
-            'name_en' => $this->name_en,
-            'name_ru' => $this->name_ru,
+            'name' => $this->{"name_" . $locale},
             'slug' => $this->slug,
             'sub_categories' => SubCategoryResource::collection($this->whenLoaded('sub_categories')),
         ];

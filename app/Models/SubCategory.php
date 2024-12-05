@@ -31,4 +31,9 @@ class SubCategory extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    public function getNameAttribute()
+    {
+        return $this->getAttribute('name_' . app()->getLocale());
+    }
 }

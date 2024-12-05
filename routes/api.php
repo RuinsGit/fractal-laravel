@@ -25,11 +25,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Blog Routes
 Route::get('/blogs', [BlogController::class, 'index']);
 
-// Category Routes
-Route::prefix('categories')->group(function () {
+// Category Routes with Language Middleware
+Route::middleware('language')->prefix('categories')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);
     Route::get('/{id}', [CategoryController::class, 'show']);
+    
 });
+Route::group(['middleware' => 'language', 'prefix' => 'products'], function () {
+    Route::get('/', [ProductController::class, 'index']);
+    Route::get('/{id}', [ProductController::class, 'show']);
+});
+
 
 // SubCategory Routes
 Route::prefix('sub-categories')->group(function () {
@@ -41,10 +47,7 @@ Route::prefix('sub-categories')->group(function () {
 Route::get('/categories/{categoryId}/sub-categories', [SubCategoryController::class, 'getByCategory']);
 
 // Product Routes
-Route::prefix('products')->group(function () {
-    Route::get('/', [ProductController::class, 'index']);
-    Route::get('/{id}', [ProductController::class, 'show']);
-});
+
 
 // Company Route
 Route::get('/company', [CompanyController::class, 'index']);

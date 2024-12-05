@@ -11,10 +11,11 @@ class CategoryController extends Controller
 {
     public function index()
     {
+        
         try {
             $categories = Category::with('sub_categories')
-                ->orderBy('created_at', 'desc')
-                ->get();
+                                ->where('status', 1)
+                                ->get();
 
             if ($categories->isEmpty()) {
                 return response()->json([
@@ -40,15 +41,9 @@ class CategoryController extends Controller
     public function show($id)
     {
         try {
-            $category = Category::with('sub_categories')->find($id);
-
-            if (!$category) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Kateqoriya tapılmadı',
-                    'requested_id' => $id
-                ], 404);
-            }
+            $category = Category::with('sub_categories')
+                              ->where('status', 1)
+                              ->findOrFail($id);
 
             return response()->json([
                 'status' => 'success',

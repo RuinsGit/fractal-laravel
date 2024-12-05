@@ -36,6 +36,7 @@ use App\Http\Controllers\Admin\HumanDesignController;
 use App\Http\Controllers\Admin\HumanContentController;
 use App\Http\Controllers\Admin\GalleryVideoController;
 use App\Http\Controllers\Admin\BlogTitleController;
+use App\Http\Controllers\Admin\ContactTitleController;
 
 
 
@@ -453,6 +454,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Blog Title Routes
         Route::prefix('blog-title')->name('blog-title.')->controller(App\Http\Controllers\Admin\BlogTitleController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::put('/update/{id}', 'update')->name('update');
+            Route::get('/destroy/{id}', 'destroy')->name('destroy');
+            Route::get('/status/{id}', 'status')->name('status');
+        });
+
+        // Contact Title Routes
+        Route::prefix('contact-title')->name('contact-title.')->controller(App\Http\Controllers\Admin\ContactTitleController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/create', 'create')->name('create');
             Route::post('/store', 'store')->name('store');

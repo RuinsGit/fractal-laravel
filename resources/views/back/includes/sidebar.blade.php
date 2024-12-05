@@ -134,6 +134,12 @@
                                 Qalereya Başlığı
                             </a>
                         </li>
+                        <li>
+            <a href="{{ route('admin.contact-title.index') }}">
+                <i class="ri-text-wrap"></i>
+                Əlaqə Başlıqları
+            </a>
+        </li>
 
                         <li>
             <a href="{{ route('admin.blog-title.index') }}">
@@ -141,6 +147,8 @@
                 Blog Başlığı
             </a>
         </li>
+
+        
                         
                     </ul>
                 </li>

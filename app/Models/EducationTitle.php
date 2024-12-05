@@ -22,14 +22,5 @@ class EducationTitle extends Model
         'status'
     ];
 
-    protected $attributes = [
-        'image' => null,
-        'name_az' => null,
-        'name_en' => null,
-        'name_ru' => null,
-        'text_az' => null,
-        'text_en' => null,
-        'text_ru' => null,
-        'status' => 1
-    ];
+    
 }

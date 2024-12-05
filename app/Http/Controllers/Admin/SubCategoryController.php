@@ -183,10 +183,28 @@ class SubCategoryController extends Controller
         }
     }
 
-    public function destroy(SubCategory $subCategory)
+    public function destroy($id)
     {
-        $subCategory->delete();
-        return redirect()->route('admin.sub-category.index')
-            ->with('success', 'Alt kateqoriya uğurla silindi.');
+        try {
+            $subCategory = SubCategory::findOrFail($id);
+            
+            // Resmi sil
+            if (File::exists(public_path($subCategory->image))) {
+                File::delete(public_path($subCategory->image));
+            }
+            
+            $subCategory->delete();
+            
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Alt kateqoriya uğurla silindi'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Xəta baş verdi: ' . $e->getMessage()
+            ]);
+        }
     }
 }

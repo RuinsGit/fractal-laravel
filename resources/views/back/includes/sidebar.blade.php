@@ -127,6 +127,21 @@
                                  Psixologiya Başlığı
                             </a>
                         </li>
+
+                        <li>
+                            <a href="{{ route('admin.gallery-title.index') }}">
+                                <i class="ri-text-wrap"></i>
+                                Qalereya Başlığı
+                            </a>
+                        </li>
+
+                        <li>
+            <a href="{{ route('admin.blog-title.index') }}">
+                <i class="ri-text-wrap"></i>
+                Blog Başlığı
+            </a>
+        </li>
+                        
                     </ul>
                 </li>
 
@@ -219,24 +234,14 @@
                         <span>Qaleriya Content</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li>
-                            <a href="{{ route('admin.gallery-title.index') }}">
-                                <i class="ri-text-wrap"></i>
-                                Başlıqlar
-                            </a>
-                        </li>
+                       
                         <li>
             <a href="{{ route('admin.gallery-video.index') }}">
                 <i class="ri-video-line"></i>
                 Videolar
             </a>
         </li>
-                        <li>
-                            <a href="{{ route('admin.about') }}">
-                                <i class="ri-information-line"></i>
-                                Haqqımızda
-                            </a>
-                        </li>
+                        
                     </ul>
                 </li>
 

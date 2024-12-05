@@ -35,6 +35,7 @@ use App\Http\Controllers\Admin\PsychologyTextController;
 use App\Http\Controllers\Admin\HumanDesignController;
 use App\Http\Controllers\Admin\HumanContentController;
 use App\Http\Controllers\Admin\GalleryVideoController;
+use App\Http\Controllers\Admin\BlogTitleController;
 
 
 
@@ -446,6 +447,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/store', 'store')->name('store');
             Route::get('/edit/{id}', 'edit')->name('edit');
             Route::post('/update/{id}', 'update')->name('update');
+            Route::get('/destroy/{id}', 'destroy')->name('destroy');
+            Route::get('/status/{id}', 'status')->name('status');
+        });
+
+        // Blog Title Routes
+        Route::prefix('blog-title')->name('blog-title.')->controller(App\Http\Controllers\Admin\BlogTitleController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::put('/update/{id}', 'update')->name('update');
             Route::get('/destroy/{id}', 'destroy')->name('destroy');
             Route::get('/status/{id}', 'status')->name('status');
         });

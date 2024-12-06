@@ -30,6 +30,9 @@ use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\LeaderController;
 use App\Http\Controllers\Api\GalleryController;
 use App\Http\Controllers\Api\GalleryVideoController;
+use App\Http\Controllers\Api\AboutController;
+use App\Http\Controllers\Api\ContactController;
+use App\Http\Controllers\Api\ContactMessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -159,6 +162,15 @@ Route::prefix('gallery-videos')->group(function () {
     Route::get('/', [GalleryVideoController::class, 'index']);
     Route::get('/{id}', [GalleryVideoController::class, 'show']);
 });
+
+// About Routes
+Route::get('/about', [AboutController::class, 'index']);
+
+// Contact Routes
+Route::get('/contact', [ContactController::class, 'index']);
+
+//Contact Message Route
+Route::post('/contact-messages', [ContactMessageController::class, 'store']);
 
 });
 

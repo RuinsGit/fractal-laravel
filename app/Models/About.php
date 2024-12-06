@@ -15,4 +15,14 @@ class About extends Model
         'description_ru',
         'image'
     ];
+
+    public function getTitleAttribute()
+    {
+        return $this->getAttribute('title_' . app()->getLocale());
+    }
+
+    public function getDescriptionAttribute()
+    {
+        return $this->getAttribute('description_' . app()->getLocale());
+    }
 }

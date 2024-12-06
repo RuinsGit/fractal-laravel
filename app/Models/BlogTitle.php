@@ -16,4 +16,9 @@ class BlogTitle extends Model
     protected $casts = [
         'status' => 'boolean'
     ];
+
+    public function getNameAttribute()
+    {
+        return $this->getAttribute('name_' . app()->getLocale());
+    }
 }

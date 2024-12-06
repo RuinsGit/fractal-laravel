@@ -20,6 +20,10 @@ use App\Http\Controllers\Api\ServicesTitleController;
 use App\Http\Controllers\Api\DigitalPsychologyTitleController;
 use App\Http\Controllers\Api\GalleryTitleController;
 use App\Http\Controllers\Api\ContactTitleController;
+use App\Http\Controllers\Api\BlogTitleController;
+use App\Http\Controllers\Api\PsychologyTextController;
+use App\Http\Controllers\Api\HumanDesignController;
+use App\Http\Controllers\Api\HumanContentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,7 +99,20 @@ Route::get('/about-company', [AboutCompanyController::class, 'index']);
 
     // Contact Title Route
     Route::get('/contact-titles', [ContactTitleController::class, 'index']);
-    
+
+    // Blog Title Route
+    Route::get('/blog-titles', [BlogTitleController::class, 'index']);
+
+    // Psychology Text Route
+    Route::get('/psychology-texts', [PsychologyTextController::class, 'index']);
+
+    // Human Design Route
+    Route::get('/human-designs', [HumanDesignController::class, 'index']);
+    // Human Content Routes
+Route::prefix('human-contents')->group(function () {
+    Route::get('/', [HumanContentController::class, 'index']);
+    Route::get('/{id}', [HumanContentController::class, 'show']);
+});
 
 });
 

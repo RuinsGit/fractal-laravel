@@ -4,15 +4,17 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CompanyResource extends JsonResource
+class AdvantageResource extends JsonResource
 {
     public function toArray($request)
     {
+        $base_url = url('/');
+        
         return [
             'id' => $this->id,
-            'text_1' => $this->text1,
-            'text_2' => $this->text2,
-            'text_3' => $this->text3,
+            'image' => $base_url . '/' . $this->image,
+            'name' => $this->name,
+            'text' => $this->text,
             'status' => $this->status
         ];
     }

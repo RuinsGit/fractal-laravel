@@ -22,5 +22,15 @@ class EducationTitle extends Model
         'status'
     ];
 
+    public function getNameAttribute()
+    {
+        return $this->getAttribute('name_' . app()->getLocale());
+    }
+
+    public function getTextAttribute()
+    {
+        return $this->getAttribute('text_' . app()->getLocale());
+    }
+
     
 }

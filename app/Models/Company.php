@@ -21,4 +21,19 @@ class Company extends Model
         'text_3_ru',
         'status'
     ];
+
+    public function getText1Attribute()
+    {
+        return $this->getAttribute('text_1_' . app()->getLocale());
+    }
+
+    public function getText2Attribute()
+    {
+        return $this->getAttribute('text_2_' . app()->getLocale());
+    }
+
+    public function getText3Attribute()
+    {
+        return $this->getAttribute('text_3_' . app()->getLocale());
+    }
 }

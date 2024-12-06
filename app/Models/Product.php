@@ -14,7 +14,18 @@ class Product extends Model
         'name_az',
         'name_en',
         'name_ru',
-        // ... diğer alanlar
+        'title_az',
+        'title_en',
+        'title_ru',
+        'description_az',
+        'description_en',
+        'description_ru',
+        'price',
+        'discount_percentage',
+        'discounted_price',
+        'thumbnail',
+        'preview_video',
+        'slug',
     ];
 
     public function category()
@@ -40,5 +51,10 @@ class Product extends Model
     public function getTitleAttribute()
     {
         return $this->getAttribute('title_' . app()->getLocale());
+    }
+
+    public function getDescriptionAttribute()
+    {
+        return $this->getAttribute('description_' . app()->getLocale());
     }
 }

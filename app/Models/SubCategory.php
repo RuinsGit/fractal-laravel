@@ -36,4 +36,5 @@ class SubCategory extends Model
     {
         return $this->getAttribute('name_' . app()->getLocale());
     }
+    
 }

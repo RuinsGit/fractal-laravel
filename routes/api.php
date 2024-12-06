@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\PartnerController;
 use App\Http\Controllers\Api\EducationTitleController;
 use App\Http\Controllers\Api\StudyingProgramController;
 use App\Http\Controllers\Api\CompanyNameController;
+use App\Http\Controllers\Api\AdvantageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,47 +23,48 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Blog Routes
-Route::get('/blogs', [BlogController::class, 'index']);
+// Dil gerektiren route'lar
+Route::middleware('language')->group(function () {
+    Route::get('/company-names', [CompanyNameController::class, 'index']);
+    Route::get('/company', [CompanyController::class, 'index']);
+    // Category Routes
+    Route::prefix('categories')->group(function () {
+        Route::get('/', [CategoryController::class, 'index']);
+        Route::get('/{id}', [CategoryController::class, 'show']);
+    });
 
-// Category Routes with Language Middleware
-Route::middleware('language')->prefix('categories')->group(function () {
-    Route::get('/', [CategoryController::class, 'index']);
-    Route::get('/{id}', [CategoryController::class, 'show']);
+    // Education Title Route
+    Route::get('/education-titles', [EducationTitleController::class, 'index']);
     
+// Studying Program Route
+Route::get('/studying-programs', [StudyingProgramController::class, 'index']);
+
+
+
+    // SubCategory Routes
+    Route::prefix('sub-categories')->group(function () {
+        Route::get('/', [SubCategoryController::class, 'index']);
+        Route::get('/{id}', [SubCategoryController::class, 'show']);
+    });
+
+    // Category bazlı SubCategories
+    Route::get('/categories/{categoryId}/sub-categories', [SubCategoryController::class, 'getByCategory']);
+
+    // Product Routes
+    Route::prefix('products')->group(function () {
+        Route::get('/', [ProductController::class, 'index']);
+        Route::get('/{id}', [ProductController::class, 'show']);
+    });
+
+    Route::get('/advantages', [AdvantageController::class, 'index']);
+   
 });
-Route::group(['middleware' => 'language', 'prefix' => 'products'], function () {
-    Route::get('/', [ProductController::class, 'index']);
-    Route::get('/{id}', [ProductController::class, 'show']);
-});
 
-
-// SubCategory Routes
-Route::prefix('sub-categories')->group(function () {
-    Route::get('/', [SubCategoryController::class, 'index']);
-    Route::get('/{id}', [SubCategoryController::class, 'show']);
-});
-
-// Category bazlı SubCategories
-Route::get('/categories/{categoryId}/sub-categories', [SubCategoryController::class, 'getByCategory']);
-
-// Product Routes
-
-
-// Company Route
-Route::get('/company', [CompanyController::class, 'index']);
-
-// Partner Routes
+// Dil gerektirmeyen route'lar
 Route::prefix('partners')->group(function () {
     Route::get('/', [PartnerController::class, 'index']);
     Route::get('/{id}', [PartnerController::class, 'show']);
 });
 
-// Education Title Route
-Route::get('/education-titles', [EducationTitleController::class, 'index']);
+Route::get('/blogs', [BlogController::class, 'index']);
 
-// Studying Program Route
-Route::get('/studying-programs', [StudyingProgramController::class, 'index']);
-
-// Company Name Route
-Route::get('/company-names', [CompanyNameController::class, 'index']);

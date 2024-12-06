@@ -11,7 +11,7 @@ class SubCategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'image' => $this->image,
+            'image' => $base_url . $this->image,
             'slug' => $this->slug,
             'category' => new CategoryResource($this->whenLoaded('category')),
         ];

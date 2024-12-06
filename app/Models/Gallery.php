@@ -12,4 +12,9 @@ class Gallery extends Model
         'title_ru',
         'image'
     ];
+
+    public function getTitleAttribute()
+    {
+        return $this->getAttribute('title_' . app()->getLocale());
+    }
 }

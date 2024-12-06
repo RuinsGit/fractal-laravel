@@ -22,4 +22,14 @@ class Comment extends Model
     protected $casts = [
         'status' => 'boolean'
     ];
+
+    public function getTitleAttribute()
+    {
+        return $this->getAttribute('title_' . app()->getLocale());
+    }
+
+    public function getCommentAttribute()
+    {
+        return $this->getAttribute('comment_' . app()->getLocale());
+    }
 }

@@ -24,6 +24,12 @@ use App\Http\Controllers\Api\BlogTitleController;
 use App\Http\Controllers\Api\PsychologyTextController;
 use App\Http\Controllers\Api\HumanDesignController;
 use App\Http\Controllers\Api\HumanContentController;
+use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\LeaderController;
+use App\Http\Controllers\Api\GalleryController;
+use App\Http\Controllers\Api\GalleryVideoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -114,6 +120,46 @@ Route::prefix('human-contents')->group(function () {
     Route::get('/{id}', [HumanContentController::class, 'show']);
 });
 
+// Service Routes
+Route::prefix('services')->group(function () {
+    Route::get('/', [ServiceController::class, 'index']);
+    Route::get('/{slug}', [ServiceController::class, 'show']);
+});
+
+// Blog Routes
+Route::prefix('blogs')->group(function () {
+    Route::get('/', [BlogController::class, 'index']);
+    Route::get('/popular', [BlogController::class, 'popular']);
+    Route::get('/{id}', [BlogController::class, 'show']);
+});
+// Order Routes
+Route::prefix('orders')->group(function () {
+    Route::get('/', [OrderController::class, 'index']);
+    Route::get('/{id}', [OrderController::class, 'show']);
+});
+
+// Comment Routes
+Route::prefix('comments')->group(function () {
+    Route::get('/', [CommentController::class, 'index']);
+    Route::get('/{id}', [CommentController::class, 'show']);
+});
+
+// Leader Routes
+Route::prefix('leaders')->group(function () {
+    Route::get('/', [LeaderController::class, 'index']);
+    Route::get('/{id}', [LeaderController::class, 'show']);
+});
+// Gallery Routes
+Route::prefix('galleries')->group(function () {
+    Route::get('/', [GalleryController::class, 'index']);
+    Route::get('/{id}', [GalleryController::class, 'show']);
+});
+// Gallery Video Routes
+Route::prefix('gallery-videos')->group(function () {
+    Route::get('/', [GalleryVideoController::class, 'index']);
+    Route::get('/{id}', [GalleryVideoController::class, 'show']);
+});
+
 });
 
 // Dil gerektirmeyen route'lar
@@ -122,7 +168,7 @@ Route::prefix('partners')->group(function () {
     Route::get('/{id}', [PartnerController::class, 'show']);
 });
 
-Route::get('/blogs', [BlogController::class, 'index']);
+
 
 
 

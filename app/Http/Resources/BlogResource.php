@@ -2,24 +2,24 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Carbon\Carbon;
 
 class BlogResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
         $base_url = url('/');
+        
         return [
             'id' => $this->id,
-            'title' => $this->title_az,
-            'description' => $this->description_az,
-            'image' => $base_url . '/' . $this->image,
+            'title' => $this->title,
+            'description' => $this->description,
+            'image' => $this->image ? $base_url . '/' . $this->image : null,
+            'view_count' => $this->view_count,
+            'status' => $this->status,
+            'slug' => $this->slug,
+            'published_at' => $this->published_at ? Carbon::parse($this->published_at)->format('Y-m-d H:i:s') : null
         ];
     }
 }

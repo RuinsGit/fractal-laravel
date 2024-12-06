@@ -10,7 +10,7 @@ class EducationTitleResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'image' => $this->image,
+            'image' => $base_url . $this->image,
             'name' => $this->name,
             'text' => $this->text,
             'status' => $this->status

@@ -45,4 +45,14 @@ class Blog extends Model
 
         return '<span class="badge bg-' . $badges[$this->status] . '">' . self::getStatusList()[$this->status] . '</span>';
     }
+
+    public function getTitleAttribute()
+    {
+        return $this->getAttribute('title_' . app()->getLocale());
+    }
+
+    public function getDescriptionAttribute()
+    {
+        return $this->getAttribute('description_' . app()->getLocale());
+    }
 }

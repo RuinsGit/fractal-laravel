@@ -15,4 +15,14 @@ class Leader extends Model
         'position_ru',
         'image'
     ];
+
+    public function getNameAttribute()
+    {
+        return $this->getAttribute('name_' . app()->getLocale());
+    }
+
+    public function getPositionAttribute()
+    {
+        return $this->getAttribute('position_' . app()->getLocale());
+    }
 }

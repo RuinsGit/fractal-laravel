@@ -18,4 +18,15 @@ class Service extends Model
         'slug',
         'status'
     ];
+
+    public function getTitleAttribute()
+    {
+        return $this->getAttribute('title_' . app()->getLocale());
+    }
+
+    public function getDescriptionAttribute()
+    {
+        return $this->getAttribute('description_' . app()->getLocale());
+    }
+    
 }

@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CourseResource extends JsonResource
+class DigitalPsychologyTitleResource extends JsonResource
 {
     public function toArray($request)
     {
@@ -12,7 +12,7 @@ class CourseResource extends JsonResource
         
         return [
             'id' => $this->id,
-            'image' => $base_url . $this->image,
+            'image' => $this->image ? $base_url . $this->image : null,
             'name' => $this->name,
             'text' => $this->text,
             'status' => $this->status

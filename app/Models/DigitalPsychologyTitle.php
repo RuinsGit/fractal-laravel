@@ -32,4 +32,15 @@ class DigitalPsychologyTitle extends Model
         'text_ru' => null,
         'status' => 1
     ];
+
+    public function getNameAttribute()
+    {
+        return $this->getAttribute('name_' . app()->getLocale());
+    }
+
+    public function getTextAttribute()
+    {
+        return $this->getAttribute('text_' . app()->getLocale());
+    }
+    
 }

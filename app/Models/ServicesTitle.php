@@ -19,4 +19,14 @@ class ServicesTitle extends Model
         'text_en',
         'text_ru'
     ];
+
+    public function getNameAttribute()
+    {
+        return $this->getAttribute('name_' . app()->getLocale());
+    }
+
+    public function getTextAttribute()
+    {
+        return $this->getAttribute('text_' . app()->getLocale());
+    }
 }

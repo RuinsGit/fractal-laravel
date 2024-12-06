@@ -16,7 +16,10 @@ use App\Http\Controllers\Api\HistoryController;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\AboutVisionController;
 use App\Http\Controllers\Api\AboutCompanyController;
-
+use App\Http\Controllers\Api\ServicesTitleController;
+use App\Http\Controllers\Api\DigitalPsychologyTitleController;
+use App\Http\Controllers\Api\GalleryTitleController;
+use App\Http\Controllers\Api\ContactTitleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,6 +83,19 @@ Route::get('/about-company', [AboutCompanyController::class, 'index']);
         Route::get('/', [CourseController::class, 'index']);
         Route::get('/{id}', [CourseController::class, 'show']);
     });
+
+    // Services Title Route
+    Route::get('/services-title', [ServicesTitleController::class, 'index']);
+
+    // Digital Psychology Title Route
+    Route::get('/digital-psychology-title', [DigitalPsychologyTitleController::class, 'index']);
+    
+    // Gallery Title Route
+    Route::get('/gallery-titles', [GalleryTitleController::class, 'index']);
+
+    // Contact Title Route
+    Route::get('/contact-titles', [ContactTitleController::class, 'index']);
+    
 
 });
 

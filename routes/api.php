@@ -12,6 +12,11 @@ use App\Http\Controllers\Api\EducationTitleController;
 use App\Http\Controllers\Api\StudyingProgramController;
 use App\Http\Controllers\Api\CompanyNameController;
 use App\Http\Controllers\Api\AdvantageController;
+use App\Http\Controllers\Api\HistoryController;
+use App\Http\Controllers\Api\CourseController;
+use App\Http\Controllers\Api\AboutVisionController;
+use App\Http\Controllers\Api\AboutCompanyController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -57,7 +62,25 @@ Route::get('/studying-programs', [StudyingProgramController::class, 'index']);
     });
 
     Route::get('/advantages', [AdvantageController::class, 'index']);
-   
+
+    // About Company Route
+Route::get('/about-company', [AboutCompanyController::class, 'index']);
+
+    // About Vision Route
+    Route::get('/about-vision', [AboutVisionController::class, 'index']);
+
+    // History Routes
+    Route::prefix('histories')->group(function () {
+        Route::get('/', [HistoryController::class, 'index']);
+        Route::get('/{id}', [HistoryController::class, 'show']);
+    });
+
+    // Course Routes
+    Route::prefix('courses')->group(function () {
+        Route::get('/', [CourseController::class, 'index']);
+        Route::get('/{id}', [CourseController::class, 'show']);
+    });
+
 });
 
 // Dil gerektirmeyen route'lar
@@ -67,4 +90,6 @@ Route::prefix('partners')->group(function () {
 });
 
 Route::get('/blogs', [BlogController::class, 'index']);
+
+
 

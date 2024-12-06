@@ -19,4 +19,15 @@ class AboutCompany extends Model
         'image',
         'status'
     ];
+
+    public function getNameAttribute()
+    {
+        return $this->getAttribute('name_' . app()->getLocale());
+    }
+
+    public function getDescriptionAttribute()
+    {
+        return $this->getAttribute('description_' . app()->getLocale());
+    }
+    
 }

@@ -16,4 +16,9 @@ class History extends Model
         'text_ru',
         'status',
     ];
+
+    public function getTextAttribute()
+    {
+        return $this->getAttribute('text_' . app()->getLocale());
+    }
 }

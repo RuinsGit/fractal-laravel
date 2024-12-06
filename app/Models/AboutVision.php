@@ -27,4 +27,26 @@ class AboutVision extends Model
         'image',
         'status'
     ];
+
+    public function getName1Attribute()
+
+    {
+        return $this->getAttribute('name_1_' . app()->getLocale());
+    }
+
+    public function getName2Attribute()
+    {
+        return $this->getAttribute('name_2_' . app()->getLocale());
+    }
+
+    public function getText1Attribute()
+    {
+        return $this->getAttribute('text_1_' . app()->getLocale());
+    }
+
+    public function getText2Attribute()
+    {
+        return $this->getAttribute('text_2_' . app()->getLocale());
+    }
+    
 }

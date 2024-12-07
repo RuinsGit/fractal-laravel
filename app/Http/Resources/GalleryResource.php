@@ -8,12 +8,12 @@ class GalleryResource extends JsonResource
 {
     public function toArray($request)
     {
-        $base_url = url('/');
+        
         
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'image' => $this->image ? $base_url . '/' . $this->image : null
+            'image' => $this->image ? url('uploads/gallery/' . basename($this->image)) : null
         ];
     }
 } 

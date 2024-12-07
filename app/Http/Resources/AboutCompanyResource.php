@@ -8,11 +8,11 @@ class AboutCompanyResource extends JsonResource
 {
     public function toArray($request)
     {
-        $base_url = url('/');
+       
         
         return [
             'id' => $this->id,
-            'image' => $base_url . '/' . $this->image,
+            'image' => $this->image ? url('uploads/about/' . basename($this->image)) : null,
             'name' => $this->name,
             'description' => $this->description,
             'status' => $this->status

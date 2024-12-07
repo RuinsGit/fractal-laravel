@@ -8,11 +8,11 @@ class HumanContentResource extends JsonResource
 {
     public function toArray($request)
     {
-        $base_url = url('/');
+       
         
         return [
             'id' => $this->id,
-            'image' => $base_url . '/uploads/human-content/' . $this->image,
+            'image' => $this->image ? url('uploads/human-content/' . basename($this->image)) : null,
             'name' => $this->name,
             'description' => $this->description,
             'status' => $this->status

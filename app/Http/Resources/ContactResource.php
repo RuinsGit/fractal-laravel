@@ -8,7 +8,7 @@ class ContactResource extends JsonResource
 {
     public function toArray($request)
     {
-        $base_url = url('/');
+        
         
         return [
             'id' => $this->id,
@@ -22,9 +22,9 @@ class ContactResource extends JsonResource
                 'youtube' => $this->youtube
             ],
             'images' => [
-                'logo' => $this->logo ? $base_url . '/' . $this->logo : null,
-                'logo_2' => $this->logo_2 ? $base_url . '/' . $this->logo_2 : null,
-                'favicon' => $this->favicon ? $base_url . '/' . $this->favicon : null
+                'logo' => $this->logo ? url('uploads/contact/' . basename($this->logo)) : null,
+                'logo_2' => $this->logo_2 ? url('uploads/contact/' . basename($this->logo_2)) : null,
+                'favicon' => $this->favicon ? url('uploads/contact/' . basename($this->favicon)) : null
             ]
         ];
     }

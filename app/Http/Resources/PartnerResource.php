@@ -10,7 +10,7 @@ class PartnerResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'image' => $base_url . $this->image,
+            'image' => $this->image ? url('uploads/partners/' . basename($this->image)) : null,
             'link' => $this->link,
             'status' => $this->status
         ];

@@ -10,7 +10,7 @@ class StudyingProgramResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'image' => $base_url . $this->image,
+            'image' => $this->image ? url('uploads/study-programs/' . basename($this->image)) : null,
             'name' => $this->name,
             'text' => $this->text,
             'description' => $this->description,

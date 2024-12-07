@@ -8,11 +8,11 @@ class DigitalPsychologyTitleResource extends JsonResource
 {
     public function toArray($request)
     {
-        $base_url = url('/');
+        
         
         return [
             'id' => $this->id,
-            'image' => $this->image ? $base_url . $this->image : null,
+            'image' => $this->image ? url('uploads/digital-psychology-title/' . basename($this->image)) : null,
             'name' => $this->name,
             'text' => $this->text,
             'status' => $this->status

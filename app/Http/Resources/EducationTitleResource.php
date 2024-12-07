@@ -10,7 +10,7 @@ class EducationTitleResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'image' => $base_url . $this->image,
+            'image' => $this->image ? url('uploads/education-title/' . basename($this->image)) : null,
             'name' => $this->name,
             'text' => $this->text,
             'status' => $this->status

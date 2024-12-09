@@ -91,10 +91,25 @@ class AboutCompanyController extends Controller
                     File::delete(public_path($aboutCompany->image));
                 }
 
-                $image = $request->file('image');
-                $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/about'), $imageName);
-                $data['image'] = 'uploads/about/' . $imageName;
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/about');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                // Klasörün var olduğundan emin ol
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $data['image'] = 'uploads/about/' . $webpFileName;
+                }
             }
 
             $aboutCompany->update($data);

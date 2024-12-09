@@ -11,8 +11,8 @@ class HeaderController extends Controller
     public function index()
     {
         try {
-            $headers = Header::latest()->get();
-            return HeaderResource::collection($headers);
+            $headers = Header::first();
+            return new HeaderResource($headers);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -21,8 +21,7 @@ class HeaderController extends Controller
         }
     }
 
-    public function show($id)
-    {
+    public function show($id){
         try {
             $header = Header::findOrFail($id);
             return new HeaderResource($header);
@@ -30,7 +29,7 @@ class HeaderController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Header not found'
-            ], 404);
+            ], 404);            
         }
     }
-} 
+}

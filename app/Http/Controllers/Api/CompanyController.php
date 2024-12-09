@@ -13,19 +13,18 @@ class CompanyController extends Controller
     {
         try {
             $companies = Company::where('status', true)
-                              ->latest()
-                              ->get();
+                             ->first();
 
-            if ($companies->isEmpty()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Şirkətlər tapılmadı'
-                ], 404);
-            }
+            // if ($companies->isEmpty()) {
+            //     return response()->json([
+            //         'status' => 'error',
+            //         'message' => 'Şirkətlər tapılmadı'
+            //     ], 404);
+            // }
 
             return response()->json([
                 'status' => 'success',
-                'data' => CompanyResource::collection($companies),
+                'data' => new CompanyResource($companies),
                 'message' => 'Şirkətlər uğurla gətirildi'
             ]);
 
@@ -56,4 +55,4 @@ class CompanyController extends Controller
             ], 404);
         }
     }
-} 
+}

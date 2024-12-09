@@ -23,11 +23,11 @@ class Company extends Model
 
     public function getName1Attribute()
     {
-        return $this->getAttribute('name1_' . app()->getLocale());
+        return $this->getAttribute('name_1_' . app()->getLocale());
     }
 
     public function getName2Attribute()
     {
-        return $this->getAttribute('name2_' . app()->getLocale());
+        return $this->getAttribute('name_2_' . app()->getLocale());
     }
 }

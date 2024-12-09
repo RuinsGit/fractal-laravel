@@ -34,10 +34,24 @@ class CompanyController extends Controller
             ]);
 
             if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = time() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/companies'), $imageName);
-                $imagePath = 'uploads/companies/' . $imageName;
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/companies');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $imagePath = 'uploads/companies/' . $webpFileName;
+                }
             }
 
             Company::create([
@@ -86,10 +100,24 @@ class CompanyController extends Controller
                     File::delete(public_path($company->image));
                 }
 
-                $image = $request->file('image');
-                $imageName = time() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/companies'), $imageName);
-                $imagePath = 'uploads/companies/' . $imageName;
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/companies');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $imagePath = 'uploads/companies/' . $webpFileName;
+                }
             }
 
             $company->update([

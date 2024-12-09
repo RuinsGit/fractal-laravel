@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\About;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class AboutController extends Controller
 {
@@ -20,13 +21,30 @@ class AboutController extends Controller
             $about = About::firstOrNew();
 
             if ($request->hasFile('image')) {
-                if ($about->image && file_exists(public_path($about->image))) {
-                    unlink(public_path($about->image));
+                // Eski resmi sil
+                if ($about->image && File::exists(public_path($about->image))) {
+                    File::delete(public_path($about->image));
                 }
-                $image = $request->file('image');
-                $imageName = time() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/about'), $imageName);
-                $about->image = 'uploads/about/' . $imageName;
+
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/about');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                // Klasörün var olduğundan emin ol
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $about->image = 'uploads/about/' . $webpFileName;
+                }
             }
 
             $about->fill($request->only([

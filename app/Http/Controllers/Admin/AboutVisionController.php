@@ -92,25 +92,6 @@ class AboutVisionController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'icon_1' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'name_1_az' => 'required|string|max:255',
-            'name_1_en' => 'nullable|string|max:255',
-            'name_1_ru' => 'nullable|string|max:255',
-            'text_1_az' => 'required|string',
-            'text_1_en' => 'nullable|string',
-            'text_1_ru' => 'nullable|string',
-            'icon_2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'name_2_az' => 'required|string|max:255',
-            'name_2_en' => 'nullable|string|max:255',
-            'name_2_ru' => 'nullable|string|max:255',
-            'text_2_az' => 'required|string',
-            'text_2_en' => 'nullable|string',
-            'text_2_ru' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|boolean'
-        ]);
-
         try {
             $vision = AboutVision::findOrFail($id);
             $data = $request->all();
@@ -120,10 +101,23 @@ class AboutVisionController extends Controller
                     File::delete(public_path($vision->icon_1));
                 }
 
-                $icon1 = $request->file('icon_1');
-                $icon1Name = Str::uuid() . '.' . $icon1->getClientOriginalExtension();
-                $icon1->move(public_path('uploads/about/vision'), $icon1Name);
-                $data['icon_1'] = 'uploads/about/vision/' . $icon1Name;
+                $file = $request->file('icon_1');
+                $destinationPath = public_path('uploads/about/vision');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_icon1_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+                    $vision->icon_1 = 'uploads/about/vision/' . $webpFileName;
+                }
             }
 
             if ($request->hasFile('icon_2')) {
@@ -131,10 +125,23 @@ class AboutVisionController extends Controller
                     File::delete(public_path($vision->icon_2));
                 }
 
-                $icon2 = $request->file('icon_2');
-                $icon2Name = Str::uuid() . '.' . $icon2->getClientOriginalExtension();
-                $icon2->move(public_path('uploads/about/vision'), $icon2Name);
-                $data['icon_2'] = 'uploads/about/vision/' . $icon2Name;
+                $file = $request->file('icon_2');
+                $destinationPath = public_path('uploads/about/vision');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_icon2_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+                    $vision->icon_2 = 'uploads/about/vision/' . $webpFileName;
+                }
             }
 
             if ($request->hasFile('image')) {
@@ -142,13 +149,34 @@ class AboutVisionController extends Controller
                     File::delete(public_path($vision->image));
                 }
 
-                $image = $request->file('image');
-                $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/about/vision'), $imageName);
-                $data['image'] = 'uploads/about/vision/' . $imageName;
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/about/vision');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+                    $vision->image = 'uploads/about/vision/' . $webpFileName;
+                }
             }
 
-            $vision->update($data);
+            $vision->fill($request->only([
+                'name_1_az', 'name_1_en', 'name_1_ru',
+                'text_1_az', 'text_1_en', 'text_1_ru',
+                'name_2_az', 'name_2_en', 'name_2_ru',
+                'text_2_az', 'text_2_en', 'text_2_ru',
+                'status'
+            ]));
+
+            $vision->save();
 
             return redirect()
                 ->route('admin.about.vision.index')

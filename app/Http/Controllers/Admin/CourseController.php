@@ -33,27 +33,47 @@ class CourseController extends Controller
             'status' => 'required|boolean'
         ]);
 
-        if($request->hasFile('image')) {
-            $image = $request->file('image');
-            $name = time() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('/uploads/courses/');
-            $image->move($destinationPath, $name);
+        try {
+            if($request->hasFile('image')) {
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/courses');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+                }
+            }
+
+            Course::create([
+                'image' => 'uploads/courses/' . $webpFileName,
+                'name_az' => $request->name_az,
+                'name_en' => $request->name_en,
+                'name_ru' => $request->name_ru,
+                'text_az' => $request->text_az,
+                'text_en' => $request->text_en,
+                'text_ru' => $request->text_ru,
+                'status' => $request->status
+            ]);
+
+            return redirect()
+                ->route('admin.course.index')
+                ->with('success', 'Kurs uğurla əlavə edildi');
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Xəta baş verdi: ' . $e->getMessage())
+                ->withInput();
         }
-
-        Course::create([
-            'image' => '/uploads/courses/' . $name,
-            'name_az' => $request->name_az,
-            'name_en' => $request->name_en,
-            'name_ru' => $request->name_ru,
-            'text_az' => $request->text_az,
-            'text_en' => $request->text_en,
-            'text_ru' => $request->text_ru,
-            'status' => $request->status
-        ]);
-
-        return redirect()
-            ->route('admin.course.index')
-            ->with('success', 'Kurs uğurla əlavə edildi');
     }
 
     public function edit($id)
@@ -75,36 +95,54 @@ class CourseController extends Controller
             'status' => 'required|boolean'
         ]);
 
-        $course = Course::findOrFail($id);
+        try {
+            $course = Course::findOrFail($id);
 
-        if($request->hasFile('image')) {
-            // Delete old image
-            if(File::exists(public_path($course->image))) {
-                File::delete(public_path($course->image));
+            if($request->hasFile('image')) {
+                if ($course->image && File::exists(public_path($course->image))) {
+                    File::delete(public_path($course->image));
+                }
+                
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/courses');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+                    
+                    $course->image = 'uploads/courses/' . $webpFileName;
+                }
             }
-            
-            // Upload new image
-            $image = $request->file('image');
-            $name = time() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('/uploads/courses/');
-            $image->move($destinationPath, $name);
-            
-            $course->image = '/uploads/courses/' . $name;
+
+            $course->update([
+                'name_az' => $request->name_az,
+                'name_en' => $request->name_en,
+                'name_ru' => $request->name_ru,
+                'text_az' => $request->text_az,
+                'text_en' => $request->text_en,
+                'text_ru' => $request->text_ru,
+                'status' => $request->status
+            ]);
+
+            return redirect()
+                ->route('admin.course.index')
+                ->with('success', 'Kurs uğurla yeniləndi');
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Xəta baş verdi: ' . $e->getMessage())
+                ->withInput();
         }
-
-        $course->update([
-            'name_az' => $request->name_az,
-            'name_en' => $request->name_en,
-            'name_ru' => $request->name_ru,
-            'text_az' => $request->text_az,
-            'text_en' => $request->text_en,
-            'text_ru' => $request->text_ru,
-            'status' => $request->status
-        ]);
-
-        return redirect()
-            ->route('admin.course.index')
-            ->with('success', 'Kurs uğurla yeniləndi');
     }
 
     public function destroy($id)

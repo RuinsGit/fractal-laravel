@@ -38,10 +38,24 @@ class AdvantageController extends Controller
             $data = $request->all();
 
             if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/advantages'), $imageName);
-                $data['image'] = 'uploads/advantages/' . $imageName;
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/advantages');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $data['image'] = 'uploads/advantages/' . $webpFileName;
+                }
             }
 
             Advantage::create($data);
@@ -82,15 +96,28 @@ class AdvantageController extends Controller
             $data = $request->all();
 
             if ($request->hasFile('image')) {
-                // Eski resmi sil
                 if ($advantage->image && File::exists(public_path($advantage->image))) {
                     File::delete(public_path($advantage->image));
                 }
 
-                $image = $request->file('image');
-                $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/advantages'), $imageName);
-                $data['image'] = 'uploads/advantages/' . $imageName;
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/advantages');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $data['image'] = 'uploads/advantages/' . $webpFileName;
+                }
             }
 
             $advantage->update($data);

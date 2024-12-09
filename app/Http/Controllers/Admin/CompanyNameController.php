@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CompanyName;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class CompanyNameController extends Controller
 {
@@ -40,12 +41,43 @@ class CompanyNameController extends Controller
             'description_az' => 'required|string',
             'description_en' => 'required|string',
             'description_ru' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        CompanyName::create($request->all());
+        try {
+            $data = $request->all();
 
-        return redirect()->route('admin.home.company-names.index')
-            ->with('success', 'Şirkət adı uğurla əlavə edildi');
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/company-names');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $data['image'] = 'uploads/company-names/' . $webpFileName;
+                }
+            }
+
+            CompanyName::create($data);
+
+            return redirect()->route('admin.home.company-names.index')
+                ->with('success', 'Şirkət adı uğurla əlavə edildi');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Xəta baş verdi: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     public function edit($id)
@@ -66,13 +98,48 @@ class CompanyNameController extends Controller
             'description_az' => 'required|string',
             'description_en' => 'required|string',
             'description_ru' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        $companyName = CompanyName::findOrFail($id);
-        $companyName->update($request->all());
+        try {
+            $companyName = CompanyName::findOrFail($id);
+            $data = $request->all();
 
-        return redirect()->route('admin.home.company-names.index')
-            ->with('success', 'Şirkət adı uğurla yeniləndi');
+            if ($request->hasFile('image')) {
+                if ($companyName->image && File::exists(public_path($companyName->image))) {
+                    File::delete(public_path($companyName->image));
+                }
+
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/company-names');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $data['image'] = 'uploads/company-names/' . $webpFileName;
+                }
+            }
+
+            $companyName->update($data);
+
+            return redirect()->route('admin.home.company-names.index')
+                ->with('success', 'Şirkət adı uğurla yeniləndi');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Xəta baş verdi: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     public function destroy($id)

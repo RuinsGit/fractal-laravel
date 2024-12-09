@@ -40,10 +40,24 @@ class CommentController extends Controller
             $data = $request->all();
 
             if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/comments'), $imageName);
-                $data['image'] = 'uploads/comments/' . $imageName;
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/comments');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $data['image'] = 'uploads/comments/' . $webpFileName;
+                }
             }
 
             Comment::create($data);
@@ -86,15 +100,28 @@ class CommentController extends Controller
             $data = $request->all();
 
             if ($request->hasFile('image')) {
-                // Eski resmi sil
                 if ($comment->image && File::exists(public_path($comment->image))) {
                     File::delete(public_path($comment->image));
                 }
 
-                $image = $request->file('image');
-                $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/comments'), $imageName);
-                $data['image'] = 'uploads/comments/' . $imageName;
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/comments');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $data['image'] = 'uploads/comments/' . $webpFileName;
+                }
             }
 
             $comment->update($data);

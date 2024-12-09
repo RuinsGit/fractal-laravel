@@ -27,10 +27,24 @@ class BlogController extends Controller
             $data = $request->validated();
 
             if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/blogs'), $imageName);
-                $data['image'] = 'uploads/blogs/' . $imageName;
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/blogs');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $data['image'] = 'uploads/blogs/' . $webpFileName;
+                }
             }
 
             $data['slug'] = Str::slug($request->title_en);
@@ -70,16 +84,28 @@ class BlogController extends Controller
             $data = $request->validated();
 
             if ($request->hasFile('image')) {
-                // Eski resmi sil
                 if ($blog->image && File::exists(public_path($blog->image))) {
                     File::delete(public_path($blog->image));
                 }
 
-                // Yeni resmi yükle
-                $image = $request->file('image');
-                $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/blogs'), $imageName);
-                $data['image'] = 'uploads/blogs/' . $imageName;
+                $file = $request->file('image');
+                $destinationPath = public_path('uploads/blogs');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $data['image'] = 'uploads/blogs/' . $webpFileName;
+                }
             }
 
             $data['slug'] = Str::slug($request->title_en);

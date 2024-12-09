@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ContactRequest;
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class ContactController extends Controller
 {
@@ -20,40 +21,81 @@ class ContactController extends Controller
         try {
             $contact = Contact::firstOrNew();
 
-            // Logo işleme
             if ($request->hasFile('logo')) {
-                if ($contact->logo && file_exists(public_path($contact->logo))) {
-                    unlink(public_path($contact->logo));
+                if ($contact->logo && File::exists(public_path($contact->logo))) {
+                    File::delete(public_path($contact->logo));
                 }
-                $logo = $request->file('logo');
-                $logoName = time() . '_logo.' . $logo->getClientOriginalExtension();
-                $logo->move(public_path('uploads/contact'), $logoName);
-                $contact->logo = 'uploads/contact/' . $logoName;
+
+                $file = $request->file('logo');
+                $destinationPath = public_path('uploads/contact');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_logo_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $contact->logo = 'uploads/contact/' . $webpFileName;
+                }
             }
 
-            // Logo 2 işleme
             if ($request->hasFile('logo_2')) {
-                if ($contact->logo_2 && file_exists(public_path($contact->logo_2))) {
-                    unlink(public_path($contact->logo_2));
+                if ($contact->logo_2 && File::exists(public_path($contact->logo_2))) {
+                    File::delete(public_path($contact->logo_2));
                 }
-                $logo2 = $request->file('logo_2');
-                $logo2Name = time() . '_logo2.' . $logo2->getClientOriginalExtension();
-                $logo2->move(public_path('uploads/contact'), $logo2Name);
-                $contact->logo_2 = 'uploads/contact/' . $logo2Name;
+
+                $file = $request->file('logo_2');
+                $destinationPath = public_path('uploads/contact');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_logo2_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $contact->logo_2 = 'uploads/contact/' . $webpFileName;
+                }
             }
 
-            
             if ($request->hasFile('favicon')) {
-                if ($contact->favicon && file_exists(public_path($contact->favicon))) {
-                    unlink(public_path($contact->favicon));
+                if ($contact->favicon && File::exists(public_path($contact->favicon))) {
+                    File::delete(public_path($contact->favicon));
                 }
-                $favicon = $request->file('favicon');
-                $faviconName = time() . '_favicon.' . $favicon->getClientOriginalExtension();
-                $favicon->move(public_path('uploads/contact'), $faviconName);
-                $contact->favicon = 'uploads/contact/' . $faviconName;
+
+                $file = $request->file('favicon');
+                $destinationPath = public_path('uploads/contact');
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $webpFileName = time() . '_favicon_' . $originalFileName . '.webp';
+
+                if (!File::exists($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0777, true);
+                }
+
+                $imageResource = imagecreatefromstring(file_get_contents($file));
+                $webpPath = $destinationPath . '/' . $webpFileName;
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $webpPath, 80);
+                    imagedestroy($imageResource);
+
+                    $contact->favicon = 'uploads/contact/' . $webpFileName;
+                }
             }
 
-           
             $contact->fill($request->only([
                 'email',
                 'phone',

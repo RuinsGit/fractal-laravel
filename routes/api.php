@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\GalleryVideoController;
 use App\Http\Controllers\Api\AboutController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\ContactMessageController;
+use App\Http\Controllers\Api\HeaderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -171,6 +172,16 @@ Route::get('/contact', [ContactController::class, 'index']);
 
 //Contact Message Route
 Route::post('/contact-messages', [ContactMessageController::class, 'store']);
+
+Route::group(['middleware' => ['api']], function () {
+    // ... diğer route'lar ...
+
+    // Header Routes
+    Route::controller(HeaderController::class)->group(function () {
+        Route::get('/headers', 'index');
+        Route::get('/headers/{id}', 'show');
+    });
+});
 
 });
 

@@ -2,38 +2,32 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'text_1_az',
-        'text_2_az',
-        'text_3_az',
-        'text_1_en',
-        'text_2_en',
-        'text_3_en',
-        'text_1_ru',
-        'text_2_ru',
-        'text_3_ru',
+        'name_1_az',
+        'name_1_en',
+        'name_1_ru',
+        'name_2_az',
+        'name_2_en',
+        'name_2_ru',
+        'image',
         'status'
     ];
 
-    public function getText1Attribute()
+    protected $casts = [
+        'status' => 'boolean'
+    ];
+
+    public function getName1Attribute()
     {
-        return $this->getAttribute('text_1_' . app()->getLocale());
+        return $this->getAttribute('name1_' . app()->getLocale());
     }
 
-    public function getText2Attribute()
+    public function getName2Attribute()
     {
-        return $this->getAttribute('text_2_' . app()->getLocale());
-    }
-
-    public function getText3Attribute()
-    {
-        return $this->getAttribute('text_3_' . app()->getLocale());
+        return $this->getAttribute('name2_' . app()->getLocale());
     }
 }

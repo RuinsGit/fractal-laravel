@@ -10,9 +10,9 @@ class CompanyResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'text_1' => $this->text1,
-            'text_2' => $this->text2,
-            'text_3' => $this->text3,
+            'name1' => $this->name1,
+            'name2' => $this->name2,
+            'image' => $this->image ? url('uploads/companies/' . basename($this->image)) : null,
             'status' => $this->status
         ];
     }

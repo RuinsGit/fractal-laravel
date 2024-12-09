@@ -5,66 +5,58 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class CompanyController extends Controller
 {
     public function index()
     {
-        $companies = Company::all();
-        $companyCount = Company::count();
-        return view('back.home.company.index', compact('companies', 'companyCount'));
+        $companies = Company::latest()->get();
+        return view('back.home.company.index', compact('companies'));
     }
 
     public function create()
     {
-        if(Company::count() > 0) {
-            return redirect()->route('admin.home.company.index')
-                ->with('error', 'Yalnız bir şirkət məlumatı əlavə edilə bilər!');
-        }
         return view('back.home.company.create');
     }
 
     public function store(Request $request)
     {
-        if(Company::count() > 0) {
-            return redirect()->route('admin.home.company.index')
-                ->with('error', 'Yalnız bir şirkət məlumatı əlavə edilə bilər!');
-        }
-
-        Company::create([
-            'text_1_az' => $request->text_1_az,
-            'text_2_az' => $request->text_2_az,
-            'text_3_az' => $request->text_3_az,
-            'text_1_en' => $request->text_1_en,
-            'text_2_en' => $request->text_2_en,
-            'text_3_en' => $request->text_3_en,
-            'text_1_ru' => $request->text_1_ru,
-            'text_2_ru' => $request->text_2_ru,
-            'text_3_ru' => $request->text_3_ru,
-            'status' => 1
-        ]);
-
-        return redirect()->route('admin.home.company.index')
-            ->with('success', 'Məlumatlar uğurla əlavə edildi');
-    }
-
-    public function status($id)
-    {
         try {
-            $company = Company::findOrFail($id);
-            $company->status = !$company->status;
-            $company->save();
+            $validated = $request->validate([
+                'name_1_az' => 'required|string|max:255',
+                'name_1_en' => 'required|string|max:255',
+                'name_1_ru' => 'required|string|max:255',
+                'name_2_az' => 'required|string|max:255',
+                'name_2_en' => 'required|string|max:255',
+                'name_2_ru' => 'required|string|max:255',
+                'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+            ]);
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Status uğurla dəyişdirildi',
-                'newStatus' => $company->status
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/companies'), $imageName);
+                $imagePath = 'uploads/companies/' . $imageName;
+            }
+
+            Company::create([
+                'name_1_az' => $request->name_1_az,
+                'name_1_en' => $request->name_1_en,
+                'name_1_ru' => $request->name_1_ru,
+                'name_2_az' => $request->name_2_az,
+                'name_2_en' => $request->name_2_en,
+                'name_2_ru' => $request->name_2_ru,
+                'image' => $imagePath ?? null,
+                'status' => $request->status ? 1 : 0
             ]);
+
+            toastr()->success('Şirkət uğurla əlavə edildi!');
+            return redirect()->route('admin.home.company.index');
+
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Xəta baş verdi'
-            ]);
+            toastr()->error($e->getMessage());
+            return back();
         }
     }
 
@@ -76,29 +68,79 @@ class CompanyController extends Controller
 
     public function update(Request $request, $id)
     {
-        $company = Company::findOrFail($id);
-        $company->update([
-            'text_1_az' => $request->text_1_az,
-            'text_2_az' => $request->text_2_az,
-            'text_3_az' => $request->text_3_az,
-            'text_1_en' => $request->text_1_en,
-            'text_2_en' => $request->text_2_en,
-            'text_3_en' => $request->text_3_en,
-            'text_1_ru' => $request->text_1_ru,
-            'text_2_ru' => $request->text_2_ru,
-            'text_3_ru' => $request->text_3_ru
-        ]);
+        try {
+            $company = Company::findOrFail($id);
 
-        return redirect()->route('admin.home.company.index')
-            ->with('success', 'Məlumatlar uğurla yeniləndi');
+            $validated = $request->validate([
+                'name_1_az' => 'required|string|max:255',
+                'name_1_en' => 'required|string|max:255',
+                'name_1_ru' => 'required|string|max:255',
+                'name_2_az' => 'required|string|max:255',
+                'name_2_en' => 'required|string|max:255',
+                'name_2_ru' => 'required|string|max:255',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            ]);
+
+            if ($request->hasFile('image')) {
+                if ($company->image && File::exists(public_path($company->image))) {
+                    File::delete(public_path($company->image));
+                }
+
+                $image = $request->file('image');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/companies'), $imageName);
+                $imagePath = 'uploads/companies/' . $imageName;
+            }
+
+            $company->update([
+                'name_1_az' => $request->name_1_az,
+                'name_1_en' => $request->name_1_en,
+                'name_1_ru' => $request->name_1_ru,
+                'name_2_az' => $request->name_2_az,
+                'name_2_en' => $request->name_2_en,
+                'name_2_ru' => $request->name_2_ru,
+                'image' => $request->hasFile('image') ? $imagePath : $company->image,
+                'status' => $request->status ? 1 : 0
+            ]);
+
+            toastr()->success('Şirkət uğurla yeniləndi!');
+            return redirect()->route('admin.home.company.index');
+
+        } catch (\Exception $e) {
+            toastr()->error($e->getMessage());
+            return back();
+        }
     }
 
     public function destroy($id)
     {
-        $company = Company::findOrFail($id);
-        $company->delete();
+        try {
+            $company = Company::findOrFail($id);
 
-        return redirect()->route('admin.home.company.index')
-            ->with('success', 'Məlumatlar uğurla silindi');
+            if ($company->image && File::exists(public_path($company->image))) {
+                File::delete(public_path($company->image));
+            }
+
+            $company->delete();
+
+            toastr()->success('Şirkət uğurla silindi!');
+            return redirect()->route('admin.home.company.index');
+
+        } catch (\Exception $e) {
+            toastr()->error($e->getMessage());
+            return back();
+        }
+    }
+
+    public function status($id)
+    {
+        $company = Company::findOrFail($id);
+        $company->status = !$company->status;
+        $company->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Status uğurla dəyişdirildi!'
+        ]);
     }
 }

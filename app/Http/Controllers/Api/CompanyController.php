@@ -9,21 +9,24 @@ use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         try {
-            $company = Company::where('status', true)->first();
-            if (!$company) {
+            $companies = Company::where('status', true)
+                              ->latest()
+                              ->get();
+
+            if ($companies->isEmpty()) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Şirkət məlumatı tapılmadı'
+                    'message' => 'Şirkətlər tapılmadı'
                 ], 404);
             }
 
             return response()->json([
                 'status' => 'success',
-                'data' => new CompanyResource($company),
-                'message' => 'Şirkət məlumatı uğurla gətirildi'
+                'data' => CompanyResource::collection($companies),
+                'message' => 'Şirkətlər uğurla gətirildi'
             ]);
 
         } catch (\Exception $e) {
@@ -31,6 +34,26 @@ class CompanyController extends Controller
                 'status' => 'error',
                 'message' => 'Xəta baş verdi: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            $company = Company::where('status', true)
+                            ->findOrFail($id);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => new CompanyResource($company),
+                'message' => 'Şirkət uğurla gətirildi'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Xəta baş verdi: ' . $e->getMessage()
+            ], 404);
         }
     }
 } 

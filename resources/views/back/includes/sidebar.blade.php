@@ -103,6 +103,13 @@
                         <span>Başlığ</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
+
+                    <li>
+            <a href="{{ route('admin.home.title.index') }}">
+                <i class="ri-text-spacing"></i>
+                Başlıqlar
+            </a>
+        </li>
                         <li>
                             <a href="{{ route('admin.course.index') }}">
                                 <i class="ri-book-open-line"></i>

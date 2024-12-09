@@ -34,6 +34,7 @@ use App\Http\Controllers\Api\AboutController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\ContactMessageController;
 use App\Http\Controllers\Api\HeaderController;
+use App\Http\Controllers\Api\HomeTitleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -182,6 +183,10 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/headers/{id}', 'show');
     });
 });
+// HomeTitle API Routes
+Route::get('/home/titles', [HomeTitleController::class, 'index']);
+Route::get('/home/titles/active', [HomeTitleController::class, 'active']);
+
 
 });
 
@@ -190,6 +195,7 @@ Route::prefix('partners')->group(function () {
     Route::get('/', [PartnerController::class, 'index']);
     Route::get('/{id}', [PartnerController::class, 'show']);
 });
+
 
 
 

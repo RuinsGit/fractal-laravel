@@ -124,6 +124,21 @@
                                     </select>
                                     @error('category_id')<div class="text-danger">{{ $message }}</div>@enderror
                                 </div>
+
+                                <div class="col-md-6">
+                                    <label>Kurs Növü</label>
+                                    <select name="course_type_id" class="form-select @error('course_type_id') is-invalid @enderror">
+                                        <option value="">Seçin</option>
+                                        @foreach($courseTypes as $courseType)
+                                            <option value="{{ $courseType->id }}" {{ old('course_type_id') == $courseType->id ? 'selected' : '' }}>
+                                                {{ $courseType->name_az }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('course_type_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
 
                             <!-- Qiymət və Endirim -->

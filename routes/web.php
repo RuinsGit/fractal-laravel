@@ -38,6 +38,7 @@ use App\Http\Controllers\Admin\GalleryVideoController;
 use App\Http\Controllers\Admin\BlogTitleController;
 use App\Http\Controllers\Admin\ContactTitleController;
 use App\Http\Controllers\Admin\HomeTitleController;
+use App\Http\Controllers\Admin\BlogTypeController;
 
 
 
@@ -485,5 +486,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/destroy/{id}', 'destroy')->name('destroy');
             Route::get('/status/{id}', 'status')->name('status');
         });
+
+        Route::resource('course-types', CourseTypeController::class);
+        Route::resource('blog-types', BlogTypeController::class);
     });
 });

@@ -14,20 +14,16 @@ class BlogRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'title_az' => 'required|max:255',
-            'title_en' => 'required|max:255',
-            'title_ru' => 'required|max:255',
-            'description_az' => 'required',
-            'description_en' => 'required',
-            'description_ru' => 'required',
-            'status' => 'required|in:0,1',
+            'title_az' => 'required|string|max:255',
+            'title_en' => 'required|string|max:255',
+            'title_ru' => 'required|string|max:255',
+            'description_az' => 'required|string',
+            'description_en' => 'required|string',
+            'description_ru' => 'required|string',
+            'blog_type_id' => 'required|exists:blog_types,id',
+            'image' => $this->isMethod('PUT') ? 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048' : 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'status' => 'nullable|in:0,1,2',
         ];
-
-        if ($this->isMethod('post')) {
-            $rules['image'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
-        } else {
-            $rules['image'] = 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048';
-        }
 
         return $rules;
     }
@@ -47,6 +43,8 @@ class BlogRequest extends FormRequest
             'image.max' => 'Şəkil həcmi maksimum 2MB ola bilər',
             'status.required' => 'Status seçin',
             'status.in' => 'Status yanlışdır',
+            'blog_type_id.required' => 'Blog növü seçilməlidir',
+            'blog_type_id.exists' => 'Seçilən blog növü mövcud deyil',
         ];
     }
 }

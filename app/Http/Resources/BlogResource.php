@@ -9,8 +9,6 @@ class BlogResource extends JsonResource
 {
     public function toArray($request)
     {
-        
-        
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -19,7 +17,12 @@ class BlogResource extends JsonResource
             'view_count' => $this->view_count,
             'status' => $this->status,
             'slug' => $this->slug,
-            'published_at' => $this->published_at ? Carbon::parse($this->published_at)->format('Y-m-d H:i:s') : null
+            'published_at' => $this->published_at ? Carbon::parse($this->published_at)->format('Y-m-d H:i:s') : null,
+            'blog_type' => [
+                'id' => $this->blogType?->id,
+                'name' => $this->blogType?->name,
+                
+            ]
         ];
     }
 }

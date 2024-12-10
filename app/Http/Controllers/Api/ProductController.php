@@ -12,12 +12,17 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Product::with(['category', 'videos'])
+            $query = Product::with(['category', 'courseType', 'videos'])
                 ->where('status', true);
 
             // Kategori filtresi
             if ($request->filled('category_id')) {
                 $query->where('category_id', $request->category_id);
+            }
+
+            // Kurs türü filtresi
+            if ($request->filled('course_type_id')) {
+                $query->where('course_type_id', $request->course_type_id);
             }
 
             // Arama filtresi
@@ -30,11 +35,9 @@ class ProductController extends Controller
                 });
             }
 
-            // Sıralama
-            $query->orderBy('order', 'asc')
-                  ->orderBy('created_at', 'desc');
-
-            $products = $query->paginate(10);
+            $products = $query->orderBy('order', 'asc')
+                            ->orderBy('created_at', 'desc')
+                            ->paginate(10);
 
             return response()->json([
                 'status' => 'success',
@@ -43,6 +46,7 @@ class ProductController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            \Log::error('Product API Error:', ['error' => $e->getMessage()]);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Xəta baş verdi: ' . $e->getMessage()
@@ -53,24 +57,14 @@ class ProductController extends Controller
     public function show($id)
     {
         try {
-            \Log::info('Requested Product ID:', ['id' => $id]);
-
-            $product = Product::with(['category', 'videos'])
+            $product = Product::with(['category', 'courseType', 'videos'])
                 ->where('id', $id)
                 ->first();
-
-            \Log::info('Found Product:', ['product' => $product ? $product->toArray() : null]);
 
             if (!$product) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Məhsul tapılmadı',
-                    'requested_id' => $id,
-                    'debug' => [
-                        'available_ids' => Product::pluck('id')->toArray(),
-                        'table' => (new Product)->getTable(),
-                        'connection' => \DB::connection()->getDatabaseName()
-                    ]
+                    'message' => 'Məhsul tapılmadı'
                 ], 404);
             }
 
@@ -81,19 +75,10 @@ class ProductController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Product Show Error:', [
-                'error' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ]);
-
+            \Log::error('Product Show API Error:', ['error' => $e->getMessage()]);
             return response()->json([
                 'status' => 'error',
-                'message' => 'Xəta baş verdi: ' . $e->getMessage(),
-                'debug_info' => [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine()
-                ]
+                'message' => 'Xəta baş verdi: ' . $e->getMessage()
             ], 500);
         }
     }

@@ -187,12 +187,12 @@
                     </a>
                 </li>
 
-                <!-- <li>
-                    <a href="{{ route('admin.sub-category.index') }}" class="waves-effect">
-                        <i class="ri-list-ordered"></i>
-                        <span>Alt Kateqoriyalar</span>
+                <li>
+                    <a href="{{ route('admin.course-types.index') }}" class="waves-effect">
+                        <i class="ri-book-mark-line"></i>
+                        <span>Kurs Növləri</span>
                     </a>
-                </li> -->
+                </li>
 
                 <li>
                     <a href="{{ route('admin.product.index') }}" class="waves-effect">
@@ -242,6 +242,13 @@
                         <span>Qalereya</span>
                     </a>
                 </li>
+
+                <li>
+            <a href="{{ route('admin.blog-types.index') }}" class="{{ Route::is('admin.blog-types.*') ? 'active' : '' }}">
+                <i class="ri-list-check"></i>
+                Blog Növləri
+            </a>
+        </li>
 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">

@@ -13,7 +13,6 @@ class ProductResource extends JsonResource
             'name' => $this->name,
             'title' => $this->title,
             'description' => $this->description,
-           
             'price' => $this->price,
             'discount_percentage' => $this->discount_percentage,
             'discounted_price' => $this->discounted_price,
@@ -22,7 +21,9 @@ class ProductResource extends JsonResource
             'slug' => $this->slug,
             'category' => new CategoryResource($this->whenLoaded('category')),
             
+            'course_type' => new CourseTypeResource($this->whenLoaded('courseType')),
             'videos' => ProductVideoResource::collection($this->whenLoaded('videos')),
+
         ];
     }
 } 

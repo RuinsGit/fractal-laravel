@@ -9,7 +9,6 @@ class Product extends Model
     protected $table = 'products';
     
     protected $fillable = [
-        'category_id',
         'name_az',
         'name_en',
         'name_ru',
@@ -19,12 +18,16 @@ class Product extends Model
         'description_az',
         'description_en',
         'description_ru',
+        'category_id',
+        'course_type_id',
         'price',
         'discount_percentage',
         'discounted_price',
         'thumbnail',
         'preview_video',
-        'slug',
+        'status',
+        'order',
+        'slug'
     ];
 
     public function category()
@@ -51,4 +54,10 @@ class Product extends Model
     {
         return $this->getAttribute('description_' . app()->getLocale());
     }
+
+    public function courseType()
+    {
+        return $this->belongsTo(CourseType::class);
+    }
+    
 }

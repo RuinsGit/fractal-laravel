@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BlogRequest;
 use App\Models\Blog;
+use App\Models\BlogType;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 
@@ -12,13 +13,14 @@ class BlogController extends Controller
 {
     public function index()
     {
-        $blogs = Blog::latest()->get();
+        $blogs = Blog::with('blogType')->latest()->get();
         return view('back.pages.blog.index', compact('blogs'));
     }
 
     public function create()
     {
-        return view('back.pages.blog.create');
+        $blogTypes = BlogType::where('status', true)->get();
+        return view('back.pages.blog.create', compact('blogTypes'));
     }
 
     public function store(BlogRequest $request)
@@ -69,7 +71,8 @@ class BlogController extends Controller
     {
         try {
             $blog = Blog::findOrFail($id);
-            return view('back.pages.blog.edit', compact('blog'));
+            $blogTypes = BlogType::where('status', true)->get();
+            return view('back.pages.blog.edit', compact('blog', 'blogTypes'));
         } catch (\Exception $e) {
             return redirect()
                 ->route('admin.blog.index')

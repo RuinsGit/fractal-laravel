@@ -35,6 +35,7 @@ use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\ContactMessageController;
 use App\Http\Controllers\Api\HeaderController;
 use App\Http\Controllers\Api\HomeTitleController;
+use App\Http\Controllers\Api\BlogTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -194,6 +195,13 @@ Route::get('/home/titles/active', [HomeTitleController::class, 'active']);
 Route::prefix('partners')->group(function () {
     Route::get('/', [PartnerController::class, 'index']);
     Route::get('/{id}', [PartnerController::class, 'show']);
+});
+
+Route::group(['prefix' => 'v1'], function () {
+    // Mevcut route'lar...
+    
+    Route::get('blog-types', [BlogTypeController::class, 'index']);
+    Route::get('blog-types/{id}', [BlogTypeController::class, 'show']);
 });
 
 

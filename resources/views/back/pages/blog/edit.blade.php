@@ -59,6 +59,23 @@
                                     </div>
                                 </div>
 
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Blog Növü</label>
+                                        <select name="blog_type_id" class="form-select @error('blog_type_id') is-invalid @enderror">
+                                            <option value="">Blog növü seçin</option>
+                                            @foreach($blogTypes as $type)
+                                                <option value="{{ $type->id }}" {{ $blog->blog_type_id == $type->id ? 'selected' : '' }}>
+                                                    {{ $type->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('blog_type_id')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
                                 <ul class="nav nav-tabs nav-justified mb-3" role="tablist">
                                     <li class="nav-item">
                                         <a class="nav-link active" data-bs-toggle="tab" href="#az" role="tab">

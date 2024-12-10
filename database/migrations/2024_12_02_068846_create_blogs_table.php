@@ -11,6 +11,11 @@ return new class extends Migration
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
             
+            // Blog Type ilişkisi
+            $table->foreignId('blog_type_id')
+                  ->constrained('blog_types')
+                  ->onDelete('cascade');
+            
             // Çok dilli içerik alanları
             $table->string('title_az');
             $table->string('title_en');

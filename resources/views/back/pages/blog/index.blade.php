@@ -55,6 +55,7 @@
                                             <th>#</th>
                                             <th>Şəkil</th>
                                             <th>Başlıq</th>
+                                            <th>Blog Növü</th>
                                             <th>Status</th>
                                             <th>Baxış sayı</th>
                                             <th>Tarix</th>
@@ -73,6 +74,13 @@
                                                          style="object-fit: cover;">
                                                 </td>
                                                 <td>{{ $blog->title_az }}</td>
+                                                <td>
+                                                    @if($blog->blogType)
+                                                        <span class="badge bg-info">{{ $blog->blogType->name }}</span>
+                                                    @else
+                                                        <span class="badge bg-warning">Təyin edilməyib</span>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     @if($blog->status == 1)
                                                         <span class="badge bg-success">Aktiv</span>

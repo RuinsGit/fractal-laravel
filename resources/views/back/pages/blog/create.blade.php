@@ -56,6 +56,25 @@
                                     </div>
                                 </div>
 
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label fw-bold">Blog Növü <span class="text-danger">*</span></label>
+                                            <select name="blog_type_id" class="form-select @error('blog_type_id') is-invalid @enderror">
+                                                <option value="">Blog növü seçin</option>
+                                                @foreach($blogTypes as $type)
+                                                    <option value="{{ $type->id }}" {{ old('blog_type_id') == $type->id ? 'selected' : '' }}>
+                                                        {{ $type->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @error('blog_type_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="row">
                                     <div class="col-12">
                                         <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
@@ -225,6 +244,12 @@
                 e.preventDefault();
                 let hasError = false;
                 let errorMessage = '';
+
+                // Blog türü kontrolü
+                if (!$('select[name="blog_type_id"]').val()) {
+                    errorMessage += 'Blog növü seçilməlidir<br>';
+                    hasError = true;
+                }
 
                 // AZ tab kontrolü
                 if (!$('#az input[name="title_az"]').val() || !$('#az textarea[name="description_az"]').val()) {

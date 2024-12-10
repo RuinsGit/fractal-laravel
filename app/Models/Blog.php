@@ -16,7 +16,8 @@ class Blog extends Model
     protected $fillable = [
         'title_az', 'title_en', 'title_ru',
         'description_az', 'description_en', 'description_ru',
-        'image', 'view_count', 'status', 'slug', 'published_at'
+        'image', 'view_count', 'status', 'slug', 'published_at',
+        'blog_type_id'
     ];
 
     protected $dates = [
@@ -25,6 +26,11 @@ class Blog extends Model
         'updated_at',
         'deleted_at'
     ];
+
+    public function blogType()
+    {
+        return $this->belongsTo(BlogType::class);
+    }
 
     public static function getStatusList()
     {

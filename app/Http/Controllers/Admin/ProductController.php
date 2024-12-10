@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVideo;
+use App\Models\CourseType;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -46,11 +47,10 @@ class ProductController extends Controller
 
     public function create()
     {
-        $categories = Category::where('status', 1)
-            ->orderBy('name_az')
-            ->get();
+        $categories = Category::all();
+        $courseTypes = CourseType::where('status', 1)->get();
         
-        return view('back.pages.product.create', compact('categories'));
+        return view('back.pages.product.create', compact('categories', 'courseTypes'));
     }
 
     public function store(ProductRequest $request)
@@ -98,6 +98,7 @@ class ProductController extends Controller
                 'description_en' => $request->description_en,
                 'description_ru' => $request->description_ru,
                 'category_id' => $request->category_id,
+                'course_type_id' => $request->course_type_id,
                 'price' => $price,
                 'discount_percentage' => $discountPercentage,
                 'discounted_price' => $discountedPrice,

@@ -42,14 +42,6 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <select name="sub_category_id" class="form-select">
-                                    <option value="">Alt Kateqoriya Seçin</option>
-                                    @foreach($sub_categories as $sub_category)
-                                        <option value="{{ $sub_category->id }}">{{ $sub_category->name_az }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-3">
                                 <select name="status" class="form-select filter-select">
                                     <option value="">Bütün Statuslar</option>
                                     <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Aktiv</option>
@@ -75,7 +67,6 @@
                                         <th style="width: 100px">Şəkil</th>
                                         <th>Ad</th>
                                         <th>Kateqoriya</th>
-                                        <th>Alt Kateqoriya</th>
                                         <th>Qiymət</th>
                                         <th>Video Sayı</th>
                                         <th>Status</th>
@@ -94,7 +85,6 @@
                                             </td>
                                             <td>{{ $product->name_az }}</td>
                                             <td>{{ $product->category->name_az ?? '-' }}</td>
-                                            <td>{{ $product->sub_category->name_az ?? '-' }}</td>
                                             <td>
                                                 @if($product->discount_percentage > 0)
                                                     <div class="d-flex flex-column">
@@ -137,7 +127,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="9" class="text-center">Məhsul tapılmadı</td>
+                                            <td colspan="8" class="text-center">Məhsul tapılmadı</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -180,9 +170,6 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <p><strong>Kateqoriya:</strong> {{ $product->category->name_az ?? '-' }}</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Alt Kateqoriya:</strong> {{ $product->sub_category->name_az ?? '-' }}</p>
                                 </div>
                             </div>
                             
@@ -271,22 +258,8 @@
 
 @push('js')
 <script>
-    // Alt kategori seçimi için AJAX
-    $('select[name="category_id"]').change(function() {
-        let categoryId = $(this).val();
-        let subCategorySelect = $('select[name="sub_category_id"]');
-        
-        if (categoryId) {
-            $.get("{{ route('admin.product.get-sub-category', '') }}/" + categoryId, function(data) {
-                subCategorySelect.html(data.view);
-            });
-        } else {
-            subCategorySelect.html('<option value="">Alt Kateqoriya Seçin</option>');
-        }
-    });
-
     // Filter
-    $('.filter-select, select[name="sub_category_id"]').change(function() {
+    $('.filter-select').change(function() {
         filterProducts();
     });
 
@@ -313,14 +286,6 @@
             params.delete('category_id');
         }
 
-        // Alt kategori
-        let subCategoryId = $('select[name="sub_category_id"]').val();
-        if (subCategoryId) {
-            params.set('sub_category_id', subCategoryId);
-        } else {
-            params.delete('sub_category_id');
-        }
-
         // Status
         let status = $('select[name="status"]').val();
         if (status) {
@@ -337,7 +302,6 @@
             params.delete('search');
         }
 
-        // Yeni URL oluştur ve yönlendir
         url.search = params.toString();
         window.location.href = url.toString();
     }

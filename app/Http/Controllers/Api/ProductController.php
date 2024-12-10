@@ -12,17 +12,12 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Product::with(['category', 'sub_category', 'videos'])
+            $query = Product::with(['category', 'videos'])
                 ->where('status', true);
 
             // Kategori filtresi
             if ($request->filled('category_id')) {
                 $query->where('category_id', $request->category_id);
-            }
-
-            // Alt kategori filtresi
-            if ($request->filled('sub_category_id')) {
-                $query->where('sub_category_id', $request->sub_category_id);
             }
 
             // Arama filtresi
@@ -58,15 +53,12 @@ class ProductController extends Controller
     public function show($id)
     {
         try {
-            // Debug için ID'yi kontrol edelim
             \Log::info('Requested Product ID:', ['id' => $id]);
 
-            // Önce ürünü bulmaya çalışalım
-            $product = Product::with(['category', 'sub_category', 'videos'])
+            $product = Product::with(['category', 'videos'])
                 ->where('id', $id)
                 ->first();
 
-            // Debug için ürün bilgisini kontrol edelim
             \Log::info('Found Product:', ['product' => $product ? $product->toArray() : null]);
 
             if (!$product) {

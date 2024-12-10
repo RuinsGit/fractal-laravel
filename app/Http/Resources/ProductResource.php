@@ -21,7 +21,7 @@ class ProductResource extends JsonResource
             'preview_video' => $this->preview_video ? url('uploads/products/videos/previews/' . basename($this->preview_video)) : null,
             'slug' => $this->slug,
             'category' => new CategoryResource($this->whenLoaded('category')),
-            'sub_category' => new SubCategoryResource($this->whenLoaded('sub_category')),
+            
             'videos' => ProductVideoResource::collection($this->whenLoaded('videos')),
         ];
     }

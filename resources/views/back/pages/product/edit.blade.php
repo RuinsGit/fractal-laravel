@@ -110,11 +110,11 @@
                                 </div>
                             </div>
 
-                            <!-- Kateqoriya və Alt Kateqoriya -->
+                            <!-- Kategori seçimi - Alt kategori kaldırıldı -->
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label>Kateqoriya</label>
-                                    <select name="category_id" class="form-select" onchange="getSubCategories(this)">
+                                    <select name="category_id" class="form-select">
                                         <option value="">Seçin</option>
                                         @foreach($categories as $category)
                                             <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
@@ -123,21 +123,6 @@
                                         @endforeach
                                     </select>
                                     @error('category_id')<div class="text-danger">{{ $message }}</div>@enderror
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label>Alt Kateqoriya</label>
-                                    <select name="sub_category_id" class="form-select">
-                                        <option value="">Seçin</option>
-                                        @foreach($sub_categories as $sub)
-                                            <option value="{{ $sub->id }}" 
-                                                    data-category="{{ $sub->category_id }}"
-                                                    {{ old('sub_category_id', $product->sub_category_id) == $sub->id ? 'selected' : '' }}>
-                                                {{ $sub->name_az }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('sub_category_id')<div class="text-danger">{{ $message }}</div>@enderror
                                 </div>
                             </div>
 
@@ -288,35 +273,6 @@
 
 @push('js')
 <script>
-    function getSubCategories(elem) {
-        let categoryId = elem.value;
-        let subCategorySelect = document.querySelector('[name="sub_category_id"]');
-        
-        if (!categoryId) {
-            subCategorySelect.innerHTML = '<option value="">Əvvəlcə kateqoriya seçin</option>';
-            return;
-        }
-
-        fetch(`/admin/product/get-sub-category/${categoryId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    subCategorySelect.innerHTML = data.view;
-                    // Əgər əvvəlcədən seçilmiş alt kateqoriya varsa, onu seç
-                    let oldSubCategory = '{{ old('sub_category_id', $product->sub_category_id) }}';
-                    if (oldSubCategory) {
-                        subCategorySelect.value = oldSubCategory;
-                    }
-                } else {
-                    subCategorySelect.innerHTML = '<option value="">Alt kateqoriya tapılmadı</option>';
-                }
-            })
-            .catch(error => {
-                console.error('Xəta:', error);
-                subCategorySelect.innerHTML = '<option value="">Xəta baş verdi</option>';
-            });
-    }
-
     function deleteVideo(videoId) {
         if (confirm('Bu videoyu silmək istədiyinizdən əminsiniz?')) {
             // CSRF token'ı al
@@ -360,12 +316,6 @@
         });
 
         $('.form-select').select2();
-
-        // Sayfa yüklendiğinde alt kategorileri filtrele
-        let selectedCategory = $('[name="category_id"]').val();
-        if (selectedCategory) {
-            getSubCategories({ value: selectedCategory });
-        }
     });
 </script>
 @endpush

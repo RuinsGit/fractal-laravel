@@ -187,12 +187,12 @@
                     </a>
                 </li>
 
-                <li>
+                <!-- <li>
                     <a href="{{ route('admin.sub-category.index') }}" class="waves-effect">
                         <i class="ri-list-ordered"></i>
                         <span>Alt Kateqoriyalar</span>
                     </a>
-                </li>
+                </li> -->
 
                 <li>
                     <a href="{{ route('admin.product.index') }}" class="waves-effect">

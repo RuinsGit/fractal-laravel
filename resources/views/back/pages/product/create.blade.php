@@ -114,21 +114,15 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label>Kateqoriya</label>
-                                    <select name="category_id" class="form-select" onchange="getSubCategories(this)">
+                                    <select name="category_id" class="form-select">
                                         <option value="">Seçin</option>
                                         @foreach($categories as $category)
-                                            <option value="{{ $category->id }}">{{ $category->name_az }}</option>
+                                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                                {{ $category->name_az }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     @error('category_id')<div class="text-danger">{{ $message }}</div>@enderror
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label>Alt Kateqoriya</label>
-                                    <select name="sub_category_id" class="form-select">
-                                        <option value="">Əvvəlcə kateqoriya seçin</option>
-                                    </select>
-                                    @error('sub_category_id')<div class="text-danger">{{ $message }}</div>@enderror
                                 </div>
                             </div>
 
@@ -257,30 +251,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    function getSubCategories(elem) {
-        let categoryId = elem.value;
-        let subCategorySelect = document.querySelector('[name="sub_category_id"]');
-        
-        if (!categoryId) {
-            subCategorySelect.innerHTML = '<option value="">Əvvəlcə kateqoriya seçin</option>';
-            return;
-        }
-
-        fetch(`/admin/product/get-sub-category/${categoryId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    subCategorySelect.innerHTML = data.view;
-                } else {
-                    subCategorySelect.innerHTML = '<option value="">Alt kateqoriya tapılmadı</option>';
-                }
-            })
-            .catch(error => {
-                console.error('Xəta:', error);
-                subCategorySelect.innerHTML = '<option value="">Xəta baş verdi</option>';
-            });
-    }
-
     $(document).ready(function() {
         $('.summernote').summernote({
             height: 200,

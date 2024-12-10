@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProductRequest;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\SubCategory;
 use App\Models\ProductImage;
 use App\Models\ProductVideo;
 use Illuminate\Support\Str;
@@ -17,16 +16,11 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with(['category', 'sub_category', 'videos']);
+        $query = Product::with(['category', 'videos']);
 
         
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
-        }
-
-        
-        if ($request->filled('sub_category_id')) {
-            $query->where('sub_category_id', $request->sub_category_id);
         }
 
         
@@ -46,9 +40,8 @@ class ProductController extends Controller
 
         $products = $query->latest()->paginate(10)->withQueryString();
         $categories = Category::all();
-        $sub_categories = SubCategory::all();
 
-        return view('back.pages.product.index', compact('products', 'categories', 'sub_categories'));
+        return view('back.pages.product.index', compact('products', 'categories'));
     }
 
     public function create()
@@ -105,7 +98,6 @@ class ProductController extends Controller
                 'description_en' => $request->description_en,
                 'description_ru' => $request->description_ru,
                 'category_id' => $request->category_id,
-                'sub_category_id' => $request->sub_category_id,
                 'price' => $price,
                 'discount_percentage' => $discountPercentage,
                 'discounted_price' => $discountedPrice,
@@ -211,9 +203,8 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         $categories = Category::all();
-        $sub_categories = SubCategory::where('category_id', $product->category_id)->get();
         
-        return view('back.pages.product.edit', compact('product', 'categories', 'sub_categories'));
+        return view('back.pages.product.edit', compact('product', 'categories'));
     }
 
     public function update(ProductRequest $request, $id)
@@ -267,7 +258,6 @@ class ProductController extends Controller
                 'description_en' => $data['description_en'],
                 'description_ru' => $data['description_ru'],
                 'category_id' => $data['category_id'],
-                'sub_category_id' => $data['sub_category_id'],
                 'price' => $price,
                 'discount_percentage' => $discountPercentage,
                 'discounted_price' => $discountedPrice,

@@ -11,11 +11,8 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        
         try {
-            $categories = Category::with('sub_categories')
-                                ->where('status', 1)
-                                ->get();
+            $categories = Category::where('status', 1)->get();
 
             if ($categories->isEmpty()) {
                 return response()->json([
@@ -41,8 +38,7 @@ class CategoryController extends Controller
     public function show($id)
     {
         try {
-            $category = Category::with('sub_categories')
-                              ->where('status', 1)
+            $category = Category::where('status', 1)
                               ->findOrFail($id);
 
             return response()->json([

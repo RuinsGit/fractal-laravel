@@ -48,7 +48,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Dil gerektiren route'lar
-Route::middleware('language')->group(function () {
+Route::middleware(['language', 'throttle:120,1'])->group(function () {
     Route::get('/company-names', [CompanyNameController::class, 'index']);
     Route::get('/company', [CompanyController::class, 'index']);
     // Category Routes
@@ -192,16 +192,16 @@ Route::get('/home/titles/active', [HomeTitleController::class, 'active']);
 });
 
 // Dil gerektirmeyen route'lar
-Route::prefix('partners')->group(function () {
-    Route::get('/', [PartnerController::class, 'index']);
-    Route::get('/{id}', [PartnerController::class, 'show']);
-});
+Route::middleware('throttle:120,1')->group(function () {
+    Route::prefix('partners')->group(function () {
+        Route::get('/', [PartnerController::class, 'index']);
+        Route::get('/{id}', [PartnerController::class, 'show']);
+    });
 
-Route::group(['prefix' => 'v1'], function () {
-    // Mevcut route'lar...
-    
-    Route::get('blog-types', [BlogTypeController::class, 'index']);
-    Route::get('blog-types/{id}', [BlogTypeController::class, 'show']);
+    Route::group(['prefix' => 'v1'], function () {
+        Route::get('blog-types', [BlogTypeController::class, 'index']);
+        Route::get('blog-types/{id}', [BlogTypeController::class, 'show']);
+    });
 });
 
 

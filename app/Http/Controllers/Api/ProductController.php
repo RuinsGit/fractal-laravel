@@ -6,38 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Services\ProductService;
 
 class ProductController extends Controller
 {
+    protected $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+
     public function index(Request $request)
     {
         try {
-            $query = Product::with(['category', 'courseType', 'videos'])
-                ->where('status', true);
-
-            // Kategori filtresi
-            if ($request->filled('category_id')) {
-                $query->where('category_id', $request->category_id);
-            }
-
-            // Kurs türü filtresi
-            if ($request->filled('course_type_id')) {
-                $query->where('course_type_id', $request->course_type_id);
-            }
-
-            // Arama filtresi
-            if ($request->filled('search')) {
-                $search = $request->search;
-                $query->where(function($q) use ($search) {
-                    $q->where('name_az', 'like', "%{$search}%")
-                      ->orWhere('name_en', 'like', "%{$search}%")
-                      ->orWhere('name_ru', 'like', "%{$search}%");
-                });
-            }
-
-            $products = $query->orderBy('order', 'asc')
-                            ->orderBy('created_at', 'desc')
-                            ->paginate(10);
+            $products = $this->productService->getFilteredProducts($request);
 
             return response()->json([
                 'status' => 'success',
@@ -57,9 +40,7 @@ class ProductController extends Controller
     public function show($id)
     {
         try {
-            $product = Product::with(['category', 'courseType', 'videos'])
-                ->where('id', $id)
-                ->first();
+            $product = $this->productService->getProductDetail($id);
 
             if (!$product) {
                 return response()->json([

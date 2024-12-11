@@ -12,18 +12,13 @@ class CourseController extends Controller
     public function index()
     {
         try {
-            $courses = Course::where('status', true)->get();
+            $courses = Course::where('status', true)->first();
 
-            if ($courses->isEmpty()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Heç bir kurs tapılmadı'
-                ], 404);
-            }
+            
 
             return response()->json([
                 'status' => 'success',
-                'data' => CourseResource::collection($courses),
+                'data' => new CourseResource($courses),
                 'message' => 'Kurslar uğurla gətirildi'
             ]);
 

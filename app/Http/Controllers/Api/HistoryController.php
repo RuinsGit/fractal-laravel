@@ -25,7 +25,7 @@ class HistoryController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data' => HistoryResource::collection($histories),
+                'data' => HistoryResource::customCollection($histories),
                 'message' => 'Tarix məlumatları uğurla gətirildi'
             ]);
 

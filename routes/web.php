@@ -39,6 +39,7 @@ use App\Http\Controllers\Admin\BlogTitleController;
 use App\Http\Controllers\Admin\ContactTitleController;
 use App\Http\Controllers\Admin\HomeTitleController;
 use App\Http\Controllers\Admin\BlogTypeController;
+use App\Http\Controllers\Admin\StudyContentController;
 
 
 
@@ -489,5 +490,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('course-types', CourseTypeController::class);
         Route::resource('blog-types', BlogTypeController::class);
+
+        // Study Content Routes
+        Route::prefix('study-content')->name('study-content.')->group(function () {
+            Route::get('/', [StudyContentController::class, 'index'])->name('index');
+            Route::get('/create', [StudyContentController::class, 'create'])->name('create');
+            Route::post('/store', [StudyContentController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [StudyContentController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}', [StudyContentController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [StudyContentController::class, 'destroy'])->name('destroy');
+            Route::get('/status/{id}', [StudyContentController::class, 'status'])->name('status');
+        });
     });
 });

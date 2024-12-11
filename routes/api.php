@@ -36,6 +36,7 @@ use App\Http\Controllers\Api\ContactMessageController;
 use App\Http\Controllers\Api\HeaderController;
 use App\Http\Controllers\Api\HomeTitleController;
 use App\Http\Controllers\Api\BlogTypeController;
+use App\Http\Controllers\Api\StudyContentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -183,6 +184,10 @@ Route::group(['middleware' => ['api']], function () {
         Route::get('/headers', 'index');
         Route::get('/headers/{id}', 'show');
     });
+
+    // Study Content Routes
+    Route::get('study-contents', [App\Http\Controllers\Api\StudyContentController::class, 'index']);
+    Route::get('study-contents/{slug}', [App\Http\Controllers\Api\StudyContentController::class, 'show']);
 });
 // HomeTitle API Routes
 Route::get('/home/titles', [HomeTitleController::class, 'index']);
@@ -192,17 +197,19 @@ Route::get('/home/titles/active', [HomeTitleController::class, 'active']);
 });
 
 // Dil gerektirmeyen route'lar
-Route::middleware('throttle:120,1')->group(function () {
-    Route::prefix('partners')->group(function () {
-        Route::get('/', [PartnerController::class, 'index']);
-        Route::get('/{id}', [PartnerController::class, 'show']);
-    });
-
-    Route::group(['prefix' => 'v1'], function () {
-        Route::get('blog-types', [BlogTypeController::class, 'index']);
-        Route::get('blog-types/{id}', [BlogTypeController::class, 'show']);
-    });
+Route::prefix('partners')->group(function () {
+    Route::get('/', [PartnerController::class, 'index']);
+    Route::get('/{id}', [PartnerController::class, 'show']);
 });
+
+Route::group(['prefix' => 'v1'], function () {
+    // Mevcut route'lar...
+    
+    Route::get('blog-types', [BlogTypeController::class, 'index']);
+    Route::get('blog-types/{id}', [BlogTypeController::class, 'show']);
+});
+
+
 
 
 

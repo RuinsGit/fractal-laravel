@@ -56,6 +56,12 @@
                             </a>
                         </li>
                         <li>
+    <a href="{{ route('admin.study-content.index') }}" class="waves-effect">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Təhsil Məzmunu</span>
+    </a>
+</li>
+                        <li>
                             <a href="{{ route('admin.home.company-names.index') }}">
                                 <i class="ri-building-line"></i>
                                 Şirkət Haqqında

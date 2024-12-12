@@ -18,17 +18,16 @@ class IncreaseApiLimit
 
     public function handle(Request $request, Closure $next): Response
     {
-        // Varsayılan limiti 2x'e çıkar (60 -> 120)
         $key = 'api:' . $request->ip();
         
-        if ($this->limiter->tooManyAttempts($key, 120)) {
+        if ($this->limiter->tooManyAttempts($key, 240)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Çox sayda sorğu göndərildi. Zəhmət olmasa bir az gözləyin.'
             ], 429);
         }
 
-        $this->limiter->hit($key, 60); // 1 dakika süreyle
+        $this->limiter->hit($key, 120);
 
         return $next($request);
     }
